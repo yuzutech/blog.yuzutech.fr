@@ -1,0 +1,21 @@
+@import url('https://fonts.googleapis.com/css?family=Lato|Quicksand:400,500,700');
+
+$family-primary: BlinkMacSystemFont, -apple-system, "Lato", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif !default$navbar-item-img-max-height: 3.5rem;
+$navbar-item-hover-color: #85b93f;
+$primary: #85b93f;
+$title-size: 2.25rem;
+
+@import "../../node_modules/bulma/sass/utilities/_all.sass";
+@import "../../node_modules/bulma/sass/base/_all.sass";
+@import "../../node_modules/bulma/sass/elements/container.sass";
+@import "../../node_modules/bulma/sass/elements/title.sass";
+@import "../../node_modules/bulma/sass/elements/content.sass";
+@import "../../node_modules/bulma/sass/elements/box.sass";
+@import "../../node_modules/bulma/sass/elements/image.sass";
+@import "../../node_modules/bulma/sass/elements/button.sass";
+@import "../../node_modules/bulma/sass/components/navbar.sass";
+@import "../../node_modules/bulma/sass/components/media.sass";
+@import "../../node_modules/bulma/sass/layout/hero.sass";
+@import "../../node_modules/bulma/sass/layout/section.sass";
+@import "../../node_modules/bulma/sass/layout/footer.sass";
+@import "../../node_modules/bulma/sass/grid/columns.sass";

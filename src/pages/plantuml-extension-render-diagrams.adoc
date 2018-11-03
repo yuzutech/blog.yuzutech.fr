@@ -1,0 +1,50 @@
+= Awesome Asciidoctor.js: Use PlantUML extension to render diagrams
+Guillaume Grossetie <ggrossetie@yuzutech.fr>
+v1.0,03/11/2018
+
+:tags: a,b,c
+:uri-eshepelyuk-gh: https://github.com/eshepelyuk
+:uri-plantuml-extension-gh: https://github.com/eshepelyuk/asciidoctor-plantuml.js
+
+Extensions in Asciidoctor.js are very powerful because they open up the language to new use cases.
+One popular use case is to render PlantUML diagrams.
+To do that we are going to use the {uri-plantuml-extension-gh}[PlantUML extension] written by {uri-eshepelyuk-gh}[Evgeny Shepelyuk].
+
+== Use
+
+In the following example document, we define a simple diagram:
+
+.document.adoc
+[source,adoc]
+----
+= PlantUML diagrams
+
+== First section
+
+[plantuml,format=svg,role=sequence]
+....
+@startuml
+alice -> bob
+@enduml
+....
+----
+
+To render this document, we need to install the dependencies using `npm`:
+
+ $ npm i asciidoctor.js asciidoctor-plantuml
+
+NOTE: If you don't have
+If you prefer `Yarn` over `npm`, use this command instead:
+
+ $ yarn add asciidoctor.js asciidoctor-plantuml
+
+
+.convert.js
+[source,js]
+----
+const asciidoctor = require('asciidoctor.js')()
+const plantuml = require('asciidoctor-plantuml')
+
+plantuml.register(asciidoctor.Extensions)
+asciidoctor.convertFile('document.adoc')
+----
