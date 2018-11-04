@@ -1,7 +1,12 @@
+// preserve Boolean.call (used in immutable module)
+const booleanCall = Boolean.call;
+
 const asciidoctor = require('asciidoctor.js')()
 
-function init () {
+// restore Boolean.call function
+Boolean.call = booleanCall;
 
+function init () {
   const HTML5Converter = Opal.const_get_qualified(
     Opal.const_get_qualified(
       Opal.const_get_relative(Opal, 'Asciidoctor'),
@@ -9,29 +14,44 @@ function init () {
     ),
     'Html5Converter'
   )
-
   class BlogConverter {
     constructor () {
       this.baseConverter = HTML5Converter.$new()
       this.transforms = {
         document: ({ node }) => {
+          const monthNames = {
+            0: 'Jan',
+            1: 'Feb',
+            2: 'Mar',
+            3: 'Apr',
+            4: 'May',
+            5: 'Jun',
+            6: 'Jul',
+            7: 'Aug',
+            8: 'Sep',
+            9: 'Oct',
+            10: 'Nov',
+            11: 'Dec'
+          }
+          const revisionDate = new Date(node.getDocument().getAttribute('revdate'))
+          const monthName = monthNames[revisionDate.getMonth()];
           return `<!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Yuzu tech, l'informatique sans pépins</title>
-  <link rel="stylesheet" href="./stylesheets/prism-tomorrow.css" />
+  <link rel="stylesheet" href="./stylesheets/prism.css" />
   <link rel="stylesheet" href="./stylesheets/main.css">
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 </head>
 <body>
  <section class="section">
     <div class="container">
-      <div class="author">
+      <div class="meta">
         <div class="avatar">by</div>
         <div class="byline">
-          <span class="author">${node.getDocument().getAuthor()}</span><time datetime="${node.getDocument().getAttribute('revdate')}">${node.getDocument().getAttribute('revdate')}</time>
+          <span class="author">${node.getDocument().getAuthor()}</span><time datetime="${revisionDate}">${monthName} ${revisionDate.getDate()}, ${revisionDate.getFullYear()}</time>
         </div>
       </div>
       <h1 class="title">${node.getDocumentTitle()}</h1>
@@ -123,16 +143,21 @@ ${titleElement}<div class="content">
       return this.baseConverter.$convert(node, transform, opts)
     }
   }
-
   asciidoctor.Converter.Factory.$register(new BlogConverter('blog'), ['blog'])
 }
 
 function convert (filePath) {
-  asciidoctor.convertFile(filePath, { backend: 'blog', to_dir: 'public' })
   console.log(`  convert ${filePath}`)
+  return asciidoctor.convertFile(filePath, { backend: 'blog', to_dir: 'public' })
+}
+
+function load(filePath) {
+  console.log(`  load ${filePath}`)
+  return asciidoctor.loadFile(filePath, { backend: 'blog'})
 }
 
 module.exports = {
   init: init,
-  convert: convert
+  convert: convert,
+  load: load
 }

@@ -7,6 +7,10 @@ const browserSync = require("browser-sync")
 
 browserSync({server: "./public"});
 
+const processor = require('./modules/processor')
+processor.init()
+const index = require('./modules/index')
+
 const watcher = chokidar.watch(['src/pages/**.adoc', 'src/stylesheets/**.scss', 'src/stylesheets/**.css', 'src/images/**', 'src/javascripts/**'], {
   persistent: true
 })
@@ -45,10 +49,10 @@ function update (filePath) {
       browserSync.reload(`stylesheets/${path.basename(filePath)}`);
     }
   } else if (filePath.includes('pages')) {
-    const pages = require('./modules/pages')
-    pages.init()
-    pages.convert(filePath)
-    browserSync.reload(`${path.basename(filePath)}`);
+    processor.convert(filePath)
+    index.generate(processor)
+    browserSync.reload(`${path.basename(filePath)}`)
+    browserSync.reload('index.html')
   } else if (filePath.includes('images')) {
     const dir = 'public/images'
     if (!fs.existsSync(dir)) {

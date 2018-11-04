@@ -3,7 +3,7 @@
 $family-primary: BlinkMacSystemFont, -apple-system, "Lato", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif !default$navbar-item-img-max-height: 3.5rem;
 $navbar-item-hover-color: #85b93f;
 $primary: #85b93f;
-$title-size: 2.25rem;
+$title-size: 1.75rem;
 $box-radius: 0;
 
 @import "../../node_modules/bulma/sass/utilities/_all.sass";
@@ -14,8 +14,10 @@ $box-radius: 0;
 @import "../../node_modules/bulma/sass/elements/box.sass";
 @import "../../node_modules/bulma/sass/elements/image.sass";
 @import "../../node_modules/bulma/sass/elements/button.sass";
+@import "../../node_modules/bulma/sass/elements/tag.sass";
 @import "../../node_modules/bulma/sass/components/navbar.sass";
 @import "../../node_modules/bulma/sass/components/media.sass";
+@import "../../node_modules/bulma/sass/components/card.sass";
 @import "../../node_modules/bulma/sass/layout/hero.sass";
 @import "../../node_modules/bulma/sass/layout/section.sass";
 @import "../../node_modules/bulma/sass/layout/footer.sass";
@@ -46,19 +48,88 @@ $box-radius: 0;
     font-style: italic;
   }
 }
-/*
-.listingblock {
-  margin-right: -1.5rem;
-  margin-left: -1.5rem;
-  .listing-title {
-    padding-right: 1.5rem;
-    padding-left: 1.5rem;
+
+.meta {
+  display: flex;
+  margin-bottom: 1.25rem;
+  .avatar {
+    background: #dbdbdb;
+    width: 2.75rem;
+    height: 2.75rem;
+    color: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Noto Serif", serif;
+    font-style: italic;
+    border-radius: 100%;
+    font-size: 1.625rem;
+    margin-right: 0.5rem;
+  }
+  .author {
+    font-weight: bold;
+  }
+  .byline {
+    display: flex;
+    flex-direction: column;
   }
 }
 
-pre[class*="language-"] {
-  padding-right: 1.5rem;
-  padding-left: 1.5rem;
+.language-asciidoc {
+  .token.variable {
+    color: #07a;
+  }
 }
-*/
 
+:not(pre) > code[class*="language-"], pre[class*="language-"] {
+  background-color: whitesmoke;
+}
+
+code[class*="language-"], pre[class*="language-"] {
+  color: #4a4a4a;
+}
+
+.card-content {
+  box-shadow: 0 -1px 2px -1px rgba(10, 10, 10, 0.2), 0 -2px 4px -2px rgba(10, 10, 10, 0.2);
+  height: 15rem;
+  overflow-y: hidden;
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+  a.summary {
+    color: inherit;
+    text-decoration: none;
+
+    time {
+      display: block;
+      font-weight: 300;
+      font-size: 0.875rem;
+      color: #7a7a7a;
+      margin-bottom: 0.25rem;
+    }
+
+    .article-title {
+      font-weight: 500;
+      letter-spacing: -0.015em;
+      font-size: 1.125rem;
+      line-height: 1.25;
+      margin: 0 0 0.625rem 0;
+      color: #333;
+    }
+
+    .excerpt {
+      font-weight: 300;
+      font-size: 1rem;
+    }
+  }
+
+  .tags {
+    margin-top: 0;
+    position: absolute;
+    right: 1.25rem;
+    bottom: 0;
+    left: 1.25rem;
+    padding-top: 2.5rem;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(to bottom, transparent 0%, #fff 2rem);
+  }
+}
