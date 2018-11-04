@@ -27,5 +27,8 @@
     "build-js": "node tasks/javascripts.js",
     "deploy": "npm run build",
     "start": "node tasks/watch.js"
+  },
+  "dependencies": {
+    "prismjs": "^1.15.0"
   }
 }

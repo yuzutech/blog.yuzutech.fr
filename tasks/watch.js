@@ -7,7 +7,7 @@ const browserSync = require("browser-sync")
 
 browserSync({server: "./public"});
 
-const watcher = chokidar.watch(['src/pages/**.adoc', 'src/stylesheets/**.scss', 'src/images/**', 'src/javascripts/**'], {
+const watcher = chokidar.watch(['src/pages/**.adoc', 'src/stylesheets/**.scss', 'src/stylesheets/**.css', 'src/images/**', 'src/javascripts/**'], {
   persistent: true
 })
 
@@ -17,26 +17,32 @@ function update (filePath) {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir)
     }
-    const outFile = `public/stylesheets/${path.basename(filePath, '.scss')}.css`
-    const sourceMap = `public/stylesheets/${path.basename(filePath, '.scss')}.css.map`
-    try {
-      const result = sass.renderSync({
-        file: filePath,
-        data: fs.readFileSync(filePath, 'utf-8'),
-        outFile: outFile,
-        includePaths: [
-          'node_modules/bulma'
-        ],
-        outputStyle: 'compact',
-        sourceMap: true
-      })
-      fs.writeFileSync(outFile, result.css)
-      if (result.map) {
-        fs.writeFileSync(sourceMap, result.map)
+    if (filePath.endsWith('.scss')) {
+      const outFile = `public/stylesheets/${path.basename(filePath, '.scss')}.css`
+      const sourceMap = `public/stylesheets/${path.basename(filePath, '.scss')}.css.map`
+      try {
+        const result = sass.renderSync({
+          file: filePath,
+          data: fs.readFileSync(filePath, 'utf-8'),
+          outFile: outFile,
+          includePaths: [
+            'node_modules/bulma'
+          ],
+          outputStyle: 'compact',
+          sourceMap: true
+        })
+        fs.writeFileSync(outFile, result.css)
+        if (result.map) {
+          fs.writeFileSync(sourceMap, result.map)
+        }
+
+        browserSync.reload(`stylesheets/${path.basename(filePath, '.scss')}.css`);
+      } catch (e) {
+        console.error(`Unable to compile ${path.basename(filePath)}, skipping.`, e);
       }
-      browserSync.reload(`stylesheets/${path.basename(filePath, '.scss')}.css`);
-    } catch (e) {
-      console.error(`Unable to compile ${path.basename(filePath)}, skipping.`, e);
+    } else {
+      fs.writeFileSync(`public/stylesheets/${path.basename(filePath)}`, fs.readFileSync(filePath, 'utf-8'), 'utf-8')
+      browserSync.reload(`stylesheets/${path.basename(filePath)}`);
     }
   } else if (filePath.includes('pages')) {
     const pages = require('./modules/pages')
