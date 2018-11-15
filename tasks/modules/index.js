@@ -35,7 +35,8 @@ function generate (processor) {
           revisionDate: revisionDate,
           revisionDateShortFormat: `${monthName} ${revisionDate.getDate()}, ${revisionDate.getFullYear()}`,
           description: description,
-          tags: tags.split(',').map(value => value.trim().replace('.', '-'))
+          tags: tags.split(',').map(value => value.trim().replace('.', '-')),
+          featured: doc.hasAttribute('page-featured')
         })
       }
     } catch (e) {
@@ -50,22 +51,23 @@ function generate (processor) {
   <i class="fas fa-tag"></i> ${tag}
 </span>
 </a>`)
-    return `<div class="column">
+    return `<div class="column${page.featured ? ' is-full' : ' is-half'}">
 <div class="card article">
   <div class="card-content">
-  <a href="${page.href}" class="summary">
-    <time datetime="${page.revisionDate}">${page.revisionDateShortFormat}</time>
-    <h2 class="article-title">
-    ${page.doc.getTitle()}
-    </h2>
-    <p class="excerpt">
-    ${page.description}
+    <a href="${page.href}" class="summary">
+      <time datetime="${page.revisionDate}">${page.revisionDateShortFormat}</time>
+      <h2 class="article-title">
+      ${page.doc.getTitle()}
+      </h2>
+      <p class="excerpt">
+      ${page.description}
+      </p>
+    </a>
+    <p class="tags is-condensed">
+      ${tagsHTML.join('\n')}
     </p>
-  </a>
-  <p class="tags is-condensed">
-    ${tagsHTML.join('\n')}
-  </p>
   </div>
+</div>
 </div>`
   });
   const page = `<!DOCTYPE html>
