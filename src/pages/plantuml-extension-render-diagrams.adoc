@@ -23,9 +23,7 @@ In the following example document, we define a simple diagram:
 
 [plantuml,format=svg,role=sequence]
 ....
-@startuml
 alice -> bob
-@enduml
 ....
 ----
 
