@@ -4,6 +4,7 @@ Guillaume Grossetie <ggrossetie@yuzutech.fr>
 :description: Since Asciidoctor.js 1.5.7, all warning and error messages are now routed through a logger. \
 With this new feature, we will see how to catch processing errors and warnings using the built-in in-memory logger.
 :page-tags: Asciidoctor.js, Logger
+:page-image: pipeline.jpg
 
 The new logging system introduces in Asciidoctor.js, can be used to catch processing errors and warnings.
 It can be really useful in a CI build when you want to make sure that your documentation is perfect before publishing it.

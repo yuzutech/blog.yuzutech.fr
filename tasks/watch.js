@@ -10,8 +10,9 @@ browserSync({server: "./public"});
 const processor = require('./modules/processor')
 processor.init()
 const index = require('./modules/index')
+const tags = require('./modules/tags')
 
-const watcher = chokidar.watch(['src/pages/**.adoc', 'src/stylesheets/**.scss', 'src/stylesheets/**.css', 'src/images/**', 'src/javascripts/**'], {
+const watcher = chokidar.watch(['src/pages/**.adoc', 'src/stylesheets/**.scss', 'src/stylesheets/**.css', 'src/images/**', 'src/javascripts/**', 'src/templates/**.js'], {
   persistent: true
 })
 
@@ -50,7 +51,9 @@ function update (filePath) {
     }
   } else if (filePath.includes('pages')) {
     processor.convert(filePath)
-    index.generate(processor)
+    const pages = index.getPages(processor)
+    index.generate(pages)
+    tags.generate(pages)
     browserSync.reload(`${path.basename(filePath)}`)
     browserSync.reload('index.html')
   } else if (filePath.includes('images')) {
@@ -71,6 +74,11 @@ function update (filePath) {
     }
     fs.writeFileSync(`public/javascripts/${path.basename(filePath)}`, fs.readFileSync(filePath, 'utf-8'), 'utf-8')
     browserSync.reload(`javascripts/${path.basename(filePath)}`);
+  } else if (filePath.includes('templates')) {
+    const pages = index.getPages(processor)
+    index.generate(pages)
+    tags.generate(pages)
+    browserSync.reload('index.html')
   }
 }
 
