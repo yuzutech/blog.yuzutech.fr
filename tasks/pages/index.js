@@ -48,13 +48,10 @@ function getPages (processor) {
 }
 
 function generate (pages) {
-  delete require.cache[require.resolve('../../src/templates/index-page')]
   const templateIndexPage = require('../../src/templates/index-page')
   const page = templateIndexPage.get(pages)
   fs.writeFileSync('public/index.html', page, 'utf-8')
 }
 
-module.exports = {
-  getPages: getPages,
-  generate: generate
-}
+module.exports = generate
+module.exports._getPages = getPages

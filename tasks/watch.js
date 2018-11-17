@@ -1,84 +1,90 @@
 const fs = require('fs')
 const path = require('path')
-
-const sass = require('node-sass')
 const chokidar = require('chokidar')
 const browserSync = require("browser-sync")
 
 browserSync({server: "./public"});
 
-const processor = require('./modules/processor')
+const processor = require('./pages/processor')
 processor.init()
-const index = require('./modules/index')
-const tags = require('./modules/tags')
+const indexPage = require('./pages/index')
+const tagPages = require('./pages/tags')
+const stylesheetsGenerator = require('./stylesheets/index')
 
 const watcher = chokidar.watch(['src/pages/**.adoc', 'src/stylesheets/**.scss', 'src/stylesheets/**.css', 'src/images/**', 'src/javascripts/**', 'src/templates/**.js'], {
   persistent: true
 })
 
+function buildStylesheet(filePath) {
+  const dir = 'public/stylesheets'
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir)
+  }
+  if (filePath.endsWith('.scss')) {
+    try {
+      const cssFile = stylesheetsGenerator(filePath)
+      browserSync.reload(cssFile)
+    } catch (e) {
+      console.error(`Unable to compile ${path.basename(filePath)}, skipping.`, e);
+    }
+  } else {
+    fs.writeFileSync(`public/stylesheets/${path.basename(filePath)}`, fs.readFileSync(filePath, 'utf-8'), 'utf-8')
+    browserSync.reload(`stylesheets/${path.basename(filePath)}`)
+  }
+}
+
+function buildPages(filePath) {
+  processor.convert(filePath)
+  const pages = indexPage._getPages(processor)
+  indexPage(pages)
+  tagPages(pages)
+  browserSync.reload(`${path.basename(filePath)}`)
+  browserSync.reload('index.html')
+}
+
+function buildImages(filePath) {
+  const dir = 'public/images'
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir)
+  }
+  if (filePath.endsWith('.png') || filePath.endsWith('.jpg')) {
+    fs.writeFileSync(`public/images/${path.basename(filePath)}`, fs.readFileSync(filePath, 'binary'), 'binary')
+  } else if (filePath.endsWith('.ico')) {
+    fs.writeFileSync(`public/${path.basename(filePath)}`, fs.readFileSync(filePath, 'binary'), 'binary')
+  }
+  browserSync.reload()
+}
+
+function buildJavaScripts(filePath) {
+  const dir = 'public/javascripts'
+  if (!fs.existsSync(dir)) {
+    fs.mkdirSync(dir)
+  }
+  fs.writeFileSync(`public/javascripts/${path.basename(filePath)}`, fs.readFileSync(filePath, 'utf-8'), 'utf-8')
+  browserSync.reload(`javascripts/${path.basename(filePath)}`)
+}
+
+function buildTemplates() {
+  // purge cache
+  delete require.cache[require.resolve('../src/templates/index-page')]
+  delete require.cache[require.resolve('../src/templates/tag-page')]
+  const pages = indexPage._getPages(processor)
+  indexPage(pages)
+  tagPages(pages)
+  browserSync.reload('index.html')
+}
+
 function update (filePath) {
   if (filePath.includes('stylesheets')) {
-    const dir = 'public/stylesheets'
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir)
-    }
-    if (filePath.endsWith('.scss')) {
-      const outFile = `public/stylesheets/${path.basename(filePath, '.scss')}.css`
-      const sourceMap = `public/stylesheets/${path.basename(filePath, '.scss')}.css.map`
-      try {
-        const result = sass.renderSync({
-          file: filePath,
-          data: fs.readFileSync(filePath, 'utf-8'),
-          outFile: outFile,
-          includePaths: [
-            'node_modules/bulma'
-          ],
-          outputStyle: 'compact',
-          sourceMap: true
-        })
-        fs.writeFileSync(outFile, result.css)
-        if (result.map) {
-          fs.writeFileSync(sourceMap, result.map)
-        }
-
-        browserSync.reload(`stylesheets/${path.basename(filePath, '.scss')}.css`);
-      } catch (e) {
-        console.error(`Unable to compile ${path.basename(filePath)}, skipping.`, e);
-      }
-    } else {
-      fs.writeFileSync(`public/stylesheets/${path.basename(filePath)}`, fs.readFileSync(filePath, 'utf-8'), 'utf-8')
-      browserSync.reload(`stylesheets/${path.basename(filePath)}`);
-    }
+    buildStylesheet(filePath)
   } else if (filePath.includes('pages')) {
-    processor.convert(filePath)
-    const pages = index.getPages(processor)
-    index.generate(pages)
-    tags.generate(pages)
-    browserSync.reload(`${path.basename(filePath)}`)
-    browserSync.reload('index.html')
+    buildPages(filePath)
   } else if (filePath.includes('images')) {
-    const dir = 'public/images'
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir)
-    }
-    if (filePath.endsWith('.png') || filePath.endsWith('.jpg')) {
-      fs.writeFileSync(`public/images/${path.basename(filePath)}`, fs.readFileSync(filePath, 'binary'), 'binary')
-    } else if (filePath.endsWith('.ico')) {
-      fs.writeFileSync(`public/${path.basename(filePath)}`, fs.readFileSync(filePath, 'binary'), 'binary')
-    }
-    browserSync.reload();
+    buildImages(filePath)
   } else if (filePath.includes('javascripts')) {
-    const dir = 'public/javascripts'
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir)
-    }
-    fs.writeFileSync(`public/javascripts/${path.basename(filePath)}`, fs.readFileSync(filePath, 'utf-8'), 'utf-8')
-    browserSync.reload(`javascripts/${path.basename(filePath)}`);
+    buildJavaScripts(filePath)
   } else if (filePath.includes('templates')) {
-    const pages = index.getPages(processor)
-    index.generate(pages)
-    tags.generate(pages)
-    browserSync.reload('index.html')
+    buildTemplates()
   }
 }
 

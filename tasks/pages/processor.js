@@ -151,13 +151,7 @@ function convert (filePath) {
   return asciidoctor.convertFile(filePath, { backend: 'blog', to_dir: 'public' })
 }
 
-function load(filePath) {
-  console.log(`  load ${filePath}`)
-  return asciidoctor.loadFile(filePath, { backend: 'blog'})
-}
-
 module.exports = {
   init: init,
-  convert: convert,
-  load: load
+  convert: convert
 }

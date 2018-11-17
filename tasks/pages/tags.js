@@ -18,14 +18,10 @@ function generate (pages) {
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir)
     }
-    console.log(`  Create tag page ${tagDir}`)
-    delete require.cache[require.resolve('../../src/templates/tag-page')]
     const templateTagPage = require('../../src/templates/tag-page')
     const page = templateTagPage.get(pages, tag)
     fs.writeFileSync(`public/tag/${tagDir}/index.html`, page, 'utf-8')
   }
 }
 
-module.exports = {
-  generate: generate
-}
+module.exports = generate
