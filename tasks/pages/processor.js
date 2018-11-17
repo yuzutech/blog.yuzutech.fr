@@ -46,7 +46,46 @@ function init () {
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 </head>
 <body>
- <section class="section">
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" href="https://www.yuzutech.fr">
+        <img src="./images/logo_100.png" alt="Yuzu tech">
+      </a>
+      <a role="button" class="navbar-burger" data-target="navMenu" aria-label="menu" aria-expanded="false">
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </a>
+    </div>
+    <div class="navbar-menu" id="navMenu">
+      <div class="navbar-start">
+        <a class="navbar-item" href="https://www.yuzutech.fr/#metier">
+          Notre métier
+        </a>
+        <a class="navbar-item" href="https://www.yuzutech.fr/#offres">
+          Nos offres
+        </a>
+        <a class="navbar-item" href="https://www.yuzutech.fr/#clients">
+          Nos clients
+        </a>
+        <a class="navbar-item" href="https://www.yuzutech.fr/#contact">
+          Contact
+        </a>
+      </div>
+    </div>
+  </nav>
+  <section class="hero">
+    <div class="hero-body">
+      <div class="container is-widescreen">
+        <div class="titles">
+          <h1 class="title">
+            Blog
+          </h1>
+        </div>
+      </div>
+    </div>
+  </section>
+  <section class="section">
     <div class="container">
       <div class="meta">
         <div class="avatar">by</div>
@@ -60,9 +99,43 @@ function init () {
       </div>
     </div>
   </section>
-  <script src="./javascripts/prism.js"></script>
-  <script src="./javascripts/prism-asciidoc.js"></script>
-  <script src="./javascripts/prism-bash.js"></script>
+  <footer class="footer">
+    <div class="container">
+      <div class="columns">
+        <div class="column">
+          <div class="content has-text-centered">
+            <h3 id="contact">Contact</h3>
+            <p>
+              <strong>Yuzu tech</strong><br/>
+              69100 Villeurbanne<br/>
+              <br/>
+              <a href="tel:+33673910445">06 73 91 04 45</a><br/>
+              <a href="mailto:info@yuzutech.fr">info@yuzutech.fr</a>
+            </p>
+          </div>
+        </div>
+        <div class="column">
+          <div class="content has-text-centered">
+            <h3>Social</h3>
+            <div class="social-link">
+              <a href="https://twitter.com/yuzutechfr" class="social-twitter">
+                <i class="fab fa-twitter-square"></i> Twitter
+              </a>
+            </div>
+            <div class="social-link">
+              <a href="https://google.com/+YuzutechFr" class="social-google-plus">
+                <i class="fab fa-google-plus-square"></i> Google +
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+  <script async defer src="./javascripts/main.js"></script>
+  <script async defer src="./javascripts/prism.js"></script>
+  <script async defer src="./javascripts/prism-asciidoc.js"></script>
+  <script async defer src="./javascripts/prism-bash.js"></script>
 </body>`
         },
         section: ({ node }) => {

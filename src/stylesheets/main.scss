@@ -1,8 +1,8 @@
 @import url('https://fonts.googleapis.com/css?family=Lato|Quicksand:400,500,700');
 
 $family-primary: BlinkMacSystemFont, -apple-system, "Lato", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif !default$navbar-item-img-max-height: 3.5rem;
-$navbar-item-hover-color: #85b93f;
-$primary: #85b93f;
+$navbar-item-hover-color: #f19300;
+$primary: #f19300;
 $title-size: 1.75rem;
 $box-radius: 0;
 
@@ -23,6 +23,42 @@ $box-radius: 0;
 @import "../../node_modules/bulma/sass/layout/section.sass";
 @import "../../node_modules/bulma/sass/layout/footer.sass";
 @import "../../node_modules/bulma/sass/grid/columns.sass";
+
+
+.hero {
+  background: url(../images/main.jpg) no-repeat center;
+  background-size: cover;
+
+  .hero-body {
+    text-align: center;
+    display: flex;
+    align-items: center;
+    padding: 2rem 1.5rem;
+    .title {
+      font-family: "Quicksand", sans-serif;
+      color: white;
+    }
+    @media screen and (min-width: $widescreen) {
+      .title {
+        font-size: 3.75rem;
+      }
+    }
+    @media screen and (max-width: $widescreen - 1px) {
+      .title {
+        font-size: 3.5rem;
+      }
+    }
+  }
+}
+
+.navbar-brand > .navbar-item {
+  padding: 0.75rem 2rem 0.75rem 0.75rem;
+}
+
+.navbar-burger {
+  margin-top: auto;
+  margin-bottom: auto;
+}
 
 .box {
   margin-top: 1.5rem;
@@ -177,7 +213,60 @@ code[class*="language-"], pre[class*="language-"] {
 }
 
 .tags.cloud {
+  margin-top: 3rem;
+  color: white;
+  align-items: center;
   .fa-tags {
     margin-right: 1rem;
+    margin-bottom: 0.5rem;
   }
 }
+
+a.tag:hover {
+  text-decoration: none;
+  background-color: #f19300;
+  color: white;
+}
+
+.tag.active {
+  text-decoration: none;
+  background-color: #f19300;
+  color: white;
+}
+
+.social-link {
+  padding-bottom: 1rem;
+
+  a {
+    svg {
+      font-size: 2.5em;
+      vertical-align: middle;
+      padding-right: 0.25rem;
+    }
+  }
+}
+
+a.social-google-plus {
+  color: darken(#D03F2C, 10%);
+  &:hover {
+    text-decoration: underline;
+  }
+  &:hover,
+  &:focus,
+  &:visited {
+    color: darken(#D03F2C, 15%);
+  }
+}
+
+a.social-twitter {
+  color: darken(#1AB2E8, 20%);
+  &:hover {
+    text-decoration: underline;
+  }
+  &:hover,
+  &:focus,
+  &:visited {
+    color: darken(#1AB2E8, 25%);
+  }
+}
+
