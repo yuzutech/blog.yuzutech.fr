@@ -19,6 +19,6 @@ fs.readdirSync(path.join('src', 'javascripts')).forEach(file => {
     console.log('', e)
     throw e
   }
-  fs.writeFileSync(`public/javascripts/main.js`, content, 'utf-8')
-  console.log('  update public/javascripts/main.js')
 })
+fs.writeFileSync(`public/javascripts/main.js`, content, 'utf-8')
+console.log('  update public/javascripts/main.js')

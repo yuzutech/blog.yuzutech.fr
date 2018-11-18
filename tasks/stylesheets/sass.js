@@ -15,14 +15,14 @@ function generateAll () {
   })
 }
 
-function generate (sassFile) {
-  if (fs.lstatSync(sassFile).isFile()) {
+function generate (cssFile) {
+  if (fs.lstatSync(cssFile).isFile() && cssFile.endsWith('.scss')) {
     try {
-      const outFile = `${dir}/${path.basename(sassFile, '.scss')}.css`
-      const sourceMap = `${dir}/${path.basename(sassFile, '.scss')}.css.map`
+      const outFile = `${dir}/${path.basename(cssFile, '.scss')}.css`
+      const sourceMap = `${dir}/${path.basename(cssFile, '.scss')}.css.map`
       const result = sass.renderSync({
-        file: sassFile,
-        data: fs.readFileSync(sassFile, 'utf-8'),
+        file: cssFile,
+        data: fs.readFileSync(cssFile, 'utf-8'),
         outFile: outFile,
         includePaths: [
           'node_modules/bulma'
@@ -31,7 +31,7 @@ function generate (sassFile) {
         sourceMap: true
       })
       fs.writeFileSync(outFile, result.css)
-      console.log(` sass ${sassFile}`)
+      console.log(` compile sass ${cssFile}`)
       if (result.map) {
         fs.writeFileSync(sourceMap, result.map)
       }
@@ -40,6 +40,9 @@ function generate (sassFile) {
       console.log('', e)
       throw e
     }
+  } else {
+    fs.writeFileSync(`public/stylesheets/${path.basename(cssFile)}`, fs.readFileSync(cssFile, 'utf-8'), 'utf-8')
+    console.log(` copy css ${cssFile}`)
   }
 }
 
