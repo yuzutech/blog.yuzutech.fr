@@ -6,7 +6,7 @@ function get (pages) {
 </span>
 </a>`)
     const imageHTML = page.image ? `<div class="card-image">
-  <a href="${page.href}" class="summary">
+  <a href="/${page.href}" class="summary">
     <img src="./images/${page.image}" alt="${page.doc.getTitle()} illustration">
   </a>
 </div>` : ''
@@ -14,7 +14,7 @@ function get (pages) {
 <div class="card article${index === 0 ? ' card-featured' : ''}">
   ${imageHTML}
   <div class="card-content">
-    <a href="${page.href}" class="summary">
+    <a href="/${page.href}" class="summary">
       <time datetime="${page.revisionDate}">${page.revisionDateShortFormat}</time>
       <h2 class="article-title">
       ${page.doc.getTitle()}
@@ -80,7 +80,7 @@ function get (pages) {
       <div class="container is-widescreen">
         <div class="titles">
           <h1 class="title">
-            Blog
+            <a href="/">Blog</a>
           </h1>
         </div>
         <div class="container">
@@ -99,39 +99,6 @@ function get (pages) {
       </div>
     </div>
   </section>
-  <footer class="footer">
-    <div class="container">
-      <div class="columns">
-        <div class="column">
-          <div class="content has-text-centered">
-            <h3 id="contact">Contact</h3>
-            <p>
-              <strong>Yuzu tech</strong><br/>
-              69100 Villeurbanne<br/>
-              <br/>
-              <a href="tel:+33673910445">06 73 91 04 45</a><br/>
-              <a href="mailto:info@yuzutech.fr">info@yuzutech.fr</a>
-            </p>
-          </div>
-        </div>
-        <div class="column">
-          <div class="content has-text-centered">
-            <h3>Social</h3>
-            <div class="social-link">
-              <a href="https://twitter.com/yuzutechfr" class="social-twitter">
-                <i class="fab fa-twitter-square"></i> Twitter
-              </a>
-            </div>
-            <div class="social-link">
-              <a href="https://google.com/+YuzutechFr" class="social-google-plus">
-                <i class="fab fa-google-plus-square"></i> Google +
-              </a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </footer>
   <script async defer src="./javascripts/main.js"></script>
 </body>`
 }

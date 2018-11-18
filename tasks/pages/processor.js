@@ -134,12 +134,6 @@ function init () {
     </div>
   </footer>
   <script async defer src="./javascripts/main.js"></script>
-  <script async defer src="./javascripts/prism.js"></script>
-  <script async defer src="./javascripts/prism-asciidoc.js"></script>
-  <script async defer src="./javascripts/prism-bash.js"></script>
-  <script async defer src="./javascripts/prism-javascript.js"></script>
-  <!--<script async defer src="./javascripts/prism-line-highlight.js"></script>-->
-  <script async defer src="./javascripts/prism-keep-markup.js"></script>
 </body>`
         },
         section: (node) => {
@@ -163,8 +157,7 @@ ${node.getContent()}
             } else {
               codeAttrs = ''
             }
-            //const dataLine = node.getAttribute('callout-lines') ? ` data-line="${node.getAttribute('callout-lines')}"` : ''
-            const dataLine = ''
+            const dataLine = node.getAttribute('callout-lines') ? ` data-line="${node.getAttribute('callout-lines')}"` : ''
             const preClass = ` class="${nowrap ? 'nowrap' : ''}"${dataLine}`
             preStart = `<pre${preClass}><code${codeAttrs}>`
             preEnd = '</code></pre>'

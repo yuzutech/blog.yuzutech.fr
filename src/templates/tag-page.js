@@ -7,13 +7,15 @@ function get (pages, tag) {
 </span>
 </a>`)
     const imageHTML = page.image ? `<div class="card-image">
-  <img src="../../images/${page.image}" alt="${page.doc.getTitle()} illustration">
+  <a href="/${page.href}" class="summary">
+    <img src="../../images/${page.image}" alt="${page.doc.getTitle()} illustration">
+  </a>
 </div>` : ''
     return `<div class="column${index === 0 ? ' is-full' : ' is-one-third'}">
 <div class="card article${index === 0 ? ' card-featured' : ''}">
   ${imageHTML}
   <div class="card-content">
-    <a href="${page.href}" class="summary">
+    <a href="/${page.href}" class="summary">
       <time datetime="${page.revisionDate}">${page.revisionDateShortFormat}</time>
       <h2 class="article-title">
       ${page.doc.getTitle()}
@@ -72,7 +74,7 @@ function get (pages, tag) {
       <div class="container is-widescreen">
         <div class="titles">
           <h1 class="title">
-            Blog
+            <a href="/">Blog</a>
           </h1>
         </div>
         <div class="container">

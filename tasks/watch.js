@@ -55,13 +55,28 @@ function buildImages(filePath) {
   browserSync.reload()
 }
 
-function buildJavaScripts(filePath) {
+function buildJavaScripts() {
   const dir = 'public/javascripts'
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir)
   }
-  fs.writeFileSync(`public/javascripts/${path.basename(filePath)}`, fs.readFileSync(filePath, 'utf-8'), 'utf-8')
-  browserSync.reload(`javascripts/${path.basename(filePath)}`)
+  let content = '';
+  fs.readdirSync(path.join('src', 'javascripts')).forEach(file => {
+    try {
+      let filePath = path.join('src', 'javascripts', file)
+      if (fs.lstatSync(filePath).isFile() && filePath.endsWith('.js')) {
+        const input = fs.readFileSync(filePath, 'utf-8')
+        content += `${input}\n`
+        const output = `public/javascripts/${path.basename(filePath)}`
+      }
+    } catch (e) {
+      console.log('', e)
+      throw e
+    }
+    fs.writeFileSync(`public/javascripts/main.js`, content, 'utf-8')
+    console.log('  update public/javascripts/main.js')
+  })
+  browserSync.reload(`javascripts/main.js`)
 }
 
 function buildTemplates() {
@@ -82,7 +97,7 @@ function update (filePath) {
   } else if (filePath.includes('images')) {
     buildImages(filePath)
   } else if (filePath.includes('javascripts')) {
-    buildJavaScripts(filePath)
+    buildJavaScripts()
   } else if (filePath.includes('templates')) {
     buildTemplates()
   }
