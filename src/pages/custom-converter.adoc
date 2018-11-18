@@ -1,18 +1,100 @@
 = Awesome Asciidoctor.js: Write your own HTML5 converter
 Guillaume Grossetie <ggrossetie@yuzutech.fr>
 :revdate: 2018-11-04 08:45
+
 :description: Asciidoctor.js provides a built-in HTML5 converter. \
 But it also allows you to override the converter methods used to convert almost any individual AsciiDoc element.
 :page-tags: Asciidoctor.js, Converter
 :page-image: build.jpg
 
-The goal of a HTML5 converter is to convert an AsciiDoc document to an HTML page.
-By default Asciidoctor.js provides a built-in HTML5 converter.
+:icons: font
 
-For instance, if we execute the following:
+:uri-template-literals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
 
-```js
 
+The goal of a HTML5 converter is to convert an AsciiDoc document to an HTML5 page.
+By default Asciidoctor.js provides a built-in HTML5 converter but you can have the full control over how elements are converted.
+
+In the following example, we are going to define how the `paragraph` element should be converted.
+The other elements will be converted using the built-in HTML5 converter.
+In other words, we override how the `paragraph` element is converted and we delegate to the built-in HTML5 converter the rest:
+
+```javascript
+const asciidoctor = require('asciidoctor')()
+
+class TemplateConverter {
+  constructor () {
+    this.baseConverter = asciidoctor.Html5Converter.$new() // <1>
+    this.templates = {
+      paragraph: (node) => `<p class="paragraph">${node.getContent()}</p>` // <2>
+    }
+  }
+
+  convert (node, transform, opts) {
+    const template = this.templates[transform || node.node_name]
+    if (template) { // <3>
+      return template(node) // <4>
+    }
+    return this.baseConverter.convert(node, transform, opts) // <5>
+  }
+}
+asciidoctor.ConverterFactory.register(new TemplateConverter(), ['html5']) // <6>
+
+// convert your document...
 ```
+<1> Instantiate the built-in HTML5 converter
+<2> Define how the `paragraph` element will be converted
+<3> Check if there's a dedicated template for the element
+<4> If it's the case, call the template (function) with the node
+<5> Otherwise call the base converter (built-in HTML5 converter)
+<6> Finally register the custom converter for the `html5` backend
+
+In the above example, we are using {uri-template-literals}[Template Literals] but you can use your favorite template engine.
+You can also override other elements.
+Here's the complete list:
+
+* document
+* embedded
+* outline
+* section
+* admonition
+* audio
+* colist
+* dlist
+* example
+* floating-title
+* image
+* listing
+* literal
+* stem
+* olist
+* open
+* page_break
+* paragraph
+* preamble
+* quote
+* thematic_break
+* sidebar
+* table
+* toc
+* ulist
+* verse
+* video
+* inline_anchor
+* inline_break
+* inline_button
+* inline_callout
+* inline_footnote
+* inline_image
+* inline_indexterm
+* inline_kbd
+* inline_menu
+* inline_quoted
+
+Using a custom HTML5 converter is extremely powerful and should be used when you want to have full control over the converter.
+For instance, when you want to build your own blog generator, or write a semantic HTML5 converter or create a converter for the latest HTML5 presentation framework.
 
 
+Written with Asciidoctor.js 1.5.8.
+
+aaa

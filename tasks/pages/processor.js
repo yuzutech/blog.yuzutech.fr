@@ -18,7 +18,7 @@ function init () {
     constructor () {
       this.baseConverter = HTML5Converter.$new()
       this.transforms = {
-        document: ({ node }) => {
+        document: (node) => {
           const monthNames = {
             0: 'Jan',
             1: 'Feb',
@@ -42,6 +42,7 @@ function init () {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Yuzu tech, l'informatique sans pépins</title>
   <link rel="stylesheet" href="./stylesheets/prism.css" />
+  <link rel="stylesheet" href="./stylesheets/prism-line-highlight.css" />
   <link rel="stylesheet" href="./stylesheets/main.css">
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 </head>
@@ -136,18 +137,21 @@ function init () {
   <script async defer src="./javascripts/prism.js"></script>
   <script async defer src="./javascripts/prism-asciidoc.js"></script>
   <script async defer src="./javascripts/prism-bash.js"></script>
+  <script async defer src="./javascripts/prism-javascript.js"></script>
+  <!--<script async defer src="./javascripts/prism-line-highlight.js"></script>-->
+  <script async defer src="./javascripts/prism-keep-markup.js"></script>
 </body>`
         },
-        section: ({ node }) => {
+        section: (node) => {
           return `<section>
 <h2 class="title is-2">${node.getTitle()}</h2>
 ${node.getContent()}
 </section>`
         },
-        paragraph: ({ node }) => {
+        paragraph: (node) => {
           return `<p>${node.getContent()}</p>`
         },
-        listing: ({node}) => {
+        listing: (node) => {
           let preStart
           let preEnd
           let codeAttrs
@@ -159,7 +163,9 @@ ${node.getContent()}
             } else {
               codeAttrs = ''
             }
-            const preClass = ` class="${nowrap ? 'nowrap' : ''}"`
+            //const dataLine = node.getAttribute('callout-lines') ? ` data-line="${node.getAttribute('callout-lines')}"` : ''
+            const dataLine = ''
+            const preClass = ` class="${nowrap ? 'nowrap' : ''}"${dataLine}`
             preStart = `<pre${preClass}><code${codeAttrs}>`
             preEnd = '</code></pre>'
           } else {
@@ -174,7 +180,7 @@ ${preStart}${node.getContent()}${preEnd}
 </div>
 </div>`
         },
-        admonition: ({ node }) => {
+        admonition: (node) => {
           const idAttribute = node.getId() ? ` id="${node.getId()}"` : ''
           const name = node.getAttribute('name')
           const titleElement = node.getTitle() ? `<div class="listing-title">${node.getCaptionedTitle()}</div>\n` : ''
@@ -195,7 +201,7 @@ ${preStart}${node.getContent()}${preEnd}
   </article>
 </div>`
         },
-        literal: ({node}) => {
+        literal: (node) => {
           const idAttribute = node.getId() ? ` id="${node.getId()}"` : ''
           const titleElement = node.getTitle() ? `<div class="title">${node.getTitle()}</div>\n` : ''
           const nowrap = !(node.document.hasAttribute('prewrap')) || (node.isOption('nowrap'))
@@ -204,24 +210,55 @@ ${titleElement}<div class="content">
 <pre${nowrap ? ' class="nowrap"' : ''}>${node.getContent()}</pre> 
 </div>
 </div>`
+        },
+        inline_callout: (node) => {
+          return `<i class="conum" data-value="${node.text}"></i>`
         }
       }
     }
 
     $convert (node, transform, opts) {
-      const transformer = this.transforms[node.node_name]
+      const transformer = this.transforms[transform || node.node_name]
       if (transformer) {
-        return transformer({ node })
+        return transformer(node)
       }
       return this.baseConverter.$convert(node, transform, opts)
     }
   }
-  asciidoctor.Converter.Factory.$register(new BlogConverter('blog'), ['blog'])
+  asciidoctor.Converter.Factory.$register(new BlogConverter(), ['html5'])
 }
 
 function convert (filePath) {
   console.log(`  convert ${filePath}`)
-  return asciidoctor.convertFile(filePath, { backend: 'blog', to_dir: 'public' })
+  const registry = asciidoctor.Extensions.create()
+  registry.postprocessor(function () {
+    const self = this;
+    self.process(function (doc, output) {
+      //console.log(output)
+      return output
+    })
+  })
+  registry.treeProcessor(function () {
+    var self = this;
+    self.process(function (doc) {
+      const listings = doc.findBy({ context: 'listing' })
+      const calloutLines = [];
+      for (let listing of listings) {
+        const lines = listing.getSourceLines()
+        for (let index in lines) {
+          const line = lines[index]
+          if (line.trim().match(/\/\/ <[0-9]+>$/)) {
+            calloutLines.push(parseInt(index) + 1) // 0-based index
+          }
+        }
+        listing.setAttribute('callout-lines', calloutLines.join(','))
+      }
+      //console.log(listingBlocks)
+      //doc.getBlocks()[0] = self.createBlock(doc, 'paragraph', 'GDPR compliant :)')
+      return doc
+    })
+  })
+  return asciidoctor.convertFile(filePath, { safe: 'safe', to_dir: 'public', extension_registry: registry })
 }
 
 module.exports = {

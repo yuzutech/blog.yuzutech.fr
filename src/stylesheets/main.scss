@@ -1,10 +1,11 @@
-@import url('https://fonts.googleapis.com/css?family=Lato|Quicksand:400,500,700');
+@import url('https://fonts.googleapis.com/css?family=Lato:100,200,300,400,500|Quicksand:400,500,700|Open+Sans');
 
 $family-primary: BlinkMacSystemFont, -apple-system, "Lato", "Segoe UI", "Roboto", "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue", "Helvetica", "Arial", sans-serif !default$navbar-item-img-max-height: 3.5rem;
 $navbar-item-hover-color: #f19300;
 $primary: #f19300;
 $title-size: 1.75rem;
 $box-radius: 0;
+$content-pre-padding: 1em 0 1em 3em;
 
 @import "../../node_modules/bulma/sass/utilities/_all.sass";
 @import "../../node_modules/bulma/sass/base/_all.sass";
@@ -23,7 +24,6 @@ $box-radius: 0;
 @import "../../node_modules/bulma/sass/layout/section.sass";
 @import "../../node_modules/bulma/sass/layout/footer.sass";
 @import "../../node_modules/bulma/sass/grid/columns.sass";
-
 
 .hero {
   background: url(../images/main.jpg) no-repeat center;
@@ -270,3 +270,43 @@ a.social-twitter {
   }
 }
 
+.conum[data-value] {
+  display: inline-block;
+  color: #fff !important;
+  background-color: rgba(0, 0, 0, .8);
+  -webkit-border-radius: 100px;
+  border-radius: 100px;
+  text-align: center;
+  font-size: .75em;
+  width: 1.67em;
+  height: 1.67em;
+  line-height: 1.67em;
+  font-family: "Open Sans", "DejaVu Sans", sans-serif;
+  font-style: normal;
+  font-weight: bold
+}
+
+.conum[data-value] * {
+  color: #fff !important
+}
+
+.conum[data-value] + b {
+  display: none
+}
+
+.conum[data-value]::after {
+  content: attr(data-value)
+}
+
+pre .conum[data-value] {
+  position: relative;
+  top: -.125em
+}
+
+b.conum * {
+  color: inherit !important
+}
+
+.conum:not([data-value]):empty {
+  display: none
+}

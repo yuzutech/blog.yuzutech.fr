@@ -1,9 +1,13 @@
 = Awesome Asciidoctor.js: Write an extension to embed a gist into your document
 Guillaume Grossetie <ggrossetie@yuzutech.fr>
 :revdate: 2018-11-15 08:45
+
 :description: Extensions are central to the success of AsciiDoc because they open up the language to new use cases. \
 Asciidoctor.js also allows extensions to be written using the full power of the JavaScript language.
 :page-tags: Asciidoctor.js, Extension
 :page-image: extension.jpg
+
+:source-highlighter: highlight.js
+:icons: font
 
 bla bla
