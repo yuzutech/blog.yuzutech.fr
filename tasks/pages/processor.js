@@ -80,7 +80,7 @@ function init () {
       <div class="container is-widescreen">
         <div class="titles">
           <h1 class="title">
-            Blog
+            <a href="/">Blog</a>
           </h1>
         </div>
       </div>
