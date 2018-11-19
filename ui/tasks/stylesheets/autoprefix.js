@@ -14,7 +14,7 @@ function generateAll () {
 }
 
 function generate (cssFile) {
-  if (fs.lstatSync(cssFile).isFile() && cssFile.endsWith('.css')) {
+  if (fs.lstatSync(cssFile).isFile() && path.basename(cssFile) === 'main.css') {
     try {
       const input = fs.readFileSync(cssFile, 'utf-8')
       postcss([autoprefixer])
