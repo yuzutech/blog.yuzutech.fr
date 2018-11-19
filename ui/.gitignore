@@ -1,1 +1,4 @@
-build/
+build/*
+!build/.gitkeep
+
+node_modules/
