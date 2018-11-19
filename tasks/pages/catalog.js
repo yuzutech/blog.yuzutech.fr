@@ -1,5 +1,6 @@
 const fs = require('fs')
 const path = require('path')
+const processor = require('./processor')
 
 const monthNames = {
   0: 'Jan',
@@ -16,7 +17,7 @@ const monthNames = {
   11: 'Dec'
 }
 
-function getPages (processor) {
+function getCatalog () {
   const pages = []
   fs.readdirSync(path.join('src', 'pages')).forEach(file => {
     try {
@@ -47,11 +48,4 @@ function getPages (processor) {
   return pages
 }
 
-function generate (pages) {
-  const templateIndexPage = require('../../src/templates/index-page')
-  const page = templateIndexPage.get(pages)
-  fs.writeFileSync('public/index.html', page, 'utf-8')
-}
-
-module.exports = generate
-module.exports._getPages = getPages
+module.exports.getCatalog = getCatalog

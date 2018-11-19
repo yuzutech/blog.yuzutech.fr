@@ -4,7 +4,7 @@ const path = require('path')
 const CleanCSS = require('clean-css')
 const cleanCSS = new CleanCSS({})
 
-const dir = 'public/stylesheets'
+const dir = 'build/stylesheets'
 
 function generateAll () {
   fs.readdirSync(dir).forEach(file => {

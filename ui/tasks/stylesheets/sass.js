@@ -2,7 +2,7 @@ const fs = require('fs')
 const path = require('path')
 const sass = require('node-sass')
 
-const dir = 'public/stylesheets'
+const dir = 'build/stylesheets'
 if (!fs.existsSync(dir)) {
   fs.mkdirSync(dir)
 }
@@ -41,7 +41,7 @@ function generate (cssFile) {
       throw e
     }
   } else {
-    fs.writeFileSync(`public/stylesheets/${path.basename(cssFile)}`, fs.readFileSync(cssFile, 'utf-8'), 'utf-8')
+    fs.writeFileSync(`build/stylesheets/${path.basename(cssFile)}`, fs.readFileSync(cssFile, 'utf-8'), 'utf-8')
     console.log(` copy css ${cssFile}`)
   }
 }

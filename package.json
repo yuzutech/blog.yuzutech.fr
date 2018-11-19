@@ -1,5 +1,5 @@
 {
-  "name": "blog-yuzutech-fr",
+  "name": "blog-yuzutech",
   "version": "0.1.0",
   "homepage": "https://blog.yuzutech.fr",
   "authors": [
@@ -7,27 +7,18 @@
   ],
   "description": "blog.yuzutech.fr website",
   "devDependencies": {
-    "autoprefixer": "^8.2.0",
     "asciidoctor.js": "1.5.7",
     "browser-sync": "^2.26.3",
-    "bulma": "^0.7.2",
     "chokidar": "^2.0.4",
-    "clean-css": "^4.1.11",
-    "node-sass": "^4.9.2",
-    "postcss-cli": "^5.0.0",
     "rimraf": "^2.6.2"
   },
   "scripts": {
-    "build": "npm run build-clean && npm run build-css && npm run build-pages && npm run build-js && npm run build-images",
+    "build": "npm run build-clean && npm run build-ui && npm run build-pages && npm run build-images",
+    "build-ui": "cd ui && npm run build && cd - && node tasks/ui/copy.js",
     "build-clean": "rimraf public/*",
     "build-pages": "node tasks/pages/build.js",
     "build-images": "node tasks/images/build.js",
-    "build-js": "node tasks/javascripts/build.js",
-    "build-css": "node tasks/stylesheets/build.js",
     "deploy": "npm run build",
     "start": "node tasks/watch.js"
-  },
-  "dependencies": {
-    "prismjs": "^1.15.0"
   }
 }

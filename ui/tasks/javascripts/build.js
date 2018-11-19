@@ -1,9 +1,9 @@
 const fs = require('fs')
 const path = require('path')
 
-const dir = 'public/javascripts'
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir)
+const outDir = 'build/javascripts'
+if (!fs.existsSync(outDir)) {
+  fs.mkdirSync(outDir)
 }
 
 let content = '';
@@ -13,12 +13,11 @@ fs.readdirSync(path.join('src', 'javascripts')).forEach(file => {
     if (fs.lstatSync(filePath).isFile() && filePath.endsWith('.js')) {
       const input = fs.readFileSync(filePath, 'utf-8')
       content += `${input}\n`
-      const output = `public/javascripts/${path.basename(filePath)}`
     }
   } catch (e) {
     console.log('', e)
     throw e
   }
 })
-fs.writeFileSync(`public/javascripts/main.js`, content, 'utf-8')
-console.log('  update public/javascripts/main.js')
+fs.writeFileSync(`${outDir}/main.js`, content, 'utf-8')
+console.log(`  updated ${outDir}/main.js`)
