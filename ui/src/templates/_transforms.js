@@ -86,12 +86,18 @@ ${preStart}${node.getContent()}${preEnd}
     const idAttribute = node.getId() ? ` id="${node.getId()}"` : ''
     const name = node.getAttribute('name')
     const titleElement = node.getTitle() ? `<div class="listing-title">${node.getCaptionedTitle()}</div>\n` : ''
+    let iconName;
+    if (name === 'note') {
+      iconName = 'info-circle'
+    } else if (name === 'important') {
+      iconName = 'exclamation-circle'
+    }
     return `<div${idAttribute} class="box ${name}${node.getRole() ? node.getRole() : ''}">
   <article class="media">
     <div class="media-left">
       <figure class="image">
-        <span class="icon has-text-info">
-          <i class="fas fa-info-circle"></i>
+        <span class="icon has-text-${name}">
+          <i class="fas fa-${iconName}"></i>
         </span>
       </figure>
     </div>

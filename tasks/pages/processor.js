@@ -42,8 +42,8 @@ function convert (filePath) {
     var self = this;
     self.process(function (doc) {
       const listings = doc.findBy({ context: 'listing' })
-      const calloutLines = [];
       for (let listing of listings) {
+        const calloutLines = [];
         const lines = listing.getSourceLines()
         for (let index in lines) {
           const line = lines[index]
@@ -56,6 +56,19 @@ function convert (filePath) {
       return doc
     })
   })
+  registry.blockMacro(function () {
+    const self = this;
+    self.named('gist')
+    self.process(function (parent, target, attrs) {
+      const titleHTML = attrs.title ? `<div class="title">${attrs.title}</div>\n` : ''
+      const html = `<div class="openblock gist">
+  ${titleHTML}<div class="content">
+    <script src="https://gist.github.com/${target}.js"></script>
+  </div>
+</div>`
+      return self.createBlock(parent, 'pass', html, attrs, {})
+    });
+  });
   return asciidoctor.convertFile(filePath, { safe: 'safe', to_dir: 'public', extension_registry: registry })
 }
 

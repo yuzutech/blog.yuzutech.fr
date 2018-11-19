@@ -65,11 +65,10 @@ $content-pre-padding: 1em;
 
 .box {
   margin-top: 1.5rem;
-}
-
-.media-left {
-  align-self: center;
-  font-size: 2rem;
+  .media-left {
+    align-self: center;
+    font-size: 2rem;
+  }
 }
 
 .content figure {
@@ -314,9 +313,19 @@ b.conum * {
   display: none
 }
 
-.colist td:not([class]):first-child{padding:.4em .75em 0;line-height:1;vertical-align:top}
-.colist td:not([class]):first-child img{max-width:none}
-.colist td:not([class]):last-child{padding:.25em 0}
+.colist td:not([class]):first-child {
+  padding: .4em .75em 0;
+  line-height: 1;
+  vertical-align: top
+}
+
+.colist td:not([class]):first-child img {
+  max-width: none
+}
+
+.colist td:not([class]):last-child {
+  padding: .25em 0
+}
 
 .content {
   dl,
@@ -339,3 +348,52 @@ b.conum * {
   content: none;
 }
 
+.token.number {
+  align-items: inherit;
+  background-color: inherit;
+  border-radius: inherit;
+  display: inherit;
+  font-size: inherit;
+  height: inherit;
+  justify-content: inherit;
+  margin-right: inherit;
+  min-width: inherit;
+  padding: inherit;
+  text-align: inherit;
+  vertical-align: inherit;
+}
+
+.has-text-note {
+  color: #209cee !important;
+}
+
+.has-text-important {
+  color: hsl(348, 100%, 61%) !important;
+}
+
+.token.tag {
+  align-items: inherit;
+  background-color: inherit;
+  border-radius: inherit;
+  color: #905;
+  display: inherit;
+  font-size: inherit;
+  height: inherit;
+  justify-content: inherit;
+  line-height: inherit;
+  padding-left: inherit;
+  padding-right: inherit;
+  white-space: inherit;
+}
+
+.gist {
+  .content table td, .content table th {
+    border: none;
+  }
+}
+
+dt {
+  color: #4a4a4a;
+  font-style: italic;
+  font-weight: 600;
+}

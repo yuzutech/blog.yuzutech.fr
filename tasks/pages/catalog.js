@@ -45,7 +45,9 @@ function getCatalog () {
       throw e
     }
   })
-  return pages
+  return pages.sort(function(p1, p2) {
+    return p2.revisionDate - p1.revisionDate;
+  });
 }
 
 module.exports.getCatalog = getCatalog

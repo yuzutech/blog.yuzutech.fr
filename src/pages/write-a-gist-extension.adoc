@@ -1,13 +1,92 @@
 = Awesome Asciidoctor.js: Write an extension to embed a gist into your document
 Guillaume Grossetie <ggrossetie@yuzutech.fr>
-:revdate: 2018-11-15 08:45
+:revdate: 2018-11-19 15:00
 
-:description: Extensions are central to the success of AsciiDoc because they open up the language to new use cases. \
-Asciidoctor.js also allows extensions to be written using the full power of the JavaScript language.
+:description: Extensions are central to the success of Asciidoctor because they open up the language to new use cases. \
+Asciidoctor.js allows extensions to be written using the full power of the JavaScript language. \
+Let's find out how we can use an extension to embed a gist into our documentation.
 :page-tags: Asciidoctor.js, Extension
 :page-image: extension.jpg
-
-:source-highlighter: highlight.js
 :icons: font
+:uri-user-manual-extensions: https://asciidoctor-docs.netlify.com/asciidoctor.js/extend/extensions/
 
-bla bla
+Asciidoctor.js offers a list of extension points that open up the language to new use cases.
+The following extension points are currently available:
+
+Preprocessor::
+Processes the raw source lines before they are passed to the parser.
+
+Tree processor::
+Processes the Asciidoctor.Document (AST) once parsing is complete.
+
+Postprocessor::
+Processes the output after the document has been converted, but before it's written to disk.
+
+Docinfo Processor::
+Adds additional content to the header or footer regions of the generated document.
+
+Block processor::
+Processes a block of content marked with a custom block style (i.e., `[custom]`).
+
+Block macro processor::
+Registers a custom block macro and processes it (e.g., `gist::12345[]`).
+
+Inline macro processor::
+Registers a custom inline macro and processes it (e.g., `btn:[Save]`).
+
+Include processor::
+Processes the `include::<filename>[]` directive.
+
+In this article we are going to use a _Block macro processor_ named `gist`. +
+To register an extension, it's recommended to create a dedicated registry.
+We can then enable the registry using the `extension_registry` option.
+
+```js
+const registry = asciidoctor.Extensions.create() // <1>
+/*
+ * A block macro that embeds a Gist into the output document
+ * Usage: gist::12345[]
+ */
+registry.blockMacro(function () { // <2>
+  const self = this
+  self.named('gist')
+  self.process(function (parent, target, attrs) {
+    const titleHTML = attrs.title ? `<div class="title">${attrs.title}</div>\n` : ''
+    const html = `<div class="openblock gist">
+  ${titleHTML}<div class="content">
+    <script src="https://gist.github.com/${target}.js"></script>
+  </div>
+</div>`
+    return self.createBlock(parent, 'pass', html, attrs, {})
+  });
+});
+const options = { extension_registry: registry } // <3>
+const result = asciidoctor.convert('gist::4b44db7b60724ceb3d969a449f30a48a[]', options)
+```
+<1> Create a `registry`
+<2> Register the gist extension
+<3> Define the `extension_registry` option (the gist extension will be enabled)
+
+In you document you can now reference a Gist using the syntax `gist::12345[]`.
+
+And here's the result with for `gist::4b44db7b60724ceb3d969a449f30a48a[]`
+
+gist::4b44db7b60724ceb3d969a449f30a48a[]
+
+[NOTE]
+====
+It's also possible to register an extension globally using `asciidoctor.Extensions.register`:
+
+```js
+asciidoctor.Extensions.register(function () {
+  this.blockMacro(function () { /* ... */ })
+})
+```
+
+In this case you don't need to specify the `extension_registry` option since the extension will be enabled globally. +
+To unregister all the extensions, you can use `asciidoctor.Extensions.unregisterAll()` function.
+====
+
+If you want to learn more about Asciidoctor.js extensions, please read the {uri-user-manual-extensions}[User Manual].
+
+Written with Asciidoctor.js 1.5.8.
