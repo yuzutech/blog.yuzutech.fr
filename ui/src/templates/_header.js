@@ -5,7 +5,6 @@ module.exports = (title, siteRelativeRoot) => {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${title}</title>
-  <link rel="stylesheet" href="${siteRelativeRoot}/stylesheets/main.css">
   <link rel="stylesheet" href="${siteRelativeRoot}/stylesheets/prism.css" />
   <link rel="stylesheet" href="${siteRelativeRoot}/stylesheets/prism-line-highlight.css" />
   <link rel="stylesheet" href="${siteRelativeRoot}/stylesheets/main.css">
