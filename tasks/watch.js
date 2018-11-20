@@ -1,58 +1,32 @@
-const fs = require('fs')
 const fsExtra = require('./_fs')
-const path = require('path')
+const ospath = require('path')
 const chokidar = require('chokidar')
 const browserSync = require('browser-sync')
-const processor = require('./pages/processor')
 const catalog = require('./pages/catalog')
+const processor = require('./pages/processor')
+const writer = require('./site/writer')
 
 const uiDirectory = 'ui/build'
+const outDirectory = 'public'
+const templateModule = ospath.join(process.cwd(), uiDirectory, 'templates/index')
+const config = { uiDirectory, outDirectory, templateModule }
 
-processor.init()
-browserSync({server: './public'})
-
+browserSync({ server: './public' })
 const watcher = chokidar.watch(['src/pages/**.adoc', 'src/images/**', `${uiDirectory}/**`], {
   persistent: true
 })
 
-function generateTagPages (pages, templates) {
-  const tags = new Set()
-  for (let page of pages) {
-    for (let tag of page.tags) {
-      tags.add(tag)
-    }
-  }
-  const dir = 'public/tag'
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir)
-  }
-  for (let tag of tags) {
-    const tagDir = tag.toLowerCase().replace('.', '-')
-    const dir = `public/tag/${tagDir}`
-    if (!fs.existsSync(dir)) {
-      fs.mkdirSync(dir)
-    }
-    const page = templates.convertTagPage(pages, tag)
-    fs.writeFileSync(`public/tag/${tagDir}/index.html`, page, 'utf-8')
-  }
-}
-
-function processPages() {
-  const pages = catalog.getCatalog()
-  const templates = require(path.join(process.cwd(), uiDirectory, 'templates/index'))
-  fs.writeFileSync(`public/index.html`, templates.convertMainPage(pages) , 'utf-8') // index.html
-  generateTagPages(pages, templates)
-  browserSync.reload()
-}
-
-function copyImages(filePath) {
-  const dir = 'public/images'
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir)
-  }
-  if (filePath.endsWith('.png') || filePath.endsWith('.jpg')) {
-    fs.writeFileSync(`public/images/${path.basename(filePath)}`, fs.readFileSync(filePath, 'binary'), 'binary')
-  }
+function processPages () {
+  const pages = catalog.getCatalog(config)
+  const templates = require(config.templateModule)
+  const files = []
+  files.push({
+    path: 'public/index.html',
+    contents: templates.convertMainPage(pages)
+  })
+  files.push.apply(files, processor.generateTagPages(pages, templates, config));
+  files.push.apply(files, pages)
+  writer(files) // Flush to disk!
   browserSync.reload()
 }
 
@@ -60,18 +34,19 @@ function update (filePath) {
   if (filePath.includes('src/pages')) {
     processPages()
   } else if (filePath.includes('src/images')) {
-    copyImages(filePath)
+    fsExtra.copySync(`src/images`, `${config.outDirectory}/images`)
+    browserSync.reload()
   } else if (filePath.includes(`${uiDirectory}/images`)) {
-    fsExtra.copySync(`${uiDirectory}/images`, 'public/images')
+    fsExtra.copySync(`${uiDirectory}/images`, `${config.outDirectory}/images`)
     browserSync.reload()
   } else if (filePath.includes(`${uiDirectory}/javascripts`)) {
-    fsExtra.copySync(`${uiDirectory}/javascripts`, 'public/javascripts')
+    fsExtra.copySync(`${uiDirectory}/javascripts`, `${config.outDirectory}/javascripts`)
     browserSync.reload()
   } else if (filePath.includes(`${uiDirectory}/stylesheets`)) {
-    fsExtra.copySync(`${uiDirectory}/stylesheets`, 'public/stylesheets')
+    fsExtra.copySync(`${uiDirectory}/stylesheets`, `${config.outDirectory}/stylesheets`)
     browserSync.reload()
   } else if (filePath.includes(`${uiDirectory}/templates`)) {
-    delete require.cache[require.resolve(path.join(process.cwd(), uiDirectory, 'templates/index'))] // remove cache
+    delete require.cache[require.resolve(config.templateModule)] // remove cache
     processPages()
   }
 }

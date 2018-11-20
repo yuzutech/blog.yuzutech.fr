@@ -13,11 +13,7 @@
     "rimraf": "^2.6.2"
   },
   "scripts": {
-    "build": "npm run build-clean && npm run build-ui && npm run build-pages && npm run build-images",
-    "build-ui": "cd ui && npm run build && cd - && node tasks/ui/copy.js",
-    "build-clean": "rimraf public/*",
-    "build-pages": "node tasks/pages/build.js",
-    "build-images": "node tasks/images/build.js",
+    "build": "node tasks/build.js",
     "deploy": "npm run build",
     "start": "node tasks/watch.js"
   }

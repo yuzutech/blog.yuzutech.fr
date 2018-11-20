@@ -2,7 +2,7 @@ const booleanCall = Boolean.call; // preserve Boolean.call (used in immutable mo
 const asciidoctor = require('asciidoctor.js')()
 Boolean.call = booleanCall; // restore Boolean.call function
 
-function init () {
+function createConverter(config) {
   const HTML5Converter = Opal.const_get_qualified(
     Opal.const_get_qualified(
       Opal.const_get_relative(Opal, 'Asciidoctor'),
@@ -10,13 +10,14 @@ function init () {
     ),
     'Html5Converter'
   )
+
   class BlogConverter {
     constructor () {
       this.baseConverter = HTML5Converter.$new()
     }
 
     $convert (node, transform, opts) {
-      const templates = require('../../ui/src/templates/index')
+      const templates = require(config.templateModule)
       const transforms = templates.getTransforms()
       const transformer = transforms[transform || node.node_name]
       if (transformer) {
@@ -25,21 +26,14 @@ function init () {
       return this.baseConverter.$convert(node, transform, opts)
     }
   }
-  asciidoctor.Converter.Factory.$register(new BlogConverter(), ['html5'])
+  return new BlogConverter()
 }
 
-function convert (filePath) {
-  console.log(`  convert ${filePath}`)
+function load (filePath, converter) {
+  console.log(`  load ${filePath}`)
   const registry = asciidoctor.Extensions.create()
-  registry.postprocessor(function () {
-    const self = this;
-    self.process(function (doc, output) {
-      //console.log(output)
-      return output
-    })
-  })
   registry.treeProcessor(function () {
-    var self = this;
+    const self = this;
     self.process(function (doc) {
       const listings = doc.findBy({ context: 'listing' })
       for (let listing of listings) {
@@ -69,10 +63,31 @@ function convert (filePath) {
       return self.createBlock(parent, 'pass', html, attrs, {})
     });
   });
-  return asciidoctor.convertFile(filePath, { safe: 'safe', to_dir: 'public', extension_registry: registry })
+  return asciidoctor.loadFile(filePath, { header_footer: true, safe: 'safe', converter, extension_registry: registry })
+}
+
+function generateTagPages (pages, templates, config) {
+  const tags = new Set()
+  for (let page of pages) {
+    for (let tag of page.tags) {
+      tags.add(tag)
+    }
+  }
+  const files = []
+  for (let tag of tags) {
+    const tagDir = tag.toLowerCase().replace('.', '-')
+    const dir = `${config.outDirectory}/tag/${tagDir}`
+    files.push({
+      base: dir,
+      path: `${dir}/index.html`,
+      contents: templates.convertTagPage(pages, tag)
+    })
+  }
+  return files
 }
 
 module.exports = {
-  init: init,
-  convert: convert
+  createConverter: createConverter,
+  load: load,
+  generateTagPages: generateTagPages
 }

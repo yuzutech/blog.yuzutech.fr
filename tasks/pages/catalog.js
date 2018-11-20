@@ -17,21 +17,25 @@ const monthNames = {
   11: 'Dec'
 }
 
-function getCatalog () {
+function getCatalog (config) {
   const pages = []
+  const converter = processor.createConverter(config)
   fs.readdirSync(path.join('src', 'pages')).forEach(file => {
     try {
       const filePath = path.join('src', 'pages', file)
       if (fs.lstatSync(filePath).isFile() && filePath.endsWith('.adoc')) {
-        const doc = processor.convert(filePath)
+        const doc = processor.load(filePath, converter)
         const revisionDate = new Date(doc.getAttribute('revdate'))
         const description = doc.getAttribute('description')
         const tags = doc.getAttribute('page-tags') || ''
         const monthName = monthNames[revisionDate.getMonth()]
+        const href = `${path.basename(filePath, '.adoc')}.html`
         pages.push({
           doc: doc,
           file: filePath,
-          href: `${path.basename(filePath, '.adoc')}.html`,
+          path: `${config.outDirectory}/${href}`,
+          contents: doc.convert(),
+          href: href,
           revisionDate: revisionDate,
           revisionDateShortFormat: `${monthName} ${revisionDate.getDate()}, ${revisionDate.getFullYear()}`,
           description: description,
@@ -45,7 +49,7 @@ function getCatalog () {
       throw e
     }
   })
-  return pages.sort(function(p1, p2) {
+  return pages.sort(function (p1, p2) {
     return p2.revisionDate - p1.revisionDate;
   });
 }
