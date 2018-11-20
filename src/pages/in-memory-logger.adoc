@@ -1,7 +1,6 @@
 = Awesome Asciidoctor.js: Catch processing errors and warnings using an in-memory logger
 Guillaume Grossetie <ggrossetie@yuzutech.fr>
 :revdate: 2018-11-15 12:20
-
 :description: Since Asciidoctor.js 1.5.7, all warning and error messages are now routed through a logger. \
 With this new feature, we will see how to catch processing errors and warnings using the built-in in-memory logger.
 :page-tags: Asciidoctor.js, Logger

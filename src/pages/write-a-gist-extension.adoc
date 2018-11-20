@@ -1,7 +1,6 @@
 = Awesome Asciidoctor.js: Write an extension to embed a gist into your document
 Guillaume Grossetie <ggrossetie@yuzutech.fr>
 :revdate: 2018-11-19 15:00
-
 :description: Extensions are central to the success of Asciidoctor because they open up the language to new use cases. \
 Asciidoctor.js allows extensions to be written using the full power of the JavaScript language. \
 Let's find out how we can use an extension to embed a gist into our documentation.
