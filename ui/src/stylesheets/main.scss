@@ -207,6 +207,20 @@ code[class*="language-"], pre[class*="language-"] {
         width: 100%;
       }
     }
+    .card-content {
+      position: relative;
+      overflow: hidden;
+      .tags {
+        margin-top: auto;
+        margin-bottom: 0;
+        padding-top: 3rem;
+        padding-bottom: 0.5rem;
+        background: linear-gradient(to bottom, transparent 0%, #fff 2rem);
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+      }
+    }
   }
 }
 
