@@ -2,14 +2,16 @@ const fs = require('fs')
 const fsExtra = require('./_fs')
 const path = require('path')
 const chokidar = require('chokidar')
-const browserSync = require("browser-sync")
+const browserSync = require('browser-sync')
 const processor = require('./pages/processor')
 const catalog = require('./pages/catalog')
 
-processor.init()
-browserSync({server: "./public"})
+const uiDirectory = 'ui/build'
 
-const watcher = chokidar.watch(['src/pages/**.adoc', 'src/images/**', 'ui/build/**'], {
+processor.init()
+browserSync({server: './public'})
+
+const watcher = chokidar.watch(['src/pages/**.adoc', 'src/images/**', `${uiDirectory}/**`], {
   persistent: true
 })
 
@@ -37,7 +39,7 @@ function generateTagPages (pages, templates) {
 
 function processPages() {
   const pages = catalog.getCatalog()
-  const templates = require('../ui/build/templates/index')
+  const templates = require(path.join(process.cwd(), uiDirectory, 'templates/index'))
   fs.writeFileSync(`public/index.html`, templates.convertMainPage(pages) , 'utf-8') // index.html
   generateTagPages(pages, templates)
   browserSync.reload()
@@ -59,17 +61,17 @@ function update (filePath) {
     processPages()
   } else if (filePath.includes('src/images')) {
     copyImages(filePath)
-  } else if (filePath.includes('ui/build/images')) {
-    fsExtra.copySync('ui/build/images', 'public/images')
+  } else if (filePath.includes(`${uiDirectory}/images`)) {
+    fsExtra.copySync(`${uiDirectory}/images`, 'public/images')
     browserSync.reload()
-  } else if (filePath.includes('ui/build/javascripts')) {
-    fsExtra.copySync('ui/build/javascripts', 'public/javascripts')
+  } else if (filePath.includes(`${uiDirectory}/javascripts`)) {
+    fsExtra.copySync(`${uiDirectory}/javascripts`, 'public/javascripts')
     browserSync.reload()
-  } else if (filePath.includes('ui/build/stylesheets')) {
-    fsExtra.copySync('ui/build/stylesheets', 'public/stylesheets')
+  } else if (filePath.includes(`${uiDirectory}/stylesheets`)) {
+    fsExtra.copySync(`${uiDirectory}/stylesheets`, 'public/stylesheets')
     browserSync.reload()
-  } else if (filePath.includes('ui/build/templates')) {
-    delete require.cache[require.resolve('../ui/build/templates/index')] // remove cache
+  } else if (filePath.includes(`${uiDirectory}/templates`)) {
+    delete require.cache[require.resolve(path.join(process.cwd(), uiDirectory, 'templates/index'))] // remove cache
     processPages()
   }
 }
