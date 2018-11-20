@@ -29,8 +29,7 @@ function convertMainPage (pages) {
         ${pagesHTML.join('\n')}
       </div>
     </div>
-  </section>
-  <script async defer src="./javascripts/main.js"></script>`
+  </section>`
   return layout('Blog - Yuzu tech', content, '.')
 }
 
