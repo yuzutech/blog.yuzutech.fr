@@ -20,7 +20,9 @@ module.exports = (uiModel) => {
     const doctitle = attributes['doctitle']
     const description = attributes['description']
     const revisionDate = new Date(attributes['page-revdate'])
-    const imagesdir = attributes.imagesdir
+
+    console.log(uiModel)
+    console.log(uiModel.siteRootPath)
     const imageHTML = image ? `<div class="card-image">
   <a href="${page.out.rootPath}/${page.out.path}" class="summary">
     <img src="${uiModel.uiRootPath}/images/${image}" alt="${doctitle} illustration">
@@ -30,7 +32,7 @@ module.exports = (uiModel) => {
   <div class="card article${index === 0 ? ' card-featured' : ''}">
     ${imageHTML}
     <div class="card-content">
-      <a href="${page.out.rootPath}/${page.out.path}" class="summary">
+      <a href="${uiModel.siteRootPath}/${page.out.path}" class="summary">
         <time datetime="${revisionDate}">${getShortRevisionDate(revisionDate)}</time>
         <h2 class="article-title">${doctitle}</h2>
         <p class="excerpt">${description}</p>
