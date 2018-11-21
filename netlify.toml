@@ -1,6 +1,6 @@
 [build]
   publish = "public"
-  command = "antora --html-url-extension-style=indexify --pull site.yml --generator ./lib/generator.js"
+  command = "netlify-build.sh"
 
 [build.environment]
   NODE_VERSION = "8"
@@ -8,4 +8,4 @@
   ANTORA_CACHE_DIR = ".cache/antora"
 
 [context.deploy-preview]
-  command = "URL=$DEPLOY_PRIME_URL antora --html-url-extension-style=indexify --pull site.yml --generator ./lib/generator.js"
+  command = "URL=$DEPLOY_PRIME_URL netlify-build.sh"
