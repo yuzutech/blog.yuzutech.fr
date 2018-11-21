@@ -7,26 +7,17 @@
   ],
   "description": "blog.yuzutech.fr website",
   "devDependencies": {
-    "@antora/asciidoc-loader": "^1.1.1",
-    "@antora/content-aggregator": "^1.1.1",
-    "@antora/content-classifier": "^1.1.1",
-    "@antora/document-converter": "^1.1.1",
-    "@antora/navigation-builder": "^1.1.1",
-    "@antora/playbook-builder": "^1.1.1",
-    "@antora/redirect-producer": "^1.1.1",
-    "@antora/site-mapper": "^1.1.1",
-    "@antora/site-publisher": "^1.1.1",
-    "asciidoctor.js": "1.5.7",
-    "browser-sync": "^2.26.3",
-    "chokidar": "^2.0.4",
-    "rimraf": "^2.6.2"
-  },
-  "scripts": {
-    "build": "node tasks/build.js",
-    "deploy": "npm run build",
-    "start": "node tasks/watch.js"
-  },
-  "dependencies": {
-
+    "@antora/asciidoc-loader": "file:packages/asciidoc-loader",
+    "@antora/cli": "1.1.1",
+    "@antora/content-aggregator": "1.1.1",
+    "@antora/content-classifier": "1.1.1",
+    "@antora/document-converter": "1.1.1",
+    "@antora/navigation-builder": "1.1.1",
+    "@antora/page-composer": "file:packages/page-composer",
+    "@antora/playbook-builder": "1.1.1",
+    "@antora/redirect-producer": "1.1.1",
+    "@antora/site-mapper": "1.1.1",
+    "@antora/site-publisher": "1.1.1",
+    "@antora/ui-loader": "file:packages/ui-loader"
   }
 }

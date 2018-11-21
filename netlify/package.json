@@ -1,7 +1,0 @@
-{
-  "name": "blog-yuzutech-netlify",
-  "private": true,
-  "devDependencies": {
-    "@antora/cli": "1.1.0"
-  }
-}
