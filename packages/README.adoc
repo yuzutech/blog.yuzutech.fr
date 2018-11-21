@@ -1,0 +1,42 @@
+= Custom Antora packages
+
+We override 3 Antora modules to do 3 things:
+
+asciidoc-loader::
+Use a custom converter.
+We define the converter as an AsciiDoc option in the generator.
++
+[source,js]
+----
+include::asciidoc-loader/lib/load-asciidoc.js[tags=override]
+----
++
+[NOTE]
+====
+`converter` is a function so we are able to pass the callback to the dedicated Antora HTML5 converter.
+
+The `converter` function is defined in `create-converter.js`.
+====
+
+page-composer::
+Use String Literals instead of Handlebars.
+The default implementation is using Handlebars but all we need is to create an extension point.
+An implementation provider, must provide a `function` for each layout.
+The `function` takes one argument, the `uiModel` and must return the page as a String.
++
+[source,js]
+----
+include::page-composer/lib/create-page-composer.js[tags=override]
+----
++
+In the code above, we `require` a JavaScript file that exports a single `function`:
++
+```js
+module.exports = (uiModel) => {
+  return 'page'
+}
+```
+
+ui-loader::
+Load the `ui` from a directory.
+See https://gitlab.com/antora/antora/merge_requests/228

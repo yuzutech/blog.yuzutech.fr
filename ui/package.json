@@ -13,15 +13,11 @@
     "clean-css": "^4.1.11",
     "node-sass": "^4.9.2",
     "postcss-cli": "^5.0.0",
-    "prismjs": "^1.15.0",
     "rimraf": "^2.6.2"
   },
   "scripts": {
-    "build": "npm run build-clean && npm run build-css && npm run build-js && npm run build-images && npm run build-templates",
-    "build-clean": "rimraf build/*",
-    "build-templates": "node tasks/templates/build.js",
-    "build-images": "node tasks/images/build.js",
-    "build-js": "node tasks/javascripts/build.js",
+    "build": "npm run build-clean && npm run build-css",
+    "build-clean": "rimraf bundle/stylesheets/*",
     "build-css": "node tasks/stylesheets/build.js",
     "deploy": "npm run build",
     "start": "node tasks/watch.js"

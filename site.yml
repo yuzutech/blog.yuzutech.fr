@@ -1,0 +1,20 @@
+runtime:
+  cache_dir: ./.cache/antora
+site:
+  title: Blog - Yuzu tech
+  url: https://blog.yuzutech.fr
+  start_page: blog::index.adoc
+content:
+  sources:
+  - url: .
+    branches: antora
+    start_path: blog
+ui:
+  bundle:
+    url: './ui/bundle'
+asciidoc:
+  extensions:
+    - './lib/extensions/gist-block-macro'
+    - './lib/extensions/prism-line-highlight-tree-processor'
+output:
+  dir: ./public

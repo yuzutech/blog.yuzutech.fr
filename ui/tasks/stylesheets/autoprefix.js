@@ -4,7 +4,7 @@ const path = require('path')
 const postcss = require('postcss')
 const autoprefixer = require('autoprefixer')
 
-const dir = 'build/stylesheets'
+const dir = 'bundle/stylesheets'
 
 function generateAll () {
   fs.readdirSync(dir).forEach(file => {

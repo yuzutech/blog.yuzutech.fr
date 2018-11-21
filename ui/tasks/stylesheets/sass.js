@@ -2,11 +2,6 @@ const fs = require('fs')
 const path = require('path')
 const sass = require('node-sass')
 
-const dir = 'build/stylesheets'
-if (!fs.existsSync(dir)) {
-  fs.mkdirSync(dir)
-}
-
 function generateAll () {
   const stylesheetsDir = path.join('src', 'stylesheets')
   fs.readdirSync(stylesheetsDir).forEach(file => {
@@ -16,6 +11,7 @@ function generateAll () {
 }
 
 function generate (cssFile) {
+  const dir = 'bundle/stylesheets'
   if (fs.lstatSync(cssFile).isFile() && cssFile.endsWith('.scss')) {
     try {
       const outFile = `${dir}/${path.basename(cssFile, '.scss')}.css`
@@ -41,7 +37,7 @@ function generate (cssFile) {
       throw e
     }
   } else {
-    fs.writeFileSync(`build/stylesheets/${path.basename(cssFile)}`, fs.readFileSync(cssFile, 'utf-8'), 'utf-8')
+    fs.writeFileSync(`bundle/stylesheets/${path.basename(cssFile)}`, fs.readFileSync(cssFile, 'utf-8'), 'utf-8')
     console.log(` copy css ${cssFile}`)
   }
 }

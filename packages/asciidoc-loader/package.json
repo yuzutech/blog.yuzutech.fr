@@ -1,0 +1,82 @@
+{
+  "_from": "@antora/asciidoc-loader",
+  "_id": "@antora/asciidoc-loader@1.1.1",
+  "_inBundle": false,
+  "_integrity": "sha512-1khP8mDsIsI95WaollArJtHuMX++PPmJ0EIlh0duLyqaSgUIT/BAnCZRqg8uZPu5i7ITRXWjODNbdeywNaeTTw==",
+  "_location": "/@antora/asciidoc-loader",
+  "_phantomChildren": {
+    "glob": "6.0.4",
+    "xmlhttprequest": "1.8.0"
+  },
+  "_requested": {
+    "type": "tag",
+    "registry": true,
+    "raw": "@antora/asciidoc-loader",
+    "name": "@antora/asciidoc-loader",
+    "escapedName": "@antora%2fasciidoc-loader",
+    "scope": "@antora",
+    "rawSpec": "",
+    "saveSpec": null,
+    "fetchSpec": "latest"
+  },
+  "_requiredBy": [
+    "#DEV:/",
+    "#USER",
+    "/@antora/document-converter"
+  ],
+  "_resolved": "https://registry.npmjs.org/@antora/asciidoc-loader/-/asciidoc-loader-1.1.1.tgz",
+  "_shasum": "9281b6386d08ac882efb2e973fb865d8413464eb",
+  "_spec": "@antora/asciidoc-loader",
+  "_where": "/home/guillaume/workspace/yuzutech/blog.yuzutech.fr",
+  "author": {
+    "name": "OpenDevise Inc.",
+    "url": "https://opendevise.com"
+  },
+  "bugs": {
+    "url": "https://gitlab.com/antora/antora/issues"
+  },
+  "bundleDependencies": false,
+  "contributors": [
+    {
+      "name": "Dan Allen",
+      "email": "dan@opendevise.com"
+    },
+    {
+      "name": "Sarah White",
+      "email": "sarah@opendevise.com"
+    },
+    {
+      "name": "Guillaume Grossetie",
+      "email": "g.grossetie@gmail.com"
+    }
+  ],
+  "dependencies": {
+    "asciidoctor.js": "1.5.6"
+  },
+  "deprecated": false,
+  "description": "Loads AsciiDoc content into an Asciidoctor Document object (AST) for use in an Antora documentation pipeline.",
+  "engines": {
+    "node": ">= 8.0.0"
+  },
+  "files": [
+    "lib/"
+  ],
+  "homepage": "https://antora.org",
+  "keywords": [
+    "antora",
+    "antora-component",
+    "asciidoc",
+    "asciidoctor",
+    "documentation",
+    "static site",
+    "web publishing"
+  ],
+  "license": "MPL-2.0",
+  "main": "lib/index.js",
+  "name": "@antora/asciidoc-loader",
+  "repository": {
+    "type": "git",
+    "url": "git+https://gitlab.com/antora/antora.git"
+  },
+  "version": "1.1.1"
+}

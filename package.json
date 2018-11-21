@@ -7,6 +7,15 @@
   ],
   "description": "blog.yuzutech.fr website",
   "devDependencies": {
+    "@antora/asciidoc-loader": "^1.1.1",
+    "@antora/content-aggregator": "^1.1.1",
+    "@antora/content-classifier": "^1.1.1",
+    "@antora/document-converter": "^1.1.1",
+    "@antora/navigation-builder": "^1.1.1",
+    "@antora/playbook-builder": "^1.1.1",
+    "@antora/redirect-producer": "^1.1.1",
+    "@antora/site-mapper": "^1.1.1",
+    "@antora/site-publisher": "^1.1.1",
     "asciidoctor.js": "1.5.7",
     "browser-sync": "^2.26.3",
     "chokidar": "^2.0.4",
@@ -16,5 +25,8 @@
     "build": "node tasks/build.js",
     "deploy": "npm run build",
     "start": "node tasks/watch.js"
+  },
+  "dependencies": {
+
   }
 }

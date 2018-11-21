@@ -1,0 +1,5 @@
+.xref:index.adoc[Index]
+* xref:write-a-gist-extension.adoc[Write an extension to embed a gist into your document]
+* xref:custom-converter.adoc[Write your own HTML5 converter]
+* xref:in-memory-logger.adoc[Catch processing errors and warnings using an in-memory logger
+* xref:plantuml-extension-render-diagrams.adoc[Use PlantUML extension to render diagrams]
