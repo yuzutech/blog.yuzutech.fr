@@ -1,3 +1,3 @@
-const stylesheets = require('./index')
+const generateStylesheet = require('./index')
 
-stylesheets._generateAll()
+generateStylesheet()

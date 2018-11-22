@@ -9,7 +9,9 @@ function getTags (page) {
 }
 
 module.exports = (uiModel) => {
-  return uiModel.page.contents.map((page, index) => {
+  return uiModel.page.contents
+    .sort((a1, a2) => new Date(a2.asciidoc.attributes['page-revdate']) - new Date(a1.asciidoc.attributes['page-revdate']))
+    .map((page, index) => {
     const tagsHTML = getTags(page).map(tag => `<a href="${getTagUrl(uiModel, tag)}" class="tag is-light has-icon">
   <span class="icon">
     <i class="fas fa-tag"></i> ${tag}

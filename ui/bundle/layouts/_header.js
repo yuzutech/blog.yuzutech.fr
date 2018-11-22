@@ -5,8 +5,6 @@ module.exports = (title, uiModel) => {
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${title}</title>
-  <link rel="stylesheet" href="${uiModel.uiRootPath}/stylesheets/prism.css" />
-  <link rel="stylesheet" href="${uiModel.uiRootPath}/stylesheets/prism-line-highlight.css" />
   <link rel="stylesheet" href="${uiModel.uiRootPath}/stylesheets/main.css">
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
 </head>

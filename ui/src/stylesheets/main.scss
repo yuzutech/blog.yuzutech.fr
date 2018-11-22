@@ -114,20 +114,6 @@ $content-pre-padding: 1em;
   }
 }
 
-.language-asciidoc {
-  .token.variable {
-    color: #07a;
-  }
-}
-
-:not(pre) > code[class*="language-"], pre[class*="language-"] {
-  background-color: whitesmoke;
-}
-
-code[class*="language-"], pre[class*="language-"] {
-  color: #4a4a4a;
-}
-
 .card {
   height: 100%;
   display: flex;
@@ -362,6 +348,28 @@ b.conum * {
   content: none;
 }
 
+.has-text-note {
+  color: #209cee !important;
+}
+
+.has-text-important {
+  color: hsl(348, 100%, 61%) !important;
+}
+
+.gist {
+  .content table td, .content table th {
+    border: none;
+  }
+}
+
+dt {
+  color: #4a4a4a;
+  font-style: italic;
+  font-weight: 600;
+}
+
+// Code highlighting
+
 .token.number {
   align-items: inherit;
   background-color: inherit;
@@ -375,14 +383,6 @@ b.conum * {
   padding: inherit;
   text-align: inherit;
   vertical-align: inherit;
-}
-
-.has-text-note {
-  color: #209cee !important;
-}
-
-.has-text-important {
-  color: hsl(348, 100%, 61%) !important;
 }
 
 .token.tag {
@@ -400,14 +400,19 @@ b.conum * {
   white-space: inherit;
 }
 
-.gist {
-  .content table td, .content table th {
-    border: none;
+@import "./prism.css";
+@import "./prism-line-highlight.css";
+
+.language-asciidoc {
+  .token.variable {
+    color: #07a;
   }
 }
 
-dt {
+:not(pre) > code[class*="language-"], pre[class*="language-"] {
+  background-color: whitesmoke;
+}
+
+code[class*="language-"], pre[class*="language-"] {
   color: #4a4a4a;
-  font-style: italic;
-  font-weight: 600;
 }

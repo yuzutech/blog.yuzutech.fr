@@ -6,22 +6,13 @@ const cleanCSS = new CleanCSS({})
 
 const dir = 'bundle/stylesheets'
 
-function generateAll () {
-  fs.readdirSync(dir).forEach(file => {
-    const filePath = path.join(dir, file)
-    generate(filePath)
-  })
-}
-
 function generate (cssFile) {
   try {
-    if (fs.lstatSync(cssFile).isFile() && cssFile.endsWith('.css')) {
-      const input = fs.readFileSync(cssFile, 'utf-8')
-      const result = cleanCSS.minify(input)
-      const output = `${dir}/${path.basename(cssFile, '.css')}.min.css`
-      fs.writeFileSync(output, result.styles, 'utf-8')
-      console.log(`  cleancss ${cssFile}`)
-    }
+    const input = fs.readFileSync(cssFile, 'utf-8')
+    const result = cleanCSS.minify(input)
+    const output = `${dir}/${path.basename(cssFile, '.css')}.min.css`
+    fs.writeFileSync(output, result.styles, 'utf-8')
+    console.log(`  cleancss ${cssFile}`)
   } catch (e) {
     console.log('', e)
     throw e
@@ -29,4 +20,3 @@ function generate (cssFile) {
 }
 
 module.exports = generate
-module.exports._generateAll = generateAll
