@@ -5,7 +5,7 @@ Guillaume Grossetie <ggrossetie@yuzutech.fr>
 :description: Extensions are central to the success of Asciidoctor because they open up the language to new use cases. \
 Asciidoctor.js allows extensions to be written using the full power of the JavaScript language. \
 Let's find out how we can use an extension to embed a gist into our documentation.
-:page-tags: Asciidoctor.js, Extension
+:page-tags: Asciidoctor.js, Extension, JavaScript
 :page-image: extension.jpg
 :icons: font
 :uri-user-manual-extensions: https://asciidoctor-docs.netlify.com/asciidoctor.js/extend/extensions/

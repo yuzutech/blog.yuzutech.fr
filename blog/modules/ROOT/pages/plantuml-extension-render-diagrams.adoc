@@ -4,7 +4,7 @@ Guillaume Grossetie <ggrossetie@yuzutech.fr>
 :page-author: Guillaume Grossetie
 :description: Extensions in Asciidoctor.js are very powerful. \
 This article will show you how to use extension to render PlantUML diagrams.
-:page-tags: Asciidoctor.js, PlantUML
+:page-tags: Asciidoctor.js, PlantUML, JavaScript
 :page-image: blueprint.jpg
 :icons: font
 :uri-eshepelyuk-gh: https://github.com/eshepelyuk

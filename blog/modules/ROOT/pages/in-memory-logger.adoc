@@ -4,7 +4,7 @@ Guillaume Grossetie <ggrossetie@yuzutech.fr>
 :page-author: Guillaume Grossetie
 :description: Since Asciidoctor.js 1.5.7, all warning and error messages are now routed through a logger. \
 With this new feature, we will see how to catch processing errors and warnings using the built-in in-memory logger.
-:page-tags: Asciidoctor.js, Logger
+:page-tags: Asciidoctor.js, Logger, JavaScript
 :page-image: pipeline.jpg
 :icons: font
 

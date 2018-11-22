@@ -1,0 +1,118 @@
+= Awesome GraalVM: Create a Java API on top of a JavaScript library
+Guillaume Grossetie <ggrossetie@yuzutech.fr>
+:page-revdate: 2018-11-22 20:40
+:page-author: Guillaume Grossetie
+:description: Let's see how we can use the GraalVM Polyglot API to create a Java API on top of the chroma JavaScript library.
+:page-tags: GraalVM, JavaScript, Java
+:page-image: us.jpg
+:icons: font
+:uri-npmjs: https://www.npmjs.com/
+:uri-chroma: https://gka.github.io/chroma.js/#color-rgba
+:uri-sdk-graalvm: https://search.maven.org/artifact/org.graalvm/graal-sdk/1.0.0-rc7/jar
+:uri-chroma-min-js: https://raw.github.com/gka/chroma.js/master/chroma.min.js
+:uri-graalvm-value: link:https://www.graalvm.org/sdk/javadoc/index.html?org/graalvm/polyglot/Value.html
+
+The Graal Polyglot API lets you embed and run code from guest languages in JVM-based host applications.
+In this article, we will cover how we create a Java API on top of a JavaScript library.
+
+With more than 700 000 packages {uri-npmjs}[npmjs] is the world's largest repository of code!
+You can find literally everything you need (or not).
+
+For our example we will use the excellent {uri-chroma}[chroma.js] library.
+_chroma.js_ is a tiny JavaScript library (but really useful) for dealing with colors! +
+Here's an example for a simple read / manipulate / output chain:
+
+```js
+chroma('pink').darken().saturate(2).hex() // "#ff6d93"
+```
+
+Pretty cool right ? +
+Now I want to use this library in my Java application that runs on GraalVM. +
+Let's start!
+
+. First download and copy {uri-chroma-min-js}[chroma.min.js] to your project _resources_.
+. Then add a dependency on the GraalVM SDK (that contains the Polyglot API):
++
+.maven
+```xml
+<dependency>
+  <groupId>org.graalvm</groupId>
+  <artifactId>graal-sdk</artifactId>
+  <version>1.0.0-rc7</version>
+</dependency>
+```
++
+.gradle
+```
+compile 'org.graalvm:graal-sdk:1.0.0-rc7'
+```
++
+If you are using another package manager, {uri-sdk-graalvm}[follow the instructions on Maven Central].
++
+Now we can use the `org.graalvm.polyglot` API in our code.
+We create a singleton class named `GraalVMChroma` in the `org.chroma` package:
++
+```java
+include::example$GraalVMChroma.java[]
+```
+<1> Create a GraalVM `Context`
+<2> Read the file `chroma.min.js` into a String
+<3> Evaluate the library code
+<4> Get the `chroma` object as a GraalVM `Value`
++
+In the code above, the file `chroma.min.js` will be read from the classpath and turned into a `String`.
+Then we evaluate the _chroma_ library code, using the `eval` method on the `context`.
+And finally, we use `eval("js", "chroma")` to get the `chroma` object.
++
+The GraalVM `Value` represents a polyglot value that can be accessed using a set of language agnostic operations.
+Polyglot values have one of the following types:
+
+* `Null`
+* `Number`
+* `Boolean`
+* `String`
+* `Host Object`
+* `Proxy Object`
+* `Native Pointer`
++
+In addition any value may have one or more of the following traits:
++
+* `Array Elements`
+* `Members`
+* `Executable`
+* `Instantiable`
++
+If you want to learn more about GraalVM `Value`, please read the  {uri-graalvm-value}[official documentation].
++
+In our case, the `chroma` object is _Instantiable_ as we can instantiate a new _chroma_ object with `chroma('hotpink')`.
++
+. Build the Java API. +
+We create a `Chroma` interface in the `org.chroma` package:
++
+[source,java]
+----
+include::example$Chroma.java[]
+----
+<1> Get the `chroma` object on the singleton
+<2> Instantiate the `chroma` object with a color
+<3> Instantiate a Java class named `ChromaInstance` with the _chroma_ instance
++
+The `ChromaInstance` implements the `Chroma` interface:
++
+[source,java]
+----
+include::example$ChromaInstance.java[]
+----
+<1> Save the reference to the _chroma_ instance
+<2> Get the member called `darken` on the _chroma_ instance and execute the function
+<3> Get the member called `saturate` on the _chroma_ instance and execute the function with a value
+<4> Get the member called `hex` on the _chroma_ instance, execute the function and return a `String`
+<5> Get the member called `rgba` on the _chroma_ instance, execute the function and build a Java `List` from the _Array Elements_ `Value`
+
+And now we can use the `chroma` library in our Java application as follow:
+
+```java
+Chroma.create("pink").darken().saturate(2).hex() // "#ff6d93"
+
+Chroma.create("orange").rgba() // List(255, 165, 0, 1)
+```
