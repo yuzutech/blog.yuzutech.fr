@@ -57,11 +57,11 @@ We create a singleton class named `GraalVMChroma` in the `org.chroma` package:
 include::example$GraalVMChroma.java[]
 ```
 <1> Create a GraalVM `Context`
-<2> Read the file `chroma.min.js` into a String
+<2> Read the file _chroma.min.js_ into a `String`
 <3> Evaluate the library code
 <4> Get the `chroma` object as a GraalVM `Value`
 +
-In the code above, the file `chroma.min.js` will be read from the classpath and turned into a `String`.
+In the code above, the file _chroma.min.js_ will be read from the classpath and turned into a `String`.
 Then we evaluate the _chroma_ library code, using the `eval` method on the `context`.
 And finally, we use `eval("js", "chroma")` to get the `chroma` object.
 +
@@ -85,7 +85,7 @@ In addition any value may have one or more of the following traits:
 +
 If you want to learn more about GraalVM `Value`, please read the  {uri-graalvm-value}[official documentation].
 +
-In our case, the `chroma` object is _Instantiable_ as we can instantiate a new _chroma_ object with `chroma('hotpink')`.
+In our case, the `chroma` object is an _Instantiable_ as we can instantiate a new _chroma_ object with `chroma('hotpink')`.
 +
 . Build a Java API. +
 We create a `Chroma` interface in the `org.chroma` package:
