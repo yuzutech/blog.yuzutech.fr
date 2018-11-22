@@ -2600,8 +2600,6 @@ b.conum * { color: inherit !important; }
 
 .content .colist table td, .content .colist table th { border: none; }
 
-.line-highlight:before, .line-highlight[data-end]:after { content: none; }
-
 .has-text-note { color: #209cee !important; }
 
 .has-text-important { color: #ff3860 !important; }
@@ -2664,6 +2662,8 @@ pre[data-line] { position: relative; padding: 1em 0 1em 3em; }
 .line-highlight[data-end]:after { content: attr(data-end); top: auto; bottom: .4em; }
 
 .line-numbers .line-highlight:before, .line-numbers .line-highlight:after { content: none; }
+
+.line-highlight:before, .line-highlight[data-end]:after { content: none; }
 
 .language-asciidoc .token.variable { color: #07a; }
 

@@ -344,10 +344,6 @@ b.conum * {
   }
 }
 
-.line-highlight:before, .line-highlight[data-end]:after {
-  content: none;
-}
-
 .has-text-note {
   color: #209cee !important;
 }
@@ -402,6 +398,10 @@ dt {
 
 @import "prism";
 @import "prism-line-highlight";
+
+.line-highlight:before, .line-highlight[data-end]:after {
+  content: none;
+}
 
 .language-asciidoc {
   .token.variable {
