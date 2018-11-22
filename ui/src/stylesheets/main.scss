@@ -399,6 +399,12 @@ dt {
 @import "prism";
 @import "prism-line-highlight";
 
+.content {
+  pre {
+    margin: 1em;
+  }
+}
+
 .line-highlight:before, .line-highlight[data-end]:after {
   content: none;
 }
