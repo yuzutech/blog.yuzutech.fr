@@ -73,7 +73,7 @@ asciidoctor.convertFile('document.adoc', options)
 ```
 ====
 
-Since version 0.9.0 of the PlantUML extension, you can also generate Ditaa and Graphviz diagrams:
+Since version 0.10.0 of the PlantUML extension, you can also generate Ditaa and Graphviz diagrams:
 
 .document.adoc
 [source,asciidoc]
@@ -114,5 +114,5 @@ digraph foo {
 
 If you want to learn about the PlantUML extension, you can read the project {uri-plantuml-extension-readme}[README on GitHub].
 
-Written with Asciidoctor.js 1.5.8 and Asciidoctor.js PlantUML extension 0.9.0.
+Written with Asciidoctor.js 1.5.8 and Asciidoctor.js PlantUML extension 0.10.0.
 
