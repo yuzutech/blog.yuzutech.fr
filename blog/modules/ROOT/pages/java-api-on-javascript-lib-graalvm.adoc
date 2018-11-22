@@ -49,9 +49,9 @@ compile 'org.graalvm:graal-sdk:1.0.0-rc7'
 +
 If you are using another package manager, {uri-sdk-graalvm}[follow the instructions on Maven Central].
 +
-. Use the GraalVM Polyglot API to evaluate the _chroma_ library
-Now we can use the `org.graalvm.polyglot` API in our code.
-We create a singleton class named `GraalVMChroma` in the `org.chroma` package:
+. Use the GraalVM Polyglot API to evaluate the _chroma_ library. +
+Now that we can use the `org.graalvm.polyglot` API in our code,
+we are going to create a singleton class named `GraalVMChroma` in the `org.chroma` package:
 +
 ```java
 include::example$GraalVMChroma.java[]
@@ -65,6 +65,8 @@ In the code above, the file _chroma.min.js_ will be read from the classpath and 
 Then we evaluate the _chroma_ library code, using the `eval` method on the `context`.
 And finally, we use `eval("js", "chroma")` to get the `chroma` object.
 +
+[NOTE]
+====
 The GraalVM `Value` represents a polyglot value that can be accessed using a set of language agnostic operations.
 Polyglot values have one of the following types:
 
@@ -84,6 +86,7 @@ In addition any value may have one or more of the following traits:
 * `Instantiable`
 +
 If you want to learn more about GraalVM `Value`, please read the  {uri-graalvm-value}[official documentation].
+====
 +
 In our case, the `chroma` object is an _Instantiable_ as we can instantiate a new _chroma_ object with `chroma('hotpink')`.
 +
