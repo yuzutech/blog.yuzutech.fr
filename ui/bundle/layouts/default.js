@@ -3,6 +3,7 @@ const date = require('./_date')
 
 function convert (uiModel) {
   const page = uiModel.page
+  uiModel.enableDisqus = true;
   const revisionDate = new Date(page.attributes.revdate)
   const author = page.attributes.author
   const title = page.title
