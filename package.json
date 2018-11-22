@@ -6,18 +6,18 @@
     "Guillaume Grossetie (https://github.com/mogztter)"
   ],
   "description": "blog.yuzutech.fr website",
-  "devDependencies": {
+  "dependencies": {
     "@antora/asciidoc-loader": "file:packages/asciidoc-loader",
+    "@antora/ui-loader": "file:packages/ui-loader",
     "@antora/cli": "1.1.1",
     "@antora/content-aggregator": "1.1.1",
     "@antora/content-classifier": "1.1.1",
     "@antora/document-converter": "1.1.1",
     "@antora/navigation-builder": "1.1.1",
-    "@antora/page-composer": "file:packages/page-composer",
+    "@antora/page-composer": "1.1.1",
     "@antora/playbook-builder": "1.1.1",
     "@antora/redirect-producer": "1.1.1",
     "@antora/site-mapper": "1.1.1",
-    "@antora/site-publisher": "1.1.1",
-    "@antora/ui-loader": "file:packages/ui-loader"
+    "@antora/site-publisher": "1.1.1"
   }
 }
