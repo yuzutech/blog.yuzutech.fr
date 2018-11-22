@@ -400,8 +400,8 @@ dt {
   white-space: inherit;
 }
 
-@import "./prism.css";
-@import "./prism-line-highlight.css";
+@import "prism";
+@import "prism-line-highlight";
 
 .language-asciidoc {
   .token.variable {
