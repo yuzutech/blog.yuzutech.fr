@@ -31,7 +31,7 @@ Now I want to use this library in my Java application that runs on GraalVM. +
 Let's start!
 
 . First download and copy {uri-chroma-min-js}[chroma.min.js] to your project _resources_.
-. Then add a dependency on the GraalVM SDK (that contains the Polyglot API):
+. Add a dependency on the GraalVM SDK (that contains the Polyglot API):
 +
 .maven
 ```xml
@@ -49,6 +49,7 @@ compile 'org.graalvm:graal-sdk:1.0.0-rc7'
 +
 If you are using another package manager, {uri-sdk-graalvm}[follow the instructions on Maven Central].
 +
+. Use the GraalVM Polyglot API to evaluate the _chroma_ library
 Now we can use the `org.graalvm.polyglot` API in our code.
 We create a singleton class named `GraalVMChroma` in the `org.chroma` package:
 +
@@ -86,7 +87,7 @@ If you want to learn more about GraalVM `Value`, please read the  {uri-graalvm-
 +
 In our case, the `chroma` object is _Instantiable_ as we can instantiate a new _chroma_ object with `chroma('hotpink')`.
 +
-. Build the Java API. +
+. Build a Java API. +
 We create a `Chroma` interface in the `org.chroma` package:
 +
 [source,java]
@@ -97,6 +98,7 @@ include::example$Chroma.java[]
 <2> Instantiate the `chroma` object with a color
 <3> Instantiate a Java class named `ChromaInstance` with the _chroma_ instance
 +
+. Implement the API. +
 The `ChromaInstance` implements the `Chroma` interface:
 +
 [source,java]
