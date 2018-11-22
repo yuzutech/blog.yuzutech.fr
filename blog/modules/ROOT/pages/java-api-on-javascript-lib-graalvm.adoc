@@ -27,8 +27,7 @@ chroma('pink').darken().saturate(2).hex() // "#ff6d93"
 ```
 
 Pretty cool right ? +
-Now I want to use this library in my Java application that runs on GraalVM. +
-Let's start!
+Now let's see how we can use this library in a Java application that runs on GraalVM.
 
 . First download and copy {uri-chroma-min-js}[chroma.min.js] to your project _resources_.
 . Add a dependency on the GraalVM SDK (that contains the Polyglot API):
@@ -77,14 +76,14 @@ Polyglot values have one of the following types:
 * `Host Object`
 * `Proxy Object`
 * `Native Pointer`
-+
+
 In addition any value may have one or more of the following traits:
-+
+
 * `Array Elements`
 * `Members`
 * `Executable`
 * `Instantiable`
-+
+
 If you want to learn more about GraalVM `Value`, please read the  {uri-graalvm-value}[official documentation].
 ====
 +

@@ -67,8 +67,7 @@ const result = asciidoctor.convert('gist::4b44db7b60724ceb3d969a449f30a48a[]', o
 <2> Register the gist extension
 <3> Define the `extension_registry` option (the gist extension will be enabled)
 
-In you document you can now reference a Gist using the syntax `gist::12345[]`.
-
+In you document you can now reference a Gist using the syntax `gist::12345[]`. +
 And here's the result with for `gist::4b44db7b60724ceb3d969a449f30a48a[]`
 
 gist::4b44db7b60724ceb3d969a449f30a48a[]

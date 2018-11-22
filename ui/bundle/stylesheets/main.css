@@ -2600,6 +2600,8 @@ b.conum * { color: inherit !important; }
 
 .content .colist table td, .content .colist table th { border: none; }
 
+.content ol > li > p { margin-bottom: 1em; }
+
 .has-text-note { color: #209cee !important; }
 
 .has-text-important { color: #ff3860 !important; }
