@@ -40,6 +40,9 @@ $content-pre-padding: 1em;
       a {
         color: inherit;
       }
+      .rss {
+        font-size: 1rem;
+      }
     }
     @media screen and (min-width: $widescreen) {
       .title {

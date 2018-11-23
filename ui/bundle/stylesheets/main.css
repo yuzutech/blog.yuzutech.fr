@@ -2497,6 +2497,8 @@ a.navbar-item:hover, a.navbar-item.is-active, .navbar-link:hover, .navbar-link.i
 
 .hero .hero-body .title a { color: inherit; }
 
+.hero .hero-body .title .rss { font-size: 1rem; }
+
 @media screen and (min-width: 1280px) { .hero .hero-body .title { font-size: 3.75rem; } }
 
 @media screen and (max-width: 1279px) { .hero .hero-body .title { font-size: 3.5rem; } }

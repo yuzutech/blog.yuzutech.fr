@@ -8,14 +8,14 @@ module.exports = (uiModel) => {
   </section>
   <script>
     var disqus_config = function () {
-    this.page.url = '${uiModel.page.canonicalUrl}';
-    this.page.identifier = '${uiModel.page.url}';
+      this.page.url = '${uiModel.page.canonicalUrl}';
+      this.page.identifier = '${uiModel.page.url}';
     };
     (function() {
-    var d = document, s = d.createElement('script');
-    s.src = 'https://blog-yuzutech.disqus.com/embed.js';
-    s.setAttribute('data-timestamp', +new Date());
-    (d.head || d.body).appendChild(s);
+      var d = document, s = d.createElement('script');
+      s.src = 'https://blog-yuzutech.disqus.com/embed.js';
+      s.setAttribute('data-timestamp', +new Date());
+      (d.head || d.body).appendChild(s);
     })();
   </script>
   <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>`

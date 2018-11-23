@@ -1,5 +1,5 @@
 function getTagUrl(uiModel, tag) {
-  return `${uiModel.siteRootPath}/${uiModel.site.homeUrl}tag/${tag.toLowerCase().replace('.', '-')}/index.html`
+  return `${uiModel.siteRootPath}${uiModel.site.homeUrl}tag/${tag.toLowerCase().replace('.', '-')}/index.html`
 }
 
 function tagCloud (uiModel) {

@@ -13,6 +13,9 @@ function convert (uiModel) {
         <div class="titles">
           <h1 class="title">
             <a href="${uiModel.siteRootPath}/index.html">Blog</a>
+            <span class="rss">
+              <a href="${uiModel.siteRootPath}/blog/1.0/rss/feed.xml"><i class="fas fa-rss"></i></a>
+            </span>
           </h1>
         </div>
       </div>
