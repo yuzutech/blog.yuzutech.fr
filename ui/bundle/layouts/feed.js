@@ -7,7 +7,7 @@ function atomItem (uiModel, item) {
     ${categories.join('\n')}
     <dc:creator><![CDATA[${item.creator}]]></dc:creator>
     <pubDate>${item.pubDate}</pubDate>
-    <media:content url="${uiModel.uiRootPath}/images/${item.image}" medium="image"/>
+    <media:content url="${uiModel.site.url}${uiModel.site.ui.url}/images/${item.image}" medium="image"/>
     <content:encoded><![CDATA[${item.contents}]]></content:encoded>
   </item>`
 }
