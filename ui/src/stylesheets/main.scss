@@ -428,3 +428,10 @@ dt {
 code[class*="language-"], pre[class*="language-"] {
   color: #4a4a4a;
 }
+
+.section-404 {
+  min-height: calc(100vh - 520px);
+  h1 {
+    text-align: center;
+  }
+}
