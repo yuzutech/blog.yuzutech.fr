@@ -7,6 +7,14 @@ module.exports = (title, uiModel) => {
   <title>${title}</title>
   <link rel="stylesheet" href="${uiModel.uiRootPath}/stylesheets/main.min.css">
   <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=UA-42107476-2"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'UA-42107476-2');
+  </script>
 </head>
 <body>
   <nav class="navbar" role="navigation" aria-label="main navigation">
