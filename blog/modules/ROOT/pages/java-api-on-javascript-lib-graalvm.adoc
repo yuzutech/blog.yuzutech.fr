@@ -121,4 +121,8 @@ Chroma.create("pink").darken().saturate(2).hex() // "#ff6d93"
 Chroma.create("orange").rgba() // List(255, 165, 0, 1)
 ```
 
-Written with GraalVM 1.0.0-rc7 and Java 1.8.
+Written with GraalVM 1.0.0-rc7 and Java 1.8. +
++++
+<i class="fab fa-github-alt"></i>
++++
+The full source code is available on GitHub: https://github.com/yuzutech/chroma-graalvm
