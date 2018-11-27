@@ -2,10 +2,11 @@ runtime:
   cache_dir: ./.cache/antora
 site:
   title: Blog - Yuzu tech
-  url: https://blog-yuzutech.netlify.com
+  url: https://blog.yuzutech.fr
   start_page: blog::index.adoc
 content:
   sources:
+  #- url: '.'
   - url: https://gitlab-ci-token:dqVrbg_3GQyVFdJHjEsN@gitlab.com/yuzutech/blog.yuzutech.fr.git
     branches: master
     start_path: blog
