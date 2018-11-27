@@ -75,5 +75,10 @@ ${titleElement}<div class="content">
   },
   inline_callout: (node) => {
     return `<i class="conum" data-value="${node.text}"></i>`
+  },
+  inline_image: (node) => {
+    if (node.getType() === 'icon' && node.getDocument().getAttribute('icons') === 'font') {
+      return `<i class="fab fa-${node.getTarget()}"></i>`
+    }
   }
 }
