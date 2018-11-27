@@ -9,3 +9,13 @@
 
 [context.deploy-preview]
   command = "URL=$DEPLOY_PRIME_URL ./netlify-build.sh"
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-XSS-Protection = "1; mode=block"
+
+    Link = """
+    </_/stylesheets/main.min.css>; rel=preload; as=style, \
+    </_/images/main.jpg>; rel=preload; as=image"""
