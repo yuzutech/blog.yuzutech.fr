@@ -2676,4 +2676,10 @@ pre[data-line] { position: relative; padding: 1em 0 1em 3em; }
 :not(pre) > code[class*="language-"], pre[class*="language-"] { background-color: whitesmoke; }
 
 code[class*="language-"], pre[class*="language-"] { color: #4a4a4a; }
+
+.section-404 { min-height: calc(100vh - 520px); }
+
+.section-404 h1 { text-align: center; }
+
+.quoteblock .attribution { text-align: right; margin-bottom: 2em; }
 /*# sourceMappingURL=main.css.map */
