@@ -34,6 +34,9 @@ module.exports = (title, uiModel) => {
         <a class="navbar-item" href="https://www.yuzutech.fr/#contact">
           Contact
         </a>
+        <a class="navbar-item" href="/">
+          Blog
+        </a>
       </div>
     </div>
   </nav>`
