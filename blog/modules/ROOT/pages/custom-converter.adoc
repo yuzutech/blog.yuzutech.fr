@@ -17,7 +17,7 @@ The other elements will be converted using the built-in HTML5 converter.
 In other words, we override how the `paragraph` element is converted and we delegate to the built-in HTML5 converter the rest:
 
 ```javascript
-const asciidoctor = require('asciidoctor')()
+const asciidoctor = require('asciidoctor.js')()
 
 class TemplateConverter {
   constructor () {
@@ -93,3 +93,7 @@ For instance, when you want to build your own blog generator, or create a conver
 
 
 Written with Asciidoctor.js 1.5.8.
+
+[%hardbreaks]
+icon:bolt[fw] bolt
+icon:heart[fw] heart
