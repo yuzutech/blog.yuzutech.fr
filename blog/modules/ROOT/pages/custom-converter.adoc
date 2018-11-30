@@ -93,7 +93,3 @@ For instance, when you want to build your own blog generator, or create a conver
 
 
 Written with Asciidoctor.js 1.5.8.
-
-[%hardbreaks]
-icon:bolt[fw] bolt
-icon:heart[fw] heart
