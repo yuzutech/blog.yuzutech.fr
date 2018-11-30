@@ -92,4 +92,4 @@ Using a custom HTML5 converter is extremely powerful and should be used only whe
 For instance, when you want to build your own blog generator, or create a converter for the latest HTML5 presentation framework.
 
 
-Written with Asciidoctor.js 1.5.8.
+Written with Asciidoctor.js 1.5.9.

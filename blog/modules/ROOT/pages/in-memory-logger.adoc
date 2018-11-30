@@ -60,4 +60,4 @@ if (errors && errors.length > 0) {
 }
 ```
 
-Written with Asciidoctor.js 1.5.8.
+Written with Asciidoctor.js 1.5.9.

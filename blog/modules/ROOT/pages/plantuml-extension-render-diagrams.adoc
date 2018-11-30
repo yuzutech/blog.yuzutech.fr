@@ -114,5 +114,5 @@ digraph foo {
 
 If you want to learn about the PlantUML extension, you can read the project {uri-plantuml-extension-readme}[README on GitHub].
 
-Written with Asciidoctor.js 1.5.8 and Asciidoctor.js PlantUML extension 0.10.0.
+Written with Asciidoctor.js 1.5.9 and Asciidoctor.js PlantUML extension 0.10.0.
 

@@ -88,4 +88,4 @@ To unregister all the extensions, you can use `asciidoctor.Extensions.unregister
 
 If you want to learn more about Asciidoctor.js extensions, please read the {uri-user-manual-extensions}[User Manual].
 
-Written with Asciidoctor.js 1.5.8.
+Written with Asciidoctor.js 1.5.9.
