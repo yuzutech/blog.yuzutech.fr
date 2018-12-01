@@ -14,7 +14,7 @@ const monthNames = {
 }
 
 function getShortRevisionDate (revisionDate) {
-  const monthName = monthNames[revisionDate.getMonth()];
+  const monthName = monthNames[revisionDate.getMonth()]
   return `${monthName} ${revisionDate.getDate()}, ${revisionDate.getFullYear()}`
 }
 

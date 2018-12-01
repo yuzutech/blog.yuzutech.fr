@@ -35,7 +35,7 @@ function generateAtomFeed (uiModel, atomFeedModel) {
 }
 
 function convert (uiModel) {
-  const atomFeedModel = uiModel.page.contents;
+  const atomFeedModel = uiModel.page.contents
   return generateAtomFeed(uiModel, atomFeedModel)
 }
 
