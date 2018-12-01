@@ -53,7 +53,7 @@ Now that we can use the `org.graalvm.polyglot` API in our code,
 we are going to create a singleton class named `GraalVMChroma` in the `org.chroma` package:
 +
 ```java
-include::example$GraalVMChroma.java[]
+include::example$chroma/GraalVMChroma.java[]
 ```
 <1> Create a GraalVM `Context`
 <2> Read the file _chroma.min.js_ into a `String`
@@ -94,7 +94,7 @@ We create a `Chroma` interface in the `org.chroma` package:
 +
 [source,java]
 ----
-include::example$Chroma.java[]
+include::example$chroma/Chroma.java[]
 ----
 <1> Get the `chroma` object on the singleton
 <2> Instantiate the `chroma` object with a color
@@ -105,7 +105,7 @@ The `ChromaInstance` implements the `Chroma` interface:
 +
 [source,java]
 ----
-include::example$ChromaInstance.java[]
+include::example$chroma/ChromaInstance.java[]
 ----
 <1> Save the reference to the _chroma_ instance
 <2> Get the member called `darken` on the _chroma_ instance and execute the function
