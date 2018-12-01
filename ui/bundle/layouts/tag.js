@@ -24,7 +24,7 @@ function convert (uiModel) {
         <div class="container">
           <div class="tags cloud">
              ${icon(faTags).html}
-            <span class="tag active is-medium"> ${tag} <a href="${uiModel.siteRootPath}/index.html" class="delete is-small"></a></span>
+            <span class="tag active is-medium"> ${tag} <a href="${uiModel.siteRootPath}/blog/1.0/" class="delete is-small"></a></span>
           </div>
         </div>
       </div>
