@@ -6,7 +6,8 @@ Guillaume Grossetie <ggrossetie@yuzutech.fr>
 In this article we are going to see how to override the converter methods used to convert almost any individual AsciiDoc element.
 :page-tags: Asciidoctor.js, Converter, JavaScript
 :page-image: build.jpg
-:icons: font
+:page-color-primary: #abc3d8
+:page-color-secondary: #c9801d
 :uri-template-literals: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Template_literals
 
 The goal of a HTML5 converter is to convert an AsciiDoc document to an HTML5 page.

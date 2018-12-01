@@ -5,7 +5,8 @@ Guillaume Grossetie <ggrossetie@yuzutech.fr>
 :description: Let's see how we can use the GraalVM Polyglot API to create a Java API on top of the chroma JavaScript library.
 :page-tags: GraalVM, JavaScript, Java
 :page-image: us.jpg
-:icons: font
+:page-color-primary: #d6a008
+:page-color-secondary: #160c0a
 :uri-npmjs: https://www.npmjs.com/
 :uri-chroma: https://gka.github.io/chroma.js/#color-rgba
 :uri-sdk-graalvm: https://search.maven.org/artifact/org.graalvm/graal-sdk/1.0.0-rc7/jar

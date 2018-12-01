@@ -6,7 +6,8 @@ Guillaume Grossetie <ggrossetie@yuzutech.fr>
 With this new feature, we will see how to catch processing errors and warnings using the built-in in-memory logger.
 :page-tags: Asciidoctor.js, Logger, JavaScript
 :page-image: pipeline.jpg
-:icons: font
+:page-color-primary: #6ba0c2
+:page-color-secondary: #eb9a42
 
 The new logging system introduces in Asciidoctor.js, can be used to catch processing errors and warnings.
 It can be really useful in a CI build when you want to make sure that your documentation is perfect before publishing it.

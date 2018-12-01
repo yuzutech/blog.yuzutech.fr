@@ -6,7 +6,8 @@ Guillaume Grossetie <ggrossetie@yuzutech.fr>
 This article will show you how to use extension to render PlantUML diagrams.
 :page-tags: Asciidoctor.js, PlantUML, JavaScript
 :page-image: blueprint.jpg
-:icons: font
+:page-color-primary: #919191
+:page-color-secondary: #414141
 :uri-eshepelyuk-gh: https://github.com/eshepelyuk
 :uri-plantuml-extension-gh: https://github.com/eshepelyuk/asciidoctor-plantuml.js
 :uri-plantuml-extension-readme: {uri-plantuml-extension-gh}/blob/master/README.adoc

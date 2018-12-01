@@ -7,7 +7,8 @@ Asciidoctor.js allows extensions to be written using the full power of the JavaS
 Let's find out how we can use an extension to embed a gist into our documentation.
 :page-tags: Asciidoctor.js, Extension, JavaScript
 :page-image: extension.jpg
-:icons: font
+:page-color-primary: #e5c49b
+:page-color-secondary: #5b5c61
 :uri-user-manual-extensions: https://asciidoctor-docs.netlify.com/asciidoctor.js/extend/extensions/
 
 Asciidoctor.js offers a list of extension points that open up the language to new use cases.
