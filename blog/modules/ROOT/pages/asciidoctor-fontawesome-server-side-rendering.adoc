@@ -20,7 +20,7 @@ By rendering server side you save the browser the effort required to download ad
 For reference, the built-in HTML5 converter in Asciidoctor.js 1.5.9 is using Font Awesome 4.7.0 and the icons are rendered as CSS pseudo-elements and styled with the `Font Awesome` font-family.
 
 In a previous article, we explained xref:custom-converter.adoc[how to create a custom HTML5 converter].
-In this article, we are going to see how we use this knowledge to render icons as SVG using the _Font Awesome_ JavaScript API.
+In this article, we are going to see how we can use this knowledge to render icons as SVG using the _Font Awesome_ JavaScript API.
 
 == Using the Font Awesome JavaScript API
 
@@ -87,7 +87,7 @@ include::example$fa5/fa-quick-tour.js[tag=icon-multi]
 
 == Server-side Rendering with a custom HTML5 converter
 
-Now that we learned how to use the _Font Awesome_ JavaScript API, let's write a custom converter to use it:
+Now that we have learned how to use the _Font Awesome_ JavaScript API, let's write a custom converter to use it:
 
 [source,js]
 ----
@@ -122,11 +122,11 @@ Now that we know how the Font Awesome API is working, we can implement the `inli
 include::example$fa5/basic-converter.js[tag=inline-image]
 ----
 <1> Check that the `node` is an `icon` (ie. `inline_image` can also convert images)
-<2> Check that the document attribute `icons` is equals to `svg`
-<3> Get the icon name using `getTarget()` function
-<4> If define, add the `prefix` to the search
+<2> Check that the document's attribute named `icons` is equals to `svg`
+<3> Get the icon's name using `getTarget()` function
+<4> If defined, add the `prefix` to the search
 <5> If the icon was found, return the SVG representation
-<6> If the `node` is not an `icon` or if the document attribute `icons` is not `svg`, delegate to the default HTML5 converter
+<6> If the `node` is not an `icon` or if the document's attribute named `icons` is not `svg`, delegate to the default HTML5 converter
 
 == And a bit of CSS
 
@@ -137,7 +137,7 @@ To do that, we are using a Docinfo processor:
 ----
 include::example$fa5/basic-converter.js[tag=docinfo-style]
 ----
-<1> `dom.css()` returns a `String` representing all the styles required for displaying icons at the correct size
+<1> `dom.css()` returns a `String` representing all the styles required to display icons at the correct size
 
 == Usage
 
@@ -164,8 +164,8 @@ include::example$fa5/advanced-converter.js[tag=inline-image]
 <1> Use the `rotate` attribute to rotate the icon
 <2> Use the `flip` attribute to flip the icon vertically or horizontally
 <3> Set the `title` attribute if the `title` is defined
-<4> Add the `size` attribute as a class (prefixed by `fa-`
-<5> Add the roles as a classes
+<4> Add the `size` attribute as a class (prefixed by `fa-`)
+<5> Add the roles as HTML classes
 
 Here's an example of what we can do:
 
