@@ -1,7 +1,11 @@
+const icon = require('@fortawesome/fontawesome-svg-core').icon
+const faTwitterSquare = require('@fortawesome/free-brands-svg-icons').faTwitterSquare
+const faGooglePlusSquare = require('@fortawesome/free-brands-svg-icons').faGooglePlusSquare
+
 module.exports = (uiModel) => {
   let disqusHTML = ''
   if (uiModel.enableDisqus) {
-    disqusHTML = `<section class="section">
+    disqusHTML = `<section class="sections is-small">
     <div class="container">
       <div id="disqus_thread"></div>
     </div>
@@ -41,12 +45,12 @@ module.exports = (uiModel) => {
             <h3>Social</h3>
             <div class="social-link">
               <a href="https://twitter.com/yuzutechfr" class="social-twitter">
-                <i class="fab fa-twitter-square"></i> Twitter
+                ${icon(faTwitterSquare).html} Twitter
               </a>
             </div>
             <div class="social-link">
               <a href="https://google.com/+YuzutechFr" class="social-google-plus">
-                <i class="fab fa-google-plus-square"></i> Google +
+                ${icon(faGooglePlusSquare).html} Google +
               </a>
             </div>
           </div>

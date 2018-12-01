@@ -2552,7 +2552,9 @@ a.navbar-item:hover, a.navbar-item.is-active, .navbar-link:hover, .navbar-link.i
   .card-featured .card-content { position: relative; overflow: hidden; }
   .card-featured .card-content .tags { margin-top: auto; margin-bottom: 0; padding-top: 3rem; padding-bottom: 0.5rem; background: linear-gradient(to bottom, transparent 0%, #fff 2rem); position: absolute; bottom: 0; width: 100%; } }
 
-.section.is-small { padding: 1rem; }
+.section.is-small { padding: 0 0 2rem 0; }
+
+#preamble { margin-bottom: 1.5rem; }
 
 .tags.cloud { margin-top: 3rem; color: white; align-items: center; }
 
@@ -2607,6 +2609,8 @@ b.conum * { color: inherit !important; }
 .has-text-note { color: #209cee !important; }
 
 .has-text-important { color: #ff3860 !important; }
+
+.has-text-caution { color: firebrick; }
 
 .gist .content table td, .gist .content table th { border: none; }
 
@@ -2682,4 +2686,20 @@ code[class*="language-"], pre[class*="language-"] { color: #4a4a4a; }
 .section-404 h1 { text-align: center; }
 
 .quoteblock .attribution { text-align: right; margin-bottom: 2em; }
+
+.content .paragrah:not(:last-child) { margin-bottom: 1em; }
+
+.paragrah .title { font-size: inherit; margin-bottom: 0; padding-bottom: 0.25em; }
+
+.ulist .title { font-size: inherit; margin-bottom: 0; }
+
+.exampleblock { padding: 1.25em 1.5em; border: 1px solid #b1b1b1; }
+
+.svg-inline--fa.is-primary { color: #0D4F9E; }
+
+.svg-inline--fa.is-success { color: #006247; }
+
+.svg-inline--fa.is-warning { color: #f19300; }
+
+.svg-inline--fa.is-danger { color: #B4001C; }
 /*# sourceMappingURL=main.css.map */

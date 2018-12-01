@@ -1,3 +1,6 @@
+const icon = require('@fortawesome/fontawesome-svg-core').icon
+const faTag = require('@fortawesome/free-solid-svg-icons').faTag
+
 const { getTagUrl: getTagUrl } = require('./_tag')
 const { getShortRevisionDate: getShortRevisionDate } = require('./_date')
 
@@ -14,7 +17,7 @@ module.exports = (uiModel) => {
     .map((page, index) => {
     const tagsHTML = getTags(page).map(tag => `<a href="${getTagUrl(uiModel, tag)}" class="tag is-light has-icon">
   <span class="icon">
-    <i class="fas fa-tag"></i> ${tag}
+    ${icon(faTag).html} ${tag}
   </span>
 </a>`)
     const attributes = page.asciidoc.attributes

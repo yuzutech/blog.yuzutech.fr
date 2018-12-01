@@ -16,7 +16,7 @@ ui:
 asciidoc:
   attributes:
     hide-uri-scheme: ''
-    icons: 'font'
+    icons: 'svg'
   extensions:
     - './lib/extensions/gist-block-macro'
     - './lib/extensions/prism-line-highlight-tree-processor'

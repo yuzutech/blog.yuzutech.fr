@@ -19,5 +19,11 @@
     "@antora/redirect-producer": "1.1.1",
     "@antora/site-mapper": "1.1.1",
     "@antora/site-publisher": "1.1.1"
+  },
+  "devDependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.8",
+    "@fortawesome/free-brands-svg-icons": "^5.5.0",
+    "@fortawesome/free-regular-svg-icons": "^5.5.0",
+    "@fortawesome/free-solid-svg-icons": "^5.5.0"
   }
 }

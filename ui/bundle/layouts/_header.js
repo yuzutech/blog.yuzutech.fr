@@ -1,3 +1,5 @@
+const dom = require('@fortawesome/fontawesome-svg-core').dom
+
 module.exports = (title, uiModel) => {
   return `<!DOCTYPE html>
 <html lang="en">
@@ -6,7 +8,9 @@ module.exports = (title, uiModel) => {
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>${title}</title>
   <link rel="stylesheet" href="${uiModel.uiRootPath}/stylesheets/main.min.css">
-  <script defer src="https://use.fontawesome.com/releases/v5.3.1/js/all.js"></script>
+  <style>
+    ${dom.css()}
+  </style>
   <script async src="https://www.googletagmanager.com/gtag/js?id=UA-42107476-2"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
