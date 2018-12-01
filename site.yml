@@ -6,9 +6,8 @@ site:
   start_page: blog::index.adoc
 content:
   sources:
-  #- url: '.'
-  - url: https://gitlab-ci-token:dqVrbg_3GQyVFdJHjEsN@gitlab.com/yuzutech/blog.yuzutech.fr.git
-    branches: master
+  - url: '.'
+    branches: HEAD
     start_path: blog
 ui:
   bundle:
