@@ -17,7 +17,7 @@ function convert (uiModel) {
       <div class="container is-widescreen">
         <div class="titles">
           <h1 class="title" style="text-shadow: 3px 3px ${colorSecondary}"">
-            <a href="${uiModel.siteRootPath}/index.html">Blog</a>
+            <a href="${uiModel.siteRootPath}/blog/1.0/">Blog</a>
             <span class="rss">
               <a href="${uiModel.siteRootPath}/blog/1.0/rss/feed.xml">
                 ${icon(faRss, { styles: { 'color': colorSecondary }}).html}
