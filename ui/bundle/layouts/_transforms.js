@@ -19,7 +19,7 @@ ${node.getContent()}
     },
     paragraph: (node) => {
       const title = node.getTitle()
-      const titleElement =  node.getTitle() ? `<div class="title">${node.getTitle()}</div>` : ''
+      const titleElement = node.getTitle() ? `<div class="title">${node.getTitle()}</div>` : ''
       return `<div class="paragrah">
   ${titleElement}
   <p>${node.getContent()}</p>
@@ -98,7 +98,7 @@ ${titleElement}<div class="content">
       return `<i class="conum" data-value="${node.text}"></i>`
     },
     inline_image: (node) => {
-      if (node.getType() === 'icon' && node.getDocument().isAttribute('icon', 'svg')) {
+      if (node.getType() === 'icon' && node.getDocument().isAttribute('icons', 'svg')) {
         const transform = {}
         if (node.hasAttribute('rotate')) {
           transform.rotate = node.getAttribute('rotate') // <1>
@@ -135,6 +135,51 @@ ${titleElement}<div class="content">
       } else {
         return self.baseConverter.$inline_image(node)
       }
+    },
+    colist: (node) => {
+      const result = []
+      const idAttribute = node.getId() ? ` id="${node.getId()}"` : ''
+      let classes = ['colist']
+      if (node.getStyle()) {
+        classes = classes.concat(node.getStyle())
+      }
+      if (node.getRole()) {
+        classes = classes.concat(node.getRole())
+      }
+      const classAttribute = ` class="${classes.join(' ')}"`
+      result.push(`<div${idAttribute}${classAttribute}>`)
+      if (node.getTitle()) {
+        result.push(`<div class="title">${node.getTitle()}</div>`)
+      }
+      if (node.getDocument().hasAttribute('icons')) {
+        result.push('<table>')
+        let num = 0
+        const svgIcons = node.getDocument().isAttribute('icons', 'svg')
+        let numLabel
+        node.getItems().forEach((item) => {
+          num += 1
+          if (svgIcons) {
+            numLabel = `<i class="conum" data-value="${num}"></i><b>${num}</b>`
+          } else {
+            numLabel = `<i class="conum" data-value="${num}"></i><b>${num}</b>`
+          }
+          result.push(`<tr>
+          <td>${numLabel}</td>
+          <td>${item.getText()}${item['$blocks?']() ? `\n ${item.getContent()}` : ''}</td>
+          </tr>`)
+        })
+        result.push('</table>')
+      } else {
+        result.push('<ol>')
+
+        node.getItems().forEach((item) => {
+          result.push(`<li>
+<p>${item.getText()}</p>${item['$blocks?']() ? `\n ${item.getContent()}` : ''}`)
+        })
+        result.push('</ol>')
+      }
+      result.push('</div>')
+      return result.join('\n')
     }
   }
 }
