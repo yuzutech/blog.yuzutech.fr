@@ -13,6 +13,7 @@ content:
 ui:
   bundle:
     url: './ui/bundle'
+  supplemental_files: ./ui/supplemental-ui
 asciidoc:
   attributes:
     hide-uri-scheme: ''
