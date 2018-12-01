@@ -1,7 +1,7 @@
 const icon = require('@fortawesome/fontawesome-svg-core').icon
 const faRss = require('@fortawesome/free-solid-svg-icons').faRss
 const faDizzy = require('@fortawesome/free-solid-svg-icons').faDizzy
-const faUndoAlt = require('@fortawesome/free-solid-svg-icons').faUndoAlt
+const faArrowAltCircleLeft = require('@fortawesome/free-solid-svg-icons').faArrowAltCircleLeft
 
 const layout = require('./_layout')
 
@@ -25,7 +25,7 @@ function convert (uiModel) {
   <section class="section section-404">
     <div class="container">
       <h1 class="title">Page not found ${icon(faDizzy).html}</h1>
-      <h2 class="subtitle">${icon(faUndoAlt).html} Back to the <a href="${uiModel.siteRootPath}/index.html">homepage</a></h2>
+      <h2 class="subtitle">${icon(faArrowAltCircleLeft).html} Back to the <a href="${uiModel.siteRootPath}/index.html">homepage</a></h2>
     </div>
   </section>`
   return layout('Blog - Yuzu tech', content, uiModel)
