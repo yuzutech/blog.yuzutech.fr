@@ -2511,6 +2511,8 @@ a.navbar-item:hover, a.navbar-item.is-active, .navbar-link:hover, .navbar-link.i
 
 .box .media-left { align-self: center; font-size: 2rem; }
 
+.box .media-content { margin: auto; }
+
 .content figure { margin: 0.5rem; }
 
 .token.title { font-size: inherit; font-weight: inherit; line-height: inherit; }
