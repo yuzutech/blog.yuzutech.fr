@@ -208,6 +208,7 @@ $content-pre-padding: 1em;
         padding-top: 3rem;
         padding-bottom: 0.5rem;
         background: linear-gradient(to bottom, transparent 0%, #fff 2rem);
+        background: -webkit-linear-gradient(top, rgba(255,255,255,0.001) 0%, #fff 10%, #fff 100%);
         position: absolute;
         bottom: 0;
         width: 100%;

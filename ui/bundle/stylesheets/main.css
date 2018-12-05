@@ -2552,7 +2552,7 @@ a.navbar-item:hover, a.navbar-item.is-active, .navbar-link:hover, .navbar-link.i
   .card-featured .card-image { flex: 2; height: 20rem; max-height: 100%; }
   .card-featured .card-image img { -o-object-fit: cover; object-fit: cover; height: 100%; width: 100%; }
   .card-featured .card-content { position: relative; overflow: hidden; }
-  .card-featured .card-content .tags { margin-top: auto; margin-bottom: 0; padding-top: 3rem; padding-bottom: 0.5rem; background: linear-gradient(to bottom, transparent 0%, #fff 2rem); position: absolute; bottom: 0; width: 100%; } }
+  .card-featured .card-content .tags { margin-top: auto; margin-bottom: 0; padding-top: 3rem; padding-bottom: 0.5rem; background: linear-gradient(to bottom, transparent 0%, #fff 2rem); background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.001) 0%, #fff 10%, #fff 100%); position: absolute; bottom: 0; width: 100%; } }
 
 .section.is-small { padding: 0 0 2rem 0; }
 
