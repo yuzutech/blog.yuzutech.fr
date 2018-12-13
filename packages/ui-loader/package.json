@@ -1,6 +1,6 @@
 {
   "name": "@antora/ui-loader",
-  "version": "2.0.0-beta.1",
+  "version": "2.0.0",
   "description": "Downloads a UI bundle, if necessary, and loads the files into a UI catalog for use in an Antora documentation pipeline.",
   "license": "MPL-2.0",
   "author": "OpenDevise Inc. (https://opendevise.com)",
