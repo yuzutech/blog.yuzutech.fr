@@ -1,0 +1,217 @@
+= Awesome Asciidoctor.js: Server Side Rendering with Font Awesome 5
+Guillaume Grossetie <ggrossetie@yuzutech.fr>
+:page-revdate: 2018-12-01 14:10
+:page-author: Guillaume Grossetie
+:description: Server Side Rendering is great for static sites. \
+With the introduction of SVG's to Font Awesome we can now render icons on the server. \
+Discover how to use the new Font Awesome JavaScript API in Asciidoctor.js.
+Server Side Rendering is a good way to increase the performance of your website
+:page-tags: Asciidoctor.js, Converter, Font Awesome, JavaScript
+:page-image: fontawesome.jpg
+:page-color-primary: #256a5d
+:page-color-secondary: #e68d30
+:uri-fa-server-side-rendering: https://fontawesome.com/how-to-use/on-the-web/other-topics/server-side-rendering
+:uri-fa: https://fontawesome.com/
+
+With {uri-fa}[Font Awesome 5] icons can be rendered as SVG elements using JavaScript.
+This implementation includes an API that can be used to do {uri-fa-server-side-rendering}[Server Side Rendering].
+By rendering server side you save the browser the effort required to download additional files or perform the rendering calculations.
+
+For reference, the built-in HTML5 converter in Asciidoctor.js 1.5.9 is using Font Awesome 4.7.0 and the icons are rendered as CSS pseudo-elements and styled with the `Font Awesome` font-family.
+
+In a previous article, we explained xref:custom-converter.adoc[how to create a custom HTML5 converter].
+In this article, we are going to see how we can use this knowledge to render icons as SVG using the _Font Awesome_ JavaScript API.
+
+== Using the Font Awesome JavaScript API
+
+Let's take a quick look at the Font Awesome JavaScript API. +
+You can install the library using `npm`:
+
+ $ npm i @fortawesome/fontawesome-svg-core
+
+In addition we also need to install the SVG icons:
+
+ $ npm i @fortawesome/free-solid-svg-icons \
+         @fortawesome/free-regular-svg-icons \
+         @fortawesome/free-brands-svg-icons
+
+[NOTE]
+====
+Font Awesome provides 3 sets of icons:
+
+* solid
+* regular
+* brands
+
+Here we install them all but you can choose to install just one set of icons.
+====
+
+So now we can start using the _Font Awesome_ JavaScript API. +
+The first thing to do is to add icons to the library:
+
+[source,js]
+----
+include::example$fa5/fa-quick-tour.js[tag=library]
+----
+
+Then we can use the `icon` function to find an icon by name and get the SVG:
+
+[source,js]
+----
+include::example$fa5/fa-quick-tour.js[tag=icon]
+----
+
+[IMPORTANT]
+====
+If the icon does not exist, the function will return `undefined`:
+
+[source,js]
+----
+include::example$fa5/fa-quick-tour.js[tag=icon-undef]
+----
+
+Also make sure to specify the `prefix` attribute when you search for a brand icon:
+
+[source,js]
+----
+include::example$fa5/fa-quick-tour.js[tag=icon-brand]
+----
+
+Or when the icon is available in two styles (regular `far` and solid `fas`):
+
+[source,js]
+----
+include::example$fa5/fa-quick-tour.js[tag=icon-multi]
+----
+====
+
+== Server-side Rendering with a custom HTML5 converter
+
+Now that we have learned how to use the _Font Awesome_ JavaScript API, let's write a custom converter to use it:
+
+[source,js]
+----
+class TemplateConverter {
+  constructor () {
+    this.baseConverter = asciidoctor.Html5Converter.$new()
+    const inlineImage = (node) => { /* */ } // <1>
+    this.templates = {
+      inline_image: inlineImage
+    }
+  }
+
+  convert (node, transform, opts) {
+    const template = this.templates[transform || node.node_name]
+    if (template) {
+      return template(node)
+    }
+    return this.baseConverter.convert(node, transform, opts)
+  }
+}
+
+asciidoctor.ConverterFactory.register(new TemplateConverter(), ['html5'])
+----
+<1> This function controls how the `inline_image` element will be converted to HTML.
+
+Here I will focus on the implementation of the `inlineImage` function.
+
+Now that we know how the Font Awesome API is working, we can implement the `inlineImage` function.
+
+[source,js]
+----
+include::example$fa5/basic-converter.js[tag=inline-image]
+----
+<1> Check that the `node` is an `icon` (ie. `inline_image` can also convert images)
+<2> Check that the document's attribute named `icons` is equals to `svg`
+<3> Get the icon's name using `getTarget()` function
+<4> If defined, add the `prefix` to the search
+<5> If the icon was found, return the SVG representation
+<6> If the `node` is not an `icon` or if the document's attribute named `icons` is not `svg`, delegate to the default HTML5 converter
+
+== And a bit of CSS
+
+To render an SVG icon effectively we need to add a few styles in the page.
+To do that, we are using a Docinfo processor:
+
+[source,js]
+----
+include::example$fa5/basic-converter.js[tag=docinfo-style]
+----
+<1> `dom.css()` returns a `String` representing all the styles required to display icons at the correct size
+
+== Usage
+
+[source,js]
+----
+include::example$fa5/basic-converter.js[tag=usage]
+----
+<1> It will produce a full HTML5 page with SVG icons
+
+And here's the result:
+
+====
+You can enable icon:flask[] experimental features on icon:gitlab[prefix=fab] GitLab.
+====
+
+== Bonus: Adding transformations
+
+We can go one step further and add transformations:
+
+[source,js]
+----
+include::example$fa5/advanced-converter.js[tag=inline-image]
+----
+<1> Use the `rotate` attribute to rotate the icon
+<2> Use the `flip` attribute to flip the icon vertically or horizontally
+<3> Set the `title` attribute if the `title` is defined
+<4> Add the `size` attribute as a class (prefixed by `fa-`)
+<5> Add the roles as HTML classes
+
+Here's an example of what we can do:
+
+[source,adoc]
+----
+.Size & title
+Do you want to drink a small icon:cocktail[sm] or a tall icon:beer[2x,title=pint] ?
+
+.Fixed-width
+icon:ruler-vertical[fw] vertical ruler +
+icon:ruler-horizontal[fw] horizontal ruler
+
+.Rotate
+icon:flag[rotate=90] +
+icon:flag[rotate=180] +
+icon:flag[rotate=270] +
+icon:flag[flip=horizontal] +
+icon:flag[flip=vertical]
+
+.Spin and pulse
+We are working on it icon:cog[spin], please wait icon:spinner[role=fa-pulse]
+
+.Roles
+icon:heart[role=is-primary] icon:heart[role=is-success] icon:heart[role=is-warning] icon:heart[role=is-danger]
+----
+
+And here's the result:
+
+====
+.Size & title
+Do you want to drink a small icon:cocktail[sm] or a tall icon:beer[2x,title=pint] ?
+
+.Fixed-width
+icon:ruler-vertical[fw] vertical ruler +
+icon:ruler-horizontal[fw] horizontal ruler
+
+.Rotate
+icon:flag[rotate=90] +
+icon:flag[rotate=180] +
+icon:flag[rotate=270] +
+icon:flag[flip=horizontal] +
+icon:flag[flip=vertical]
+
+.Spin and pulse
+We are working on it icon:cog[spin], please wait icon:spinner[role=fa-pulse]
+
+.Roles
+icon:heart[role=is-primary] icon:heart[role=is-success] icon:heart[role=is-warning] icon:heart[role=is-danger]
+====
