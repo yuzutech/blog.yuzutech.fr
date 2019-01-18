@@ -41,12 +41,14 @@ const EXTENSION_DSL_TYPES = Extensions.$constants(false).filter((name) => name.e
  */
 function loadAsciiDoc (file, contentCatalog = undefined, config = {}) {
   const fileSrc = file.src
+  const relative = fileSrc.relative
+  const extname = fileSrc.extname || relative.replace(/.*(?=\.)/g, '')
   const intrinsicAttrs = {
-    docname: fileSrc.stem,
+    docname: relative.substr(0, relative.length - extname.length),
     docfile: file.path,
     // NOTE docdir implicitly sets base_dir on document; Opal only expands value to absolute path if it starts with ./
     docdir: file.dirname,
-    docfilesuffix: fileSrc.extname,
+    docfilesuffix: extname,
     imagesdir: path.join(file.pub.moduleRootPath, '_images'),
     attachmentsdir: path.join(file.pub.moduleRootPath, '_attachments'),
     examplesdir: EXAMPLES_DIR_TOKEN,
@@ -187,7 +189,7 @@ function isExtensionRegistered (ext, registry) {
  * Low-level operation to free objects from memory that have been weaved into an extension DSL module
  */
 function freeExtensions () {
-  EXTENSION_DSL_TYPES.forEach((type) => (Opal.const_get_local(Extensions, type).$$included_in.length = 0))
+  EXTENSION_DSL_TYPES.forEach((type) => (Opal.const_get_local(Extensions, type).$$iclasses.length = 0))
 }
 
 module.exports = loadAsciiDoc

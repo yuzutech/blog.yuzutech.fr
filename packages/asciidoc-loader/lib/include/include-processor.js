@@ -10,7 +10,12 @@ const TAG_DIRECTIVE_RX = /\b(?:tag|(end))::(\S+)\[\]$/
 const IncludeProcessor = (() => {
   const $callback = Symbol('callback')
   const superclass = Opal.module(null, 'Asciidoctor').Extensions.IncludeProcessor
-  const scope = Opal.klass(Opal.module(null, 'Antora'), superclass, 'IncludeProcessor', function () {})
+  const scope = Opal.klass(
+    Opal.module(null, 'Antora', function $Antora () {}),
+    superclass,
+    'IncludeProcessor',
+    function () {}
+  )
 
   Opal.defn(scope, '$initialize', function initialize (callback) {
     Opal.send(this, Opal.find_super_dispatcher(this, 'initialize', initialize))
@@ -24,13 +29,11 @@ const IncludeProcessor = (() => {
       let startLineNum = 1
       const tags = getTags(attrs)
       if (tags) [includeContents, startLineNum] = applyTagFiltering(includeContents, tags)
-      const includes = doc.getCatalog().includes.$dup()
+      Opal.hash_put(attrs, 'partial-option', true)
       reader.pushInclude(includeContents, resolvedFile.file, resolvedFile.path, startLineNum, attrs)
       if (resolvedFile.context) {
         ;(reader.file = new String(reader.file)).context = resolvedFile.context // eslint-disable-line no-new-wrappers
       }
-      // TODO after upgrading to 1.5.7, pass partial-option attribute instead
-      doc.getCatalog().includes.$replace(includes)
     }
   })
 
