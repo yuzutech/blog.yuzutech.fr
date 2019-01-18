@@ -1,0 +1,77 @@
+= Awesome Asciidoctor.js: Find broken links in your documentation
+Guillaume Grossetie <ggrossetie@yuzutech.fr>
+:page-revdate: 2018-12-02 17:00
+:page-author: Guillaume Grossetie
+:description: Don't let your documentation be filled with broken links. \
+Learn how to use Asciidoctor.js to find them.
+:page-tags: Asciidoctor.js, JavaScript
+:page-image: catalog-links.jpg
+:page-color-primary: #bf8f4a
+:page-color-secondary: #193133
+
+One of the most frustrating experiences for a reader is broken links.
+Using a https://opendevise.com/blog/referencing-pages/[good site generator] can help but what about external links ? +
+How do you make sure that all the external links in your documentation still work ?
+
+With Asciidoctor.js, you can enable a catalog using the `catalog_assets` option.
+Once this option is enabled, the processor will capture every links found in your document, and store them in the catalog. +
+For reference, the parser will also capture footnotes, images, index terms, cross-references and ids. But let's focus on links for now.
+
+Here's an example where `catalog_assets` is enabled:
+
+[source,js]
+----
+include::example$broken-links/main.js[tags=convert]
+----
+<1> Enable the `catalog_assets` option
+<2> Convert the document because links will only be available after the document has been converted
+<3> Return an `Array` of links found in the document
+
+Now that we have all the links present in our document, we can make sure that every one of them is still working. +
+To do that we should probably use a library but here's a naive implementation to give you an idea.
+
+Here, we are using the `http` and `https` module from Node.js to make sure that the server does not return a `4xx` or `5xx` errors for the URL:
+
+[source,js]
+----
+include::example$broken-links/main.js[tags=check-http]
+----
+<1> The server returns an error code `4xx` or `5xx`
+<2> The status code is (considered) valid
+<3> The client returns an error (most likely because the server is nonexistent)
+
+[NOTE]
+====
+We are not using `reject` because we want all the promises to be resolved (ie. we don't want to stop at the first failure).
+====
+
+We also define a function to check if a file exists:
+
+[source,js]
+----
+include::example$broken-links/main.js[tags=check-file]
+----
+<1> Use https://nodejs.org/api/fs.html#fs_fs_stat_path_options_callback[`stat`] to make sure that the file exists
+
+And finally, we iterate on each link:
+
+[source,js]
+----
+include::example$broken-links/main.js[tags=check-all]
+----
+<1> Parse the link
+<2> If the protocol is `http:` or `http:`, use the `checkHttpLink` function
+<3> If the protocol is `file:`, normalize the path and use the `checkFileLink` function
+<4> If the protocol is `undefined`, use the `checkFileLink` function
+<5> If the protocol is unsupported, return an error
+<6> Check if there's one or more errors
+<7> Exit the program with the return code 1
+
+And here's the output of this program:
+
+```
+Found a broken link: subdir/bar.pdf - Error: ENOENT: no such file or directory, stat 'subdir/bar.pdf'
+Found a broken link: quz.pdf - Error: ENOENT: no such file or directory, stat 'quz.pdf'
+Found a broken link: https://antoraa.org - Error: getaddrinfo ENOTFOUND antoraa.org antoraa.org:443
+Found a broken link: https://asciidoctor.org/doc - Status code is: 404
+```
