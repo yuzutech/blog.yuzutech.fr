@@ -1,6 +1,6 @@
 = Awesome Asciidoctor.js: Find broken links in your documentation
 Guillaume Grossetie <ggrossetie@yuzutech.fr>
-:page-revdate: 2018-12-02 17:00
+:page-revdate: 2019-01-18 16:40
 :page-author: Guillaume Grossetie
 :description: Don't let your documentation be filled with broken links. \
 Learn how to use Asciidoctor.js to find them.
