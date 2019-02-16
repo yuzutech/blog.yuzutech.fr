@@ -20,7 +20,7 @@ ${node.getContent()}
     paragraph: (node) => {
       const title = node.getTitle()
       const titleElement = node.getTitle() ? `<div class="title">${node.getTitle()}</div>` : ''
-      return `<div class="paragrah">
+      return `<div class="paragraph">
   ${titleElement}
   <p>${node.getContent()}</p>
 </div>`

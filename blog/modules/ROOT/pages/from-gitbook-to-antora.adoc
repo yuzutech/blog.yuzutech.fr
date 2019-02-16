@@ -1,0 +1,309 @@
+= Awesome Antora: Migrate from GitBook to Antora
+Guillaume Grossetie <ggrossetie@yuzutech.fr>
+:page-revdate: 2019-02-16 09:00
+:page-author: Guillaume Grossetie
+:description: 😱 GitBook has dropped support for AsciiDoc! \
+No worries, let's migrate to Antora where we can use AsciiDoc to its fullest extent.
+:page-tags: Antora, Migration
+:page-image: hiking.jpeg
+:page-color-primary: #3B6C7B
+:page-color-secondary: #BBAC8B
+:uri-gitbook-drop-asciidoc: https://docs.gitbook.com/v2-changes/important-differences#asciidoc-support
+:uri-antora: https://antora.org/
+:uri-antora-docs: https://docs.antora.org/antora/2.0
+:uri-antora-playbook: {uri-antora-docs}/playbook/
+:uri-antora-structure: {uri-antora-docs}/component-structure/
+:uri-antora-module: {uri-antora-docs}/modules/
+:uri-antora-component: {uri-antora-docs}/component-structure/
+:uri-antora-component-descriptor: {uri-antora-docs}/component-descriptor/
+:uri-antora-install: {uri-antora-docs}/install/install-antora/
+:uri-opendevise: https://opendevise.com/
+
+As you may already know, the new version of {uri-gitbook-drop-asciidoc}[GitBook has dropped support for AsciiDoc].
+And since you're here, you probably enjoy writing documentation in _AsciiDoc_ and you want to keep using it!
+I have good news for you and it's called _Antora_.
+
+== Antora
+
+{uri-antora}[Antora] is a documentation site generator and _AsciiDoc_ is Antora's native content markup language.
+{uri-opendevise}[OpenDevise], the company behind _Antora_, is also actively working on _Asciidoctor_, the reference implementation of the AsciiDoc syntax.
+
+In other words, the _AsciiDoc_ syntax is a first class citizen in _Antora_ and _Asciidoctor_ is used at its full potential.
+
+Without further ado, let's migrate from GitBook to Antora!
+
+== Documentation component and modules
+
+[%hardbreaks]
+A collection of documentation files organized under Antora's {uri-antora-structure}[standard project structure] is called a _documentation component_.
+In Antora's terminology, a GitBook is a single documentation component in a local repository.
+So the first thing you will need to do is to create a {uri-antora-component}[documentation component] named `book` with a {uri-antora-module}[module] named `ROOT`.
+
+[NOTE]
+====
+Here the module named `ROOT` will contain everything,
+but depending on your use case you could create as many modules (or documentation components) as you want.
+====
+
+. Create the structure
+
+ $ mkdir -p book/modules/ROOT/pages
+
+. Move every *.adoc files to [.path]_pages_
+
+ $ mv *.adoc book/modules/ROOT/pages
+
+If you have images, attachments or videos, you will need to create the following subdirectories in your module:
+
+* [.path]_assets/attachments_
+* [.path]_assets/images_
+* [.path]_assets/videos_
+
+And here's the complete tree structure:
+
+```
+.
+└── book
+    └── modules
+        └── ROOT
+            ├── assets
+            │   ├── attachments
+            │   ├── images
+            │   └── videos
+            └── pages
+
+8 directories
+```
+
+If your book is structured in chapters, you do not necessarily need to create a module for each chapter.
+You can instead create subfolders in the [.path]_pages_ directory.
+
+Next, we need to describe our documentation component.
+
+== Component descriptor
+
+A documentation component must contain a {uri-antora-component-descriptor}[component descriptor] file named `antora.yml`.
+
+So let's create a file named `antora.yml` in the [.path]_book/_ directory:
+
+.book/antora.yml
+```yml
+name: book
+title: Book
+version: 'latest'
+start_page: ROOT:overview.adoc
+```
+
+The keys and values are pretty much self explanatory.
+Our component will be named `book`, its title will be `Book` and its version will be `latest`.
+
+We also explicitly define the start page.
+By default, Antora looks for a file named `index.adoc` in the `ROOT` module.
+So if your start page is already named `index.adoc`, you can remove the `start_page` key.
+
+Check out the {uri-antora-component-descriptor}[component description documentation] to learn more.
+
+== Playbook
+
+GitBook allows you to customize your book using a configuration file named `book.json`. +
+Similarly, Antora uses a {uri-antora-playbook}[playbook file] to control
+what content is included in your site,
+what user interface (UI) is applied to it,
+and where the site is published. +
+Playbooks can be written in YAML, JSON, and TOML.
+
+In the following examples, we will be using YAML (but you're free to use JSON or TOML):
+
+== Content
+
+In the previous section we've created a documentation component called `book`.
+The next step is to register this documentation component in our playbook.
+
+. Create a file named `site.yml` at the root:
++
+.site.yml
+```yml
+content:
+  sources:
+  - url: .
+    start_path: book
+```
+
+Since we are working with a local repository we are using the value dot (`.`). +
+The path will be resolved relative to the location of the playbook file.
+
+The `start_path` value points to our documentation component named `book`.
+
+== Attributes
+
+The `attributes` key in your playbook file can be used to define global (i.e. site-wide) AsciiDoc document attributes.
+
+.site.yml
+```yml
+asciidoc:
+  attributes:
+    spark-version: '2.1.0'
+    sourcedir: 'src/main/scala'
+```
+
+== Google Analytics
+
+Antora has built-in support for Google Analytics.
+To enable it, you will need to configure your key in `site.keys.google_analytics`.
+
+.site.yml
+```yml
+site:
+  keys:
+    google_analytics: 'UA-86782445-4'
+```
+
+== Navigation
+
+With Antora, you can create your site's navigation with AsciiDoc and store it right alongside your documentation files.
+
+GitBook uses a `SUMMARY.adoc` file to define the structure of chapters and subchapters of the book.
+Here's an example:
+
+```adoc
+= Summary
+
+. link:part1/README.adoc[Part I]
+.. link:part1/writing.adoc[Writing is nice]
+.. link:part1/antora.adoc[Antora is nice]
+. link:part2/README.adoc[Part II]
+.. link:part2/feedback_please.adoc[We love feedback]
+.. link:part2/better_tools.adoc[Better tools for authors]
+```
+
+In Antora, you need to define the key `nav` in the `antora.yml` file:
+
+. Edit the file `antora.yml` in the [.path]_book/_ directory:
++
+.book/antora.yml
+```yml
+name: book
+title: Book
+version: 'latest'
+start_page: ROOT:overview.adoc
+nav:
+- modules/ROOT/nav.adoc
+```
++
+The `nav` key accepts a list of navigation files.
+Each value specifies the path to a navigation file (e.g., modules/module-name/nav.adoc).
+The order of the values dictates the order the contents of the navigation files are assembled in the published component menu.
++
+. Create a file named `nav.adoc` in the [.path]_book/modules/ROOT_ directory:
++
+.book/modules/ROOT/nav.adoc
+```adoc
+.xref:index.adoc[In-module page]
+* xref:a-page-in-this-module.adoc[Another in-module page]
+** xref:another-page.adoc#and-fragment[An in-module page deep link]
+* xref:topic/page.adoc[In-module page in a topic folder]
+```
+
+== Links between pages
+
+If you use the published URL in your links, I would recommend to start using cross-references.
+In Antora, you can create a link between pages using the `xref` macro.
+For instance, to create a link to a page in the same module, you should use:
+
+```adoc
+xref:error-handling.adoc[Error Handling]
+```
+
+And here's the syntax to create a link to a page in a topic folder:
+
+```adoc
+xref:concept/index.adoc[Key Concepts]
+```
+
+As we've seen before images are stored in a directory named [.path]_assets/images_.
+To insert an image, we need to use the AsciiDoc block image macro (`image::[]`).
+Let's say we have an image called _pipeline-workflow.png_ in [.path]_assets/images_.
+Here's the syntax to add it to a page.
+
+```adoc
+image::pipeline-workflow.png[a diagram illustrating the pipeline stages]
+```
+
+As you can see, we don't need to use a relative path or to define the `imagesdir`.
+So in most cases, you should be able to simplify the path to your linked resources.
+
+== Example
+
+We will be using the "Spark Streaming Notebook" as an example.
+The source code of this book is available on GitHub: https://github.com/jaceklaskowski/spark-streaming-notebook
+
+Here's the `book.json` file:
+
+.book.json
+```json
+{
+  "structure": {
+    "readme": "book-intro.adoc"
+  },
+  "variables": {
+    "spark.version": "2.1.0",
+    "sourcedir": "src/main/scala"
+  },
+  "plugins": ["ga"],
+  "pluginsConfig": {
+    "ga": {
+      "token": "UA-86782445-4"
+    }
+  }
+}
+```
+
+And here's the equivalent configuration in Antora:
+
+.site.yml
+```yml
+site:
+  title: Spark Streaming
+  url: https://jaceklaskowski.github.io/spark-streaming-notebook
+  start_page: book::intro.adoc
+  keys:
+    google_analytics: 'UA-86782445-4'
+content:
+  sources:
+  - url: .
+    start_path: book
+asciidoc:
+  attributes:
+    spark-version: '2.1.0'
+    sourcedir: 'src/main/scala'
+```
+
+== Generate your site
+
+To get you started quickly, Antora provides a default UI.
+To use it, edit your `site.yml` file and add the following content:
+
+.site.yml
+```yml
+ui:
+  bundle:
+    url: https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/master/raw/build/ui-bundle.zip?job=bundle-stable
+    snapshot: true
+```
+
+Then, configure the output directory to define where the generated site will be published.
+Again, edit your `site.yml` file and add the following content:
+
+.site.yml
+```yml
+output:
+  dir: ./public
+```
+
+We're almost done.
+If that's not already the case, please {uri-antora-install}[install Antora] on your machine.
+Then, open a terminal and type:
+
+ $ antora site.yml
+
+Your site should be generated in the `public/` directory 🚀

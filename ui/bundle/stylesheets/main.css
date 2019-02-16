@@ -2489,6 +2489,8 @@ a.navbar-item:hover, a.navbar-item.is-active, .navbar-link:hover, .navbar-link.i
 
 @media screen and (min-width: 1472px) { .columns.is-variable.is-8-fullhd { --columnGap: 2rem; } }
 
+.title:not(:last-child) { margin-bottom: .5rem; }
+
 .hero { background: url(../images/main.jpg) no-repeat center; background-size: cover; }
 
 .hero .hero-body { text-align: center; display: flex; align-items: center; padding: 2rem 1.5rem; }
@@ -2687,9 +2689,11 @@ code[class*="language-"], pre[class*="language-"] { color: #4a4a4a; }
 
 .quoteblock .attribution { text-align: right; margin-bottom: 2em; }
 
-.content .paragrah:not(:last-child) { margin-bottom: 1em; }
+li .paragraph { margin-bottom: 1em; }
 
-.paragrah .title { font-size: inherit; margin-bottom: 0; padding-bottom: 0.25em; }
+.content .paragraph:not(:last-child) { margin-bottom: 1em; }
+
+.paragraph .title { font-size: inherit; margin-bottom: 0; padding-bottom: 0.25em; }
 
 .ulist .title { font-size: inherit; margin-bottom: 0; }
 
