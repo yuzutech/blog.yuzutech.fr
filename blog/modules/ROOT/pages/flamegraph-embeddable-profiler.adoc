@@ -1,0 +1,230 @@
+= Generate a FlameGraph using an embeddable profiler
+Guillaume Grossetie <ggrossetie@yuzutech.fr>
+:page-revdate: 2019-02-25 20:00
+:page-author: Guillaume Grossetie
+:description: Learn how to generate a FlameGraph using an embeddable profiler in a JVM application.
+:page-tags: FlameGraph, Java, Clojure, JVM
+:page-image: fire.jpeg
+:page-color-primary: #b9deed
+:page-color-secondary: #FC8220
+
+:uri-bg-flamegraphs: http://www.brendangregg.com/flamegraphs.html
+:uri-gh-async-profiler: https://github.com/jvm-profiling-tools/async-profiler
+:uri-gh-flamegraph: https://github.com/brendangregg/FlameGraph
+:uri-gh-clj-async-profiler: https://github.com/clojure-goes-fast/clj-async-profiler
+:uri-clojure-from-java: https://clojure.org/reference/java_interop#_calling_clojure_from_java
+
+Flame graphs are a visualization of profiled software, allowing the most frequent code-paths to be identified quickly and accurately.
+If you want to learn more, you should definitely read {uri-bg-flamegraphs}[this article from the creator of Flame graphs, Brendan Gregg].
+
+== Where it all started
+
+Recently, I was investigating a performance issue in a JRuby application, namely AsciidoctorJ with the Asciidoctor diagram extension enabled.
+The same code was almost two times slower in JRuby 9 than in JRuby 1.7.
+
+Dominic, who reported this issue, has created a _short-living_ application to reproduce it.
+The application was written in Clojure and was able to generate a flame graph for a particular function:
+
+```clojure
+(ns io.github.asciidoctor
+  (:require
+    [clj-async-profiler.core :as profiler])
+  (:import
+    [org.asciidoctor
+     Asciidoctor
+     Asciidoctor$Factory]
+    [java.io File]))
+
+(defn asciidoctor ^Asciidoctor []
+  (doto
+    (Asciidoctor$Factory/create)
+    (.requireLibrary (into-array String ["asciidoctor-diagram"]))))
+
+(defn -main
+  [& _]
+  (let [asciidoctor (asciidoctor)
+        f (File. "doc.adoc")]
+    ;; Warm up the JIT... <1>
+    (println
+      (.getAbsolutePath
+        (profiler/profile ;; <2>
+          {:return-file true}
+          (dotimes [_ 100] ;; <3>
+            (.readDocumentHeader asciidoctor f)))))
+    (System/exit 0)))
+```
+<1> Warm up the JIT by doing some work
+<2> Profile a function
+<3> Execute 100 times the function `readDocumentHeader`
+
+If you are not familiar with Clojure, don't worry, the important thing to remember is that this application can generate a Flame graph for a given function. +
+Here, the function is execute 100 times `readDocumentHeader`.
+
+I was really impressed because typically if you want to generate a Flame graph, you will have to:
+
+- package your application,
+- attach an agent or start a profiler for a given `pid`,
+- and then convert the raw output to a nice SVG visualization
+
+Here we can just run the application and it will generate a Flame graph for a given function.
+Don't get me wrong, using the technique described above is working great but in this case it's not really practical because we don't want to include the warm up, and the application is not running for long.
+
+Now you may be wondering, "how is it working ?"
+
+Actually, the `profiler/profile` function is provided by the {uri-gh-clj-async-profiler}[clj-async-profiler] library.
+
+[IMPORTANT]
+====
+Please note that _clj-async-profiler_ is only supported on GNU/Linux and MacOS.
+If you are running GNU/Linux, you need to do ensure that `perf_event_paranoid` is set to 1:
+
+ cat /proc/sys/kernel/perf_event_paranoid
+
+If it prints 2, it means you are running a newer Linux kernel.
+You will have to set it to 1 to allow async-profiler to use kernel profiling data:
+
+ $ echo 1 | sudo tee /proc/sys/kernel/perf_event_paranoid
+====
+
+This library is a really convenient wrapper around the excellent {uri-gh-async-profiler}[async-profiler] and {uri-gh-flamegraph}[FlameGraph].
+With this library, you can just call a function in your application and it will generate a Flame graph!
+
+== From Clojure to Java
+
+While I was trying to pinpoint the root cause of performance issue, I though maybe it could be an interaction between Clojure dynamic classloader and JRuby. +
+In order to remove this assumption, I decided to write the same application in Java to compare the two Flame graphs.
+
+And here's roughly the same application in Java:
+
+```java
+package org.asciidoctor;
+
+import java.io.File;
+
+public class App {
+  public static void main(String[] args) {
+    Asciidoctor asciidoctor = Asciidoctor.Factory.create();
+    asciidoctor.requireLibrary("asciidoctor-diagram");
+    File file = new File("doc.adoc");
+    // Warm up the JIT... <1>
+    for (int i = 0; i < 100; i++) { // <2>
+      asciidoctor.readDocumentHeader(file);
+    }
+    System.exit(0);
+  }
+}
+```
+<1> Warm up the JIT by doing some work
+<2> Execute 100 times the method `readDocumentHeader`
+
+Using the following Maven dependency:
+
+```xml
+<dependency>
+  <groupId>org.jruby</groupId>
+  <artifactId>jruby-complete</artifactId>
+  <version>9.2.6.0</version>
+</dependency>
+<dependency>
+  <groupId>org.asciidoctor</groupId>
+  <artifactId>asciidoctorj</artifactId>
+  <version>1.6.1</version>
+</dependency>
+<dependency>
+  <groupId>org.asciidoctor</groupId>
+  <artifactId>asciidoctorj-diagram</artifactId>
+  <version>1.5.12</version>
+</dependency>
+```
+
+Now we need to produce a Flame graph so we can compare the two.
+
+I did some research but found nothing close to the ease of use of the _clj-async-profiler_ library.
+So why don't we just use it in Java?
+
+Clojure provides a package to bootstrap Clojure access from other JVM languages.
+In other words, we can call {uri-clojure-from-java}[Clojure from Java].
+
+To do so, we need to add the following dependencies:
+
+```xml
+<dependency>
+  <groupId>com.clojure-goes-fast</groupId>
+  <artifactId>clj-async-profiler</artifactId>
+  <version>0.3.0</version>
+</dependency>
+<dependency>
+  <groupId>org.clojure</groupId>
+  <artifactId>clojure</artifactId>
+  <version>1.10.0</version>
+</dependency>
+```
+
+And then, we can use the API to invoke `clj-async-profiler` functions:
+
+```java
+import clojure.java.api.Clojure;
+import clojure.lang.IFn;
+
+Clojure
+  .var("clojure.core", "require")
+  .invoke(Clojure.read("clj-async-profiler.core")); // <1>
+
+Clojure.var("clj-async-profiler.core", "start").invoke(); // <2>
+
+// code to profile...
+
+System.out.println(Clojure.var("clj-async-profiler.core", "stop").invoke()); // <3>
+
+// ...
+```
+<1> Require the `core` package from the `clj-async-profiler` library
+<2> Start the profiler by calling the `start` function
+<3> Stop the profiler by calling the `stop` function and output the result
+
+The `stop` function will stop the profiler and return the path to the generated SVG visualization.
+
+And here's the full example:
+
+```java
+package org.asciidoctor;
+
+import clojure.java.api.Clojure;
+
+import java.io.File;
+
+public class App {
+  public static void main(String[] args) {
+    Asciidoctor asciidoctor = Asciidoctor.Factory.create();
+    asciidoctor.requireLibrary("asciidoctor-diagram");
+    File file = new File("doc.adoc");
+    // Warm up the JIT...
+
+    Clojure.var("clojure.core", "require")
+      .invoke(Clojure.read("clj-async-profiler.core"));
+
+    Clojure.var("clj-async-profiler.core", "start").invoke();
+    for (int i = 0; i < 100; i++) {
+      asciidoctor.readDocumentHeader(file);
+    }
+    System.out.println(Clojure.var("clj-async-profiler.core", "stop").invoke());
+
+    System.exit(0);
+  }
+}
+```
+
+When running this application, it will output the path to the generated SVG, for instance:
+
+ /tmp/clj-async-profiler/results/flamegraph-2019-02-25-11-56-25.svg
+
+You can then open this file in your browser.
+
+== Final outcome
+
+In the end, Clojure had nothing to do with this performance issue.
+We've discovered that the root cause was actually an overhead in the JRuby `Kernel#require_relative` method: https://github.com/jruby/jruby/issues/5618.
+We've also made a few changes in the Asciidoctor diagram extension to call `require_relative` less frequently.
+
+Now AsciidoctorJ with the Asciidoctor diagram extension enabled is faster on JRuby 9 than on JRuby 1.7! +
+And we also learned in the process how to easily generate a Flame graph using _clj-async-profiler_ 🍻
