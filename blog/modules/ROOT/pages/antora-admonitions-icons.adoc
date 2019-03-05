@@ -1,0 +1,123 @@
+= Awesome Antora: Add icons to admonition labels
+Guillaume Grossetie <ggrossetie@yuzutech.fr>
+:page-revdate: 2019-03-05 11:25
+:page-author: Guillaume Grossetie
+:description: You are using Antora's default UI and you want to add icons next to the admonition labels, look no further!
+:page-tags: Antora, Font Awesome
+:page-image: come.jpeg
+:page-color-primary: #8BB3B2
+:page-color-secondary: #C68B45
+:uri-fa-icons: https://fontawesome.com/icons
+
+Admonitions are a great way to draw the reader's attention to auxiliary information.
+Asciidoctor provides five admonition style labels:
+
+- NOTE
+- TIP
+- IMPORTANT
+- CAUTION
+- WARNING
+
+If you are familiar with Asciidoctor, you probably know that you can enable font-based icons using `:icons: font`.
+When you do that, Asciidoctor will draw an icon for the built-in admonition labels.
+And here's the result with the default stylesheet:
+
+image::asciidoctor-default-admonition.png[align="center"]
+
+It might come as a surprise but the Antora's default UI uses its own stylesheet and does not include an icon font.
+So using `:icons: font` will not produce the desired affect:
+
+image::antora-default-admonition.png[align="center"]
+
+Luckily, with a few lines of CSS we can add the icons back to the admonitions labels.
+
+== Supplemental files
+
+Antora provides a feature called "supplemental files" to _supercharge_ the UI.
+As you can see below, we can define a key named `supplemental_files` that points to a directory named [.path]_supplemental-ui_:
+
+```yml
+ui:
+  bundle:
+    url: 'https://gitlab.com/antora/antora-ui-default/-/jobs/artifacts/master/raw/build/ui-bundle.zip?job=bundle-stable'
+    snapshot: true
+  supplemental_files: './supplemental-ui'
+```
+
+In this directory we will create a CSS file:
+
+.supplemental-ui/css/extra.css
+```css
+.doc .admonitionblock .icon {
+    border-radius: 1rem;
+}
+
+i.fa[class^='icon-'], i.fa[class*=' icon-']:before {
+    content: "";
+    height: 1.25rem;
+    width: 1.25rem;
+    margin-right: 0.25rem;
+    margin-left: -0.5rem;
+}
+
+i.fa.icon-note:before {
+    background: no-repeat url("../img/note.svg");
+}
+
+i.fa.icon-tip:before {
+    background: no-repeat url("../img/tip.svg");
+}
+
+i.fa.icon-important:before {
+    background: no-repeat url("../img/important.svg");
+}
+
+i.fa.icon-warning:before {
+    background: no-repeat url("../img/warning.svg");
+}
+
+i.fa.icon-caution:before {
+    background: no-repeat url("../img/caution.svg");
+}
+```
+
+Then, create a directory named [.path]_img_ in the [.path]_supplemental-ui_ directory and add the following SVG icons:
+
+- link:{attachmentsdir}/note.svg[note.svg^]
+- link:{attachmentsdir}/tip.svg[tip.svg^]
+- link:{attachmentsdir}/important.svg[important.svg^]
+- link:{attachmentsdir}/warning.svg[warning.svg^]
+- link:{attachmentsdir}/caution.svg[caution.svg^]
+
+NOTE: The above icons were created using {uri-fa-icons}[Font Awesome 5 icons].
+
+Now, we need to reference this new [.path]_extra.css_ file in the `<head>` of our documentation site by creating a template named [.path]_head-meta.hbs_ in a [.path]_partials_ directory:
+
+.supplemental-ui/partials/head-meta.hbs
+```html
+    <link rel="stylesheet" href="{{uiRootPath}}/css/extra.css">
+```
+
+To sum up, your [.path]_supplemental-ui_ directory should contain the following files and directories:
+
+```tree
+supplemental-ui
+├── css
+│   └── extra.css
+├── img
+│   ├── caution.svg
+│   ├── important.svg
+│   ├── note.svg
+│   ├── tip.svg
+│   └── warning.svg
+└── partials
+    └── head-meta.hbs
+
+3 directories, 7 file
+```
+
+And here's the result:
+
+image::antora-icon-admonition.png[align="center"]
+
+Here, we've demonstrated how to add icons next to the admonition labels but you can virtually *override the style of any elements* by adding CSS rules 🎨
