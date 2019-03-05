@@ -33,7 +33,7 @@ module.exports = (uiModel) => {
 </div>` : ''
     return `<div class="column${index === 0 ? ' is-full' : ' is-one-third'}">
   <div class="card article${index === 0 ? ' card-featured' : ''}">
-    ${imageHTML}
+    ${index < 7 ? imageHTML : ''}
     <div class="card-content">
       <a href="${pageUrl}" class="summary">
         <time datetime="${revisionDate}">${getShortRevisionDate(revisionDate)}</time>
