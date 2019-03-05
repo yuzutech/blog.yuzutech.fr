@@ -5,7 +5,7 @@ const faGooglePlusSquare = require('@fortawesome/free-brands-svg-icons').faGoogl
 module.exports = (uiModel) => {
   let disqusHTML = ''
   if (uiModel.enableDisqus) {
-    disqusHTML = `<section class="sections is-small">
+    disqusHTML = `<section class="section">
     <div class="container">
       <div id="disqus_thread"></div>
     </div>
