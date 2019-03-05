@@ -25,7 +25,7 @@ And here's the result with the default stylesheet:
 image::asciidoctor-default-admonition.png[align="center"]
 
 It might come as a surprise, but the Antora's default UI uses its own stylesheet and does not include an icon font.
-So using `:icons: font` will not produce the desired affect:
+So, using `:icons: font` will not produce the desired affect:
 
 image::antora-default-admonition.png[align="center"]
 
