@@ -29,7 +29,7 @@ So, using `:icons: font` will not produce the desired affect:
 
 image::antora-default-admonition.png[align="center"]
 
-Luckily, with a few lines of CSS we can add the icons back to the admonitions labels.
+Luckily, with a few lines of CSS, we can add the icons back to the admonitions labels.
 
 == Supplemental files
 
