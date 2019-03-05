@@ -6,6 +6,7 @@ $primary: #f19300;
 $title-size: 1.75rem;
 $box-radius: 0;
 $content-pre-padding: 1em;
+$fullhd-enabled: false;
 
 @import "../../node_modules/bulma/sass/utilities/_all.sass";
 @import "../../node_modules/bulma/sass/base/_all.sass";
@@ -38,16 +39,20 @@ $content-pre-padding: 1em;
     display: flex;
     align-items: center;
     padding: 2rem 1.5rem;
+
     .title {
       font-family: "Quicksand", sans-serif;
       color: white;
+
       a {
         color: inherit;
       }
+
       .rss {
         font-size: 1rem;
       }
     }
+
     @media screen and (min-width: $widescreen) {
       .title {
         font-size: 3.75rem;
@@ -72,10 +77,12 @@ $content-pre-padding: 1em;
 
 .box {
   margin-top: 1.5rem;
+
   .media-left {
     align-self: center;
     font-size: 2rem;
   }
+
   .media-content {
     margin: auto;
   }
@@ -93,6 +100,7 @@ $content-pre-padding: 1em;
 
 .listingblock {
   padding-bottom: 0.5rem;
+
   .listing-title {
     font-style: italic;
   }
@@ -101,6 +109,7 @@ $content-pre-padding: 1em;
 .meta {
   display: flex;
   margin-bottom: 1.25rem;
+
   .avatar {
     background: #dbdbdb;
     width: 2.75rem;
@@ -115,9 +124,11 @@ $content-pre-padding: 1em;
     font-size: 1.625rem;
     margin-right: 0.5rem;
   }
+
   .author {
     font-weight: bold;
   }
+
   .byline {
     display: flex;
     flex-direction: column;
@@ -151,6 +162,7 @@ $content-pre-padding: 1em;
   padding-left: 1.25rem;
   padding-right: 1.25rem;
   padding-bottom: 0;
+
   a.summary {
     color: inherit;
     text-decoration: none;
@@ -190,29 +202,34 @@ $content-pre-padding: 1em;
     flex-direction: row;
     height: 20rem;
     max-height: 100%;
+
     .card-content {
       flex: 1;
     }
+
     .card-image {
       flex: 2;
       height: 20rem;
       max-height: 100%;
+
       img {
         object-fit: cover;
         height: 100%;
         width: 100%;
       }
     }
+
     .card-content {
       position: relative;
       overflow: hidden;
+
       .tags {
         margin-top: auto;
         margin-bottom: 0;
         padding-top: 3rem;
         padding-bottom: 0.5rem;
         background: linear-gradient(to bottom, transparent 0%, #fff 2rem);
-        background: -webkit-linear-gradient(top, rgba(255,255,255,0.001) 0%, #fff 10%, #fff 100%);
+        background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.001) 0%, #fff 10%, #fff 100%);
         position: absolute;
         bottom: 0;
         width: 100%;
@@ -233,6 +250,7 @@ $content-pre-padding: 1em;
   margin-top: 3rem;
   color: white;
   align-items: center;
+
   .fa-tags {
     margin-right: 1rem;
     margin-bottom: 0.5rem;
@@ -265,9 +283,11 @@ a.tag:hover {
 
 a.social-google-plus {
   color: darken(#D03F2C, 10%);
+
   &:hover {
     text-decoration: underline;
   }
+
   &:hover,
   &:focus,
   &:visited {
@@ -277,9 +297,11 @@ a.social-google-plus {
 
 a.social-twitter {
   color: darken(#1AB2E8, 20%);
+
   &:hover {
     text-decoration: underline;
   }
+
   &:hover,
   &:focus,
   &:visited {
@@ -352,11 +374,13 @@ b.conum * {
     margin-bottom: 1em;
     width: initial;
   }
+
   .colist {
     table td, table th {
       border: none;
     }
   }
+
   ol > li > p {
     margin-bottom: 1em;
   }
@@ -467,6 +491,7 @@ li {
   .content &:not(:last-child) {
     margin-bottom: 1em;
   }
+
   .title {
     font-size: inherit;
     margin-bottom: 0;
@@ -490,13 +515,30 @@ li {
   &.is-primary {
     color: #0D4F9E
   }
+
   &.is-success {
     color: #006247;
   }
+
   &.is-warning {
     color: #f19300;
   }
+
   &.is-danger {
     color: #B4001C;
   }
+}
+
+.imageblock {
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+.imageblock.text-center {
+  justify-content: center;
+}
+
+.imageblock > .content {
+  margin: .5rem;
+  border: 1px solid #dbdbdb;
 }
