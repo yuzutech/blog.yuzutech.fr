@@ -3,29 +3,7 @@ const faTwitterSquare = require('@fortawesome/free-brands-svg-icons').faTwitterS
 const faGooglePlusSquare = require('@fortawesome/free-brands-svg-icons').faGooglePlusSquare
 
 module.exports = (uiModel) => {
-  let disqusHTML = ''
-  if (uiModel.enableDisqus) {
-    disqusHTML = `<section class="section">
-    <div class="container">
-      <div id="disqus_thread"></div>
-    </div>
-  </section>
-  <script>
-    var disqus_config = function () {
-      this.page.url = '${uiModel.page.canonicalUrl}';
-      this.page.identifier = '${uiModel.page.url}';
-    };
-    (function() {
-      var d = document, s = d.createElement('script');
-      s.src = 'https://blog-yuzutech.disqus.com/embed.js';
-      s.setAttribute('data-timestamp', +new Date());
-      (d.head || d.body).appendChild(s);
-    })();
-  </script>
-  <noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>`
-  }
-  return `${disqusHTML}
-  <footer class="footer">
+  return `<footer class="footer">
     <div class="container">
       <div class="columns">
         <div class="column">

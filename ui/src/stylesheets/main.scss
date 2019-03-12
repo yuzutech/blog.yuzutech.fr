@@ -6,7 +6,6 @@ $primary: #f19300;
 $title-size: 1.75rem;
 $box-radius: 0;
 $content-pre-padding: 1em;
-$fullhd-enabled: false;
 
 @import "../../node_modules/bulma/sass/utilities/_all.sass";
 @import "../../node_modules/bulma/sass/base/_all.sass";
@@ -25,10 +24,6 @@ $fullhd-enabled: false;
 @import "../../node_modules/bulma/sass/layout/section.sass";
 @import "../../node_modules/bulma/sass/layout/footer.sass";
 @import "../../node_modules/bulma/sass/grid/columns.sass";
-
-.title:not(:last-child) {
-  margin-bottom: .5rem;
-}
 
 .hero {
   background: url(../images/main.jpg) no-repeat center;
@@ -239,7 +234,7 @@ $fullhd-enabled: false;
 }
 
 .section.is-small {
-  padding: 0 0 2rem 0;
+  padding: 0;
 }
 
 #preamble {
@@ -472,6 +467,36 @@ code[class*="language-"], pre[class*="language-"] {
 .section-404 {
   min-height: calc(100vh - 520px);
   text-align: center;
+}
+
+.section-blog-post {
+  main {
+    max-width: 50rem;
+    padding-bottom: 3rem;
+
+    footer {
+      .discuss-twitter {
+        margin-right: .7rem;
+      }
+      a {
+        box-shadow: 0 1px 0 0 currentColor;
+        color: currentColor;
+      }
+      a:hover, a:active {
+        box-shadow: none;
+      }
+      a:active, a:hover {
+        outline-width: 0;
+      }
+    }
+  }
+  aside {
+    max-width: 50rem;
+    margin: 0 auto;
+  }
+  .title:not(:last-child) {
+    margin-bottom: .5rem;
+  }
 }
 
 .quoteblock {
