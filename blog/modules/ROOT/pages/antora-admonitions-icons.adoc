@@ -52,7 +52,8 @@ In this directory we will create a CSS file:
     border-radius: 1rem;
 }
 
-i.fa[class^='icon-'], i.fa[class*=' icon-']::before {
+i.fa[class^='icon-'],
+i.fa[class*=' icon-']::before {
     content: "";
     height: 1.25rem;
     width: 1.25rem;
