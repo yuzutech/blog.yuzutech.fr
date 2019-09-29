@@ -80,6 +80,7 @@ $content-pre-padding: 1em;
 
   .media-content {
     margin: auto;
+    overflow-x: auto;
   }
 }
 
@@ -93,7 +94,7 @@ $content-pre-padding: 1em;
   line-height: inherit;
 }
 
-.listingblock {
+.listingblock:not(:last-child) {
   padding-bottom: 0.5rem;
 
   .listing-title {
@@ -234,11 +235,11 @@ $content-pre-padding: 1em;
 }
 
 .section.is-small {
-  padding: 0;
+  padding: 1.25rem 0 0;
 }
 
 #preamble {
-  margin-bottom: 1.5rem;
+  margin-bottom: .5rem;
 }
 
 .tags.cloud {
@@ -532,7 +533,7 @@ li {
 }
 
 .exampleblock {
-  padding: 1.25em 1.5em;
+  padding: .75rem 1rem;
   border: 1px solid #b1b1b1;
 }
 

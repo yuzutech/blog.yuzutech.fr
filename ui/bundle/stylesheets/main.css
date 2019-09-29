@@ -2511,15 +2511,15 @@ a.navbar-item:hover, a.navbar-item.is-active, .navbar-link:hover, .navbar-link.i
 
 .box .media-left { align-self: center; font-size: 2rem; }
 
-.box .media-content { margin: auto; }
+.box .media-content { margin: auto; overflow-x: auto; }
 
 .content figure { margin: 0.5rem; }
 
 .token.title { font-size: inherit; font-weight: inherit; line-height: inherit; }
 
-.listingblock { padding-bottom: 0.5rem; }
+.listingblock:not(:last-child) { padding-bottom: 0.5rem; }
 
-.listingblock .listing-title { font-style: italic; }
+.listingblock:not(:last-child) .listing-title { font-style: italic; }
 
 .meta { display: flex; margin-bottom: 1.25rem; }
 
@@ -2554,9 +2554,9 @@ a.navbar-item:hover, a.navbar-item.is-active, .navbar-link:hover, .navbar-link.i
   .card-featured .card-content { position: relative; overflow: hidden; }
   .card-featured .card-content .tags { margin-top: auto; margin-bottom: 0; padding-top: 3rem; padding-bottom: 0.5rem; background: linear-gradient(to bottom, transparent 0%, #fff 2rem); background: -webkit-linear-gradient(top, rgba(255, 255, 255, 0.001) 0%, #fff 10%, #fff 100%); position: absolute; bottom: 0; width: 100%; } }
 
-.section.is-small { padding: 0; }
+.section.is-small { padding: 1.25rem 0 0; }
 
-#preamble { margin-bottom: 1.5rem; }
+#preamble { margin-bottom: .5rem; }
 
 .tags.cloud { margin-top: 3rem; color: white; align-items: center; }
 
@@ -2709,7 +2709,7 @@ li .paragraph { margin-bottom: 1em; }
 
 .ulist .title { font-size: inherit; margin-bottom: 0; }
 
-.exampleblock { padding: 1.25em 1.5em; border: 1px solid #b1b1b1; }
+.exampleblock { padding: .75rem 1rem; border: 1px solid #b1b1b1; }
 
 .svg-inline--fa.is-primary { color: #0D4F9E; }
 
