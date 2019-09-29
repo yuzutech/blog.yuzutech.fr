@@ -6,6 +6,9 @@
     "Guillaume Grossetie (https://github.com/mogztter)"
   ],
   "description": "blog.yuzutech.fr website",
+  "engines": {
+    "node": ">=10.15.0"
+  },
   "dependencies": {
     "@antora/asciidoc-loader": "file:packages/asciidoc-loader",
     "@antora/cli": "^2.1.1",

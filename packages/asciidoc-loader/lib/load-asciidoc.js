@@ -8,6 +8,7 @@ if ('encoding' in String.prototype && String(String.prototype.encoding) !== 'UTF
 
 const asciidoctor = require('asciidoctor.js')()
 const Extensions = asciidoctor.Extensions
+const convertImageRef = require('./image/convert-image-ref')
 const convertPageRef = require('./xref/convert-page-ref')
 const createConverter = require('./converter/create')
 const createExtensionRegistry = require('./create-extension-registry')
@@ -54,18 +55,20 @@ function loadAsciiDoc (file, contentCatalog = undefined, config = {}) {
     examplesdir: EXAMPLES_DIR_TOKEN,
     partialsdir: PARTIALS_DIR_TOKEN,
   }
-  const pageAttrs = fileSrc.family === 'page' ? computePageAttrs(fileSrc, contentCatalog) : {}
+  const pageAttrs = computePageAttrs(fileSrc, contentCatalog)
   const attributes = Object.assign({}, config.attributes, intrinsicAttrs, pageAttrs)
   const relativizePageRefs = config.relativizePageRefs !== false
   // tag::override[]
   let converter
   if (typeof config.converter === 'function') {
     converter = config.converter({
-      onPageRef: (refSpec, content) => convertPageRef(refSpec, content, file, contentCatalog, relativizePageRefs),
+      onImageRef: (resourceSpec) => convertImageRef(resourceSpec, file, contentCatalog),
+      onPageRef: (pageSpec, content) => convertPageRef(pageSpec, content, file, contentCatalog, relativizePageRefs),
     })
   } else {
     converter = createConverter({
-      onPageRef: (refSpec, content) => convertPageRef(refSpec, content, file, contentCatalog, relativizePageRefs),
+      onImageRef: (resourceSpec) => convertImageRef(resourceSpec, file, contentCatalog),
+      onPageRef: (pageSpec, content) => convertPageRef(pageSpec, content, file, contentCatalog, relativizePageRefs),
     })
   }
   // end::override[]
@@ -76,12 +79,9 @@ function loadAsciiDoc (file, contentCatalog = undefined, config = {}) {
   if (extensions.length) {
     extensions.forEach((extension) => extension.register(extensionRegistry, { file, contentCatalog, config }))
   }
-  const doc = asciidoctor.load(file.contents.toString(), {
-    attributes,
-    converter,
-    extension_registry: extensionRegistry,
-    safe: 'safe',
-  })
+  const opts = { attributes, converter, extension_registry: extensionRegistry, safe: 'safe' }
+  if (config.doctype) opts.doctype = config.doctype
+  const doc = asciidoctor.load(file.contents.toString(), opts)
   if (extensions.length) freeExtensions()
   return doc
 }
@@ -90,9 +90,13 @@ function computePageAttrs (fileSrc, contentCatalog) {
   const attrs = {}
   // QUESTION should we soft set the page-id attribute?
   attrs['page-component-name'] = fileSrc.component
-  attrs['page-component-version'] = attrs['page-version'] = fileSrc.version
   const component = contentCatalog && contentCatalog.getComponent(fileSrc.component)
-  if (component) attrs['page-component-title'] = component.title
+  const version = (attrs['page-component-version'] = attrs['page-version'] = fileSrc.version)
+  if (component) {
+    const componentVersion = component.versions.find((it) => it.version === version)
+    if (componentVersion) attrs['page-component-display-version'] = componentVersion.displayVersion
+    attrs['page-component-title'] = component.title
+  }
   attrs['page-module'] = fileSrc.module
   attrs['page-relative'] = fileSrc.relative
   const origin = fileSrc.origin

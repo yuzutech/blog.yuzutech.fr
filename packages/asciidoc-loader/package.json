@@ -19,7 +19,7 @@
     "asciidoctor.js": "1.5.9"
   },
   "engines": {
-    "node": ">= 8.0.0"
+    "node": ">=8.11.0"
   },
   "files": [
     "lib/"

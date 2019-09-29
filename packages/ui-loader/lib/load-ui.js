@@ -18,7 +18,7 @@ const yaml = require('js-yaml')
 const vfs = require('vinyl-fs')
 const vzip = require('gulp-vinyl-zip')
 
-const { UI_CACHE_FOLDER, UI_DESC_FILENAME, SUPPLEMENTAL_FILES_GLOB } = require('./constants')
+const { FILE_MODE, UI_CACHE_FOLDER, UI_DESC_FILENAME, SUPPLEMENTAL_FILES_GLOB } = require('./constants')
 const URI_SCHEME_RX = /^https?:\/\//
 const EXT_RX = /\.[a-z]{2,3}$/
 
@@ -56,10 +56,10 @@ async function loadUi (playbook) {
   const bundleUrl = bundle.url
   let resolveBundle
   if (isUrl(bundleUrl)) {
-    const { cacheDir, pull } = playbook.runtime || {}
+    const { cacheDir, fetch } = playbook.runtime || {}
     resolveBundle = ensureCacheDir(cacheDir, startDir).then((absCacheDir) => {
       const cachePath = ospath.join(absCacheDir, `${sha1(bundleUrl)}.zip`)
-      return pull && bundle.snapshot
+      return fetch && bundle.snapshot
         ? downloadBundle(bundleUrl, cachePath)
         : fs.pathExists(cachePath).then((cached) => (cached ? cachePath : downloadBundle(bundleUrl, cachePath)))
     })
@@ -242,8 +242,9 @@ function srcSupplementalFiles (filesSpec, startDir) {
 
 function createMemoryFile (path_, contents = []) {
   const stat = new fs.Stats()
+  stat.mode = FILE_MODE
+  stat.mtime = undefined
   stat.size = contents.length
-  stat.mode = 33188
   return new File({ path: path_, contents: Buffer.from(contents), stat })
 }
 

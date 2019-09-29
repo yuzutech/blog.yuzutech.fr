@@ -23,15 +23,11 @@ function resolveIncludeFile (target, page, cursor, catalog) {
   let resolved
   let family
   let relative
-  let placeholder
   if (RESOURCE_ID_DETECTOR_RX.test(target)) {
     // NOTE support legacy {partialsdir} and {examplesdir} prefixes (same as resource ID w/ only family and relative)
     if (target.startsWith(PARTIALS_DIR_TOKEN) || target.startsWith(EXAMPLES_DIR_TOKEN)) {
       ;[family, relative] = splitOnce(target, '$')
-      if (relative.charAt() === '/') {
-        relative = relative.substr(1)
-        placeholder = true
-      }
+      if (relative.charAt() === '/') relative = relative.substr(1)
       resolved = catalog.getById({
         component: ctx.component,
         version: ctx.version,
@@ -60,14 +56,6 @@ function resolveIncludeFile (target, page, cursor, catalog) {
       // NOTE src.contents is set if page is marked as a partial
       // TODO if include file is a page, warn if not marked as a partial
       contents: (resolvedSrc.contents || resolved.contents).toString(),
-    }
-  } else {
-    // FIXME use replace next line instead of pushing an include; maybe raise error
-    // TODO log "Unresolved include"
-    return {
-      context: cursor.dir.context,
-      file: cursor.file,
-      contents: `+include::${placeholder ? '{' + family + 'sdir}/' + relative : target}[]+`,
     }
   }
 }

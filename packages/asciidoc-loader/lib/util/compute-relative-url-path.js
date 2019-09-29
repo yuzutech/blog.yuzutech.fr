@@ -18,11 +18,9 @@ const { posix: path } = require('path')
  * @returns {String} The shortest relative path to travel from the start URL to the target URL.
  */
 function computeRelativeUrlPath (from, to, hash = '') {
-  if (from === to) {
-    return hash || (isDir(to) ? './' : path.basename(to))
-  } else {
-    return path.relative(path.dirname(from + '.'), to) + (isDir(to) ? '/' + hash : hash)
-  }
+  return from === to
+    ? hash || (isDir(to) ? './' : path.basename(to))
+    : (path.relative(path.dirname(from + '.'), to) || '.') + (isDir(to) ? '/' + hash : hash)
 }
 
 function isDir (str) {
