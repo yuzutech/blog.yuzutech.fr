@@ -11,9 +11,9 @@ function convert (uiModel) {
       <div class="container is-widescreen">
         <div class="titles">
           <h1 class="title">
-            <a href="${uiModel.siteRootPath}/blog/1.0/">Blog</a>
+            <a href="${uiModel.siteRootPath}/blog/">Blog</a>
             <span class="rss">
-              <a href="${uiModel.siteRootPath}/blog/1.0/rss/feed.xml">
+              <a href="${uiModel.siteRootPath}/blog/rss/feed.xml">
                 ${icon(faRss).html}
               </a>
             </span>
@@ -25,7 +25,7 @@ function convert (uiModel) {
   <section class="section section-404">
     <div class="container">
       <h1 class="title">Page not found ${icon(faDizzy).html}</h1>
-      <h2 class="subtitle">${icon(faArrowAltCircleLeft).html} Back to the <a href="${uiModel.siteRootPath}/blog/1.0/">homepage</a></h2>
+      <h2 class="subtitle">${icon(faArrowAltCircleLeft).html} Back to the <a href="${uiModel.siteRootPath}/blog/">homepage</a></h2>
     </div>
   </section>`
   return layout('Blog - Yuzu tech', content, uiModel)
