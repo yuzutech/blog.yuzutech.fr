@@ -10,6 +10,22 @@
 [context.deploy-preview]
   command = "URL=$DEPLOY_PRIME_URL ./netlify-build.sh"
 
+[[redirects]]
+  from = "/blog/1.0/:slug/index.html"
+  to = "/blog/:slug/index.html"
+
+[[redirects]]
+  from = "/blog/1.0/rss/feed.xml"
+  to = "/blog/rss/feed.xml"
+
+[[redirects]]
+  from = "/blog/1.0/rss/feed.xml"
+  to = "/blog/rss/feed.xml"
+
+[[redirects]]
+  from = "/blog/1.0/tag/:tag/index.html"
+  to = "/blog/tag/:tag/index.html"
+
 [[headers]]
   for = "/*"
   [headers.values]
