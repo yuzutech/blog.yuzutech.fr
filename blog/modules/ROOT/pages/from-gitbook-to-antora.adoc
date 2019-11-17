@@ -104,7 +104,7 @@ So if your start page is already named `index.adoc`, you can remove the `start_p
 [NOTE]
 ====
 The name of the component is determined from the `name` key in the component descriptor.
-We happened to name the directory the component descriptor is in `book` also, but this does not affect the name of the component.
+In this migration guide we have named the directory the component descriptor is in `book` also, but this does not affect the name of the component.
 ====
 
 Check out the {uri-antora-component-descriptor}[component description documentation] to learn more.
@@ -143,8 +143,9 @@ The `start_path` value points to our documentation component located in the `boo
 [NOTE]
 ====
 For ease of migration, this guide is recommending a particular very simple, but restrictive, layout in a single git repository.
-For a local repository, the -url will be the path from the playbook to the git root.
-The start_path is the path from the git root to the `antora.yml` component descriptor.
+In a playbook `sources` entry, there are two keys expressing the relationship between the playbook, the git repo of the source, and the location of the component descriptor.
+For a local repository, the `url` will be the path from the playbook to the git root.
+The `start_path` is the path from the git root to the `antora.yml` component descriptor.
 ====
 
 == Attributes
