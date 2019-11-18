@@ -36,7 +36,7 @@ Without further ado, let's migrate from GitBook to Antora!
 
 [%hardbreaks]
 A collection of documentation files organized under Antora's {uri-antora-structure}[standard project structure] is called a _documentation component_.
-In Antora's terminology, a GitBook is a single documentation component in a local repository.
+In Antora's terminology, a GitBook corresponds to a single documentation component in a single git repository.
 So the first thing you will need to do is to create a {uri-antora-component}[documentation component] named `book` with a {uri-antora-module}[module] named `ROOT`.
 
 [NOTE]
@@ -49,7 +49,7 @@ but depending on your use case you could create as many modules (or documentatio
 
  $ mkdir -p book/modules/ROOT/pages
 
-. Move every *.adoc files to [.path]_pages_
+. Move every *.adoc file to [.path]_pages_
 
  $ mv *.adoc book/modules/ROOT/pages
 
@@ -76,7 +76,7 @@ And here's the complete tree structure:
 ```
 
 If your book is structured in chapters, you do not necessarily need to create a module for each chapter.
-You can instead create subfolders in the [.path]_pages_ directory.
+You can instead create `'topic`' subfolders in the [.path]_pages_ directory.
 
 Next, we need to describe our documentation component.
 
@@ -101,6 +101,12 @@ We also explicitly define the start page.
 By default, Antora looks for a file named `index.adoc` in the `ROOT` module.
 So if your start page is already named `index.adoc`, you can remove the `start_page` key.
 
+[NOTE]
+====
+The name of the component is determined from the `name` key in the component descriptor.
+In this migration guide, the component root directory is named `book` but this does not affect the name of the component (defined in the component descriptor file).
+====
+
 Check out the {uri-antora-component-descriptor}[component description documentation] to learn more.
 
 == Playbook
@@ -119,9 +125,9 @@ In the following examples, we will be using YAML (but you're free to use JSON or
 In the previous section we've created a documentation component called `book`.
 The next step is to register this documentation component in our playbook.
 
-. Create a file named `site.yml` at the root:
+. Create a file named `antora-playbook.yml` at the root of your git repository:
 +
-.site.yml
+.antora-playbook.yml
 ```yml
 content:
   sources:
@@ -132,13 +138,21 @@ content:
 Since we are working with a local repository we are using the value dot (`.`). +
 The path will be resolved relative to the location of the playbook file.
 
-The `start_path` value points to our documentation component named `book`.
+The `start_path` value points to our documentation component located in the `book` directory (and also named `book`).
+
+[NOTE]
+====
+For ease of migration, this guide is recommending a particular very simple, but restrictive, layout in a single git repository.
+In a playbook `sources` entry, there are two keys expressing the relationship between the playbook, the git repository of the source, and the location of the component descriptor.
+For a local repository, the `url` will be the path from the playbook to the root of the git repository.
+The `start_path` is the path from the root of the git repository to the `antora.yml` component descriptor.
+====
 
 == Attributes
 
 The `attributes` key in your playbook file can be used to define global (i.e. site-wide) AsciiDoc document attributes.
 
-.site.yml
+.antora-playbook.yml
 ```yml
 asciidoc:
   attributes:
@@ -151,7 +165,7 @@ asciidoc:
 Antora has built-in support for Google Analytics.
 To enable it, you will need to configure your key in `site.keys.google_analytics`.
 
-.site.yml
+.antora-playbook.yml
 ```yml
 site:
   keys:
@@ -260,7 +274,7 @@ Here's the `book.json` file:
 
 And here's the equivalent configuration in Antora:
 
-.site.yml
+.antora-playbook.yml
 ```yml
 site:
   title: Spark Streaming
@@ -281,9 +295,9 @@ asciidoc:
 == Generate your site
 
 To get you started quickly, Antora provides a default UI.
-To use it, edit your `site.yml` file and add the following content:
+To use it, edit your `antora-playbook.yml` file and add the following content:
 
-.site.yml
+.antora-playbook.yml
 ```yml
 ui:
   bundle:
@@ -292,9 +306,9 @@ ui:
 ```
 
 Then, configure the output directory to define where the generated site will be published.
-Again, edit your `site.yml` file and add the following content:
+Again, edit your `antora-playbook.yml` file and add the following content:
 
-.site.yml
+.antora-playbook.yml
 ```yml
 output:
   dir: ./public
@@ -304,6 +318,6 @@ We're almost done.
 If that's not already the case, please {uri-antora-install}[install Antora] on your machine.
 Then, open a terminal and type:
 
- $ antora site.yml
+ $ antora antora-playbook.yml
 
 Your site should be generated in the `public/` directory 🚀
