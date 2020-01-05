@@ -2590,7 +2590,7 @@ a.social-twitter:hover, a.social-twitter:focus, a.social-twitter:visited { color
 
 .conum[data-value]::after { content: attr(data-value); }
 
-pre .conum[data-value] { position: relative; top: -.125em; }
+pre .conum[data-value] { position: relative; top: -.125em; text-shadow: none; }
 
 b.conum * { color: inherit !important; }
 
