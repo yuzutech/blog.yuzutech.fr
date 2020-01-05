@@ -92,6 +92,9 @@ Then, create a directory named [.path]_img_ in the [.path]_supplemental-ui_ dire
 
 NOTE: The above icons were created using {uri-fa-icons}[Font Awesome 5 icons].
 
+The circular background behind the icons is black with transparency so you can change the background colour of the admonitions without having to update the SVG files.
+Thanks to https://github.com/streetster[@streetster] for the idea!
+
 Now, we need to reference this new [.path]_extra.css_ file in the `<head>` of our documentation site by creating a template named [.path]_head-meta.hbs_ in a [.path]_partials_ directory:
 
 .supplemental-ui/partials/head-meta.hbs
@@ -120,5 +123,33 @@ supplemental-ui
 And here's the result:
 
 image::antora-icon-admonition.png[align="center"]
+
+Since we are using a background with transparency, we can use alternative colors:
+
+```css
+.doc .admonitionblock.note .icon {
+    background-color: #795548;
+}
+
+.doc .admonitionblock.tip .icon {
+    background-color: #607D8B;
+}
+
+.doc .admonitionblock.important .icon {
+    background-color: #E91E63;
+}
+
+.doc .admonitionblock.warning .icon {
+    background-color: #FF7043;
+}
+
+.doc .admonitionblock.caution .icon {
+    background-color: #673AB7;
+}
+```
+
+And here's the result:
+
+image::antora-alternative-admonition-colors.png[align="center"]
 
 Here, we've demonstrated how to add icons next to the admonition labels but you can virtually *override the style of any elements* by adding CSS rules 🎨
