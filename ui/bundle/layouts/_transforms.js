@@ -39,7 +39,6 @@ ${node.getContent()}
 </section>`
     },
     paragraph: (node) => {
-      const title = node.getTitle()
       const titleElement = node.getTitle() ? `<div class="title">${node.getTitle()}</div>` : ''
       return `<div class="paragraph">
   ${titleElement}
