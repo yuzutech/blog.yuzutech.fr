@@ -1,0 +1,117 @@
+= Awesome Asciidoctor.js: Create PDF using Web technologies
+Guillaume Grossetie <ggrossetie@yuzutech.fr>
+:page-revdate: 2020-03-29 13:00
+:page-author: Guillaume Grossetie
+:description: Learn how to create a PDF from an AsciiDoc document using Web technologies!
+:page-tags: Asciidoctor.js, Converter, PDF, JavaScript, CSS, Paged Media
+:page-image: print.jpg
+:page-color-primary: #cb8530
+:page-color-secondary: #7f7b78
+
+The first question you might ask is: *does it make sense to use Web technologies for print?* +
+It actually makes a lot of sense!
+
+== Why Web technologies make sense for print
+
+First of all, you can create complex layout using Flexbox and Grid.
+Just take a look at a few experiments by https://twitter.com/julesforrest[Jules Forrest]:
+
+- https://codepen.io/julesforrest/full/xLBbVb/[Explicit]
+- https://codepen.io/julesforrest/full/yowMPw/[IL magazine]
+- https://codepen.io/julesforrest/full/oeVKjg/[Americanistica]
+
+You can also check out the great https://labs.jensimmons.com/[experimental layout lab of Jen Simmons].
+Here are my favorite ones:
+
+- https://labs.jensimmons.com/2017/02-004.html[Futurismo Trentino exhibition poster]
+- https://labs.jensimmons.com/2018/03-004.html[Bauhaus]
+- https://labs.jensimmons.com/2017/01-007.html[Die Neue Typographie]
+
+Pretty neat, right? 🔥
+
+Furthermore, much of the CSS you already know will be useful when formatting for print.
+But there's more, CSS has two specifications which deal specifically with CSS for print:
+
+- https://www.w3.org/TR/css-page-3/[Paged Media module]
+- https://www.w3.org/TR/css-gcpm-3/[Generated Content for Paged Media Module]
+
+You can define page size, page margins, page orientation, bleed area, crop and registration marks, footnotes, page numbering... and more!
+
+[TIP]
+====
+Recommended articles by https://twitter.com/rachelandrew[Rachel Andrew] from https://www.smashingmagazine.com/[Smashing Magazine] to learn more about print CSS:
+
+- https://www.smashingmagazine.com/2018/05/print-stylesheets-in-2018/
+- https://www.smashingmagazine.com/2015/01/designing-for-print-with-css/
+- https://www.smashingmagazine.com/2019/06/create-pdf-web-application/
+====
+
+So, basically we have everything we need, right?
+Well... currently, very few things are natively supported by browsers 😞
+
+But don't despair, there's hope!
+
+== Paged.js to the rescue! ⛑️
+
+https://www.pagedjs.org/[Paged.js] is a free and open source JavaScript library that paginates content in the browser to create PDF output from any HTML content.
+Paged.js follows the Paged Media standards published by the W3C.
+In effect, Paged.js acts as a polyfill for the CSS modules to print content using features that are not yet natively supported by browsers.
+
+So, while browsers don't support natively all the great features specified by the W3C, we can use Paged.js to fill the gap!
+
+Moreover, in February this year, the https://www.w3.org/community/cssprint/[CSS Print Community Group] has been launched and Paged.js is part of it!
+The goal of this community group is to gather use cases, help with specifications, and advocate for more and better implementations in browsers.
+
+So things are moving and the future of CSS print is bright!🌻
+
+== What about Asciidoctor.js?
+
+https://github.com/asciidoctor/asciidoctor.js[Asciidoctor.js] can convert AsciiDoc content to HTML5 using the built-in converter or https://blog.yuzutech.fr/blog/custom-converter/index.html[a custom HTML5 converter].
+So, we already have everything we need to produce a "print-ready" HTML5 page from an AsciiDoc document.
+
+But we still need to open this Web page in a browser and instruct the browser to print it to PDF...
+and that's exactly what https://github.com/puppeteer/puppeteer[Puppeteer] can do! +
+Puppeteer is a Node library which provides a high-level API to control Chrome over the DevTools Protocol.
+Puppeteer runs headless by default and provides an API to generate a PDF of the page with `print` css media.
+
+== Summary
+
+Let's recap quickly:
+
+- CSS is awesome and provide a great set of features for printing
+- Browsers don't support natively all these features but Paged.js is here to fill the gap
+- Asciidoctor.js can produce a "print-ready" HTML5 page from an AsciiDoc document
+- Puppeteer can run a headless browser and print a Web page to PDF
+
+== Putting it all together!
+
+Introducing https://github.com/mogztter/asciidoctor-pdf.js#asciidoctor-pdf[Asciidoctor Web PDF] 🎉
+
+This project provides a PDF converter for AsciiDoc based on Web technologies using:
+
+- Asciidoctor.js
+- Paged.js
+- Puppeteer
+
+The project is at an early stage but it already has a few interesting features:
+
+- Complex layouts with CSS and JavaScript
+- SVG icons with Font Awesome 5
+- PDF document outline (i.e., bookmarks)
+- Table Of Contents
+- Document metadata (title, authors, subject, keywords, etc)
+- Fully customizable template
+- Syntax highlighting with Highlight.js
+- Page numbering
+- Preview mode
+- STEM support with MathJax 3
+
+If you have Node installed, you can give it a try:
+
+[source]
+----
+$ npm i asciidoctor-pdf
+$ asciidoctor-pdf doc.adoc
+----
+
+Have fun! 😀
