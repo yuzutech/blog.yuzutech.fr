@@ -1,11 +1,32 @@
 const library = require('@fortawesome/fontawesome-svg-core').library
-const icon = require('@fortawesome/fontawesome-svg-core').icon
-const faInfoCircle = require('@fortawesome/free-solid-svg-icons').faInfoCircle
-const faExclamationCircle = require('@fortawesome/free-solid-svg-icons').faExclamationCircle
-const faQuestionCircle = require('@fortawesome/free-solid-svg-icons').faQuestionCircle
-const faFire = require('@fortawesome/free-solid-svg-icons').faFire
-const fas = require('@fortawesome/free-solid-svg-icons').fas
-const far = require('@fortawesome/free-regular-svg-icons').far
+const {icon, layer} = require('@fortawesome/fontawesome-svg-core')
+
+let soldIcon
+let faLightbulb
+try {
+  soldIcon = require('@fortawesome/pro-solid-svg-icons')
+  faLightbulb = soldIcon.faLightbulbOn
+} catch (e) {
+  soldIcon = require('@fortawesome/free-solid-svg-icons')
+  faLightbulb = soldIcon.faLightbulb
+}
+
+const faCircle = soldIcon.faCircle
+const faLightbulbCircleIcon = layer((push) => {
+  push(icon(faCircle))
+  push(icon(faLightbulb, { transform: { size: 8, x: -2 }, classes: 'fa-inverse' }))
+})
+const faInfoCircleIcon = icon(soldIcon.faInfoCircle)
+const faExclamationCircleIcon = icon(soldIcon.faExclamationCircle)
+const faQuestionCircleIcon = icon(soldIcon.faQuestionCircle)
+const faFireIcon = icon(soldIcon.faFire)
+const fas = soldIcon.fas
+let far
+try {
+  far = require('@fortawesome/pro-regular-svg-icons').far
+} catch (e) {
+  far = require('@fortawesome/free-regular-svg-icons').far
+}
 const fab = require('@fortawesome/free-brands-svg-icons').fab
 library.add(fas, far, fab)
 
@@ -59,20 +80,22 @@ ${preStart}${node.getContent()}${preEnd}
       const titleElement = node.getTitle() ? `<div class="listing-title">${node.getCaptionedTitle()}</div>\n` : ''
       let faIcon
       if (name === 'note') {
-        faIcon = faInfoCircle
+        faIcon = faInfoCircleIcon
       } else if (name === 'important') {
-        faIcon = faExclamationCircle
+        faIcon = faExclamationCircleIcon
       } else if (name === 'caution') {
-        faIcon = faFire
+        faIcon = faFireIcon
+      } else if (name === 'tip') {
+        faIcon = faLightbulbCircleIcon
       } else {
-        faIcon = faQuestionCircle
+        faIcon = faQuestionCircleIcon
       }
       return `<div${idAttribute} class="box ${name}${node.getRole() ? node.getRole() : ''}">
   <article class="media">
     <div class="media-left">
       <figure class="image">
         <span class="icon has-text-${name}">
-          ${icon(faIcon).html}
+          ${faIcon.html}
         </span>
       </figure>
     </div>
