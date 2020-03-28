@@ -45,7 +45,7 @@ function loadAsciiDoc (file, contentCatalog = undefined, config = {}) {
   const relative = fileSrc.relative
   const extname = fileSrc.extname || relative.replace(/.*(?=\.)/g, '')
   const intrinsicAttrs = {
-    docname: relative.substr(0, relative.length - extname.length),
+    docname: (fileSrc.family === 'nav' ? 'nav$' : '') + relative.substr(0, relative.length - extname.length),
     docfile: file.path,
     // NOTE docdir implicitly sets base_dir on document; Opal only expands value to absolute path if it starts with ./
     docdir: file.dirname,
@@ -55,8 +55,8 @@ function loadAsciiDoc (file, contentCatalog = undefined, config = {}) {
     examplesdir: EXAMPLES_DIR_TOKEN,
     partialsdir: PARTIALS_DIR_TOKEN,
   }
-  const pageAttrs = computePageAttrs(fileSrc, contentCatalog)
-  const attributes = Object.assign({}, config.attributes, intrinsicAttrs, pageAttrs)
+  const attributes = fileSrc.family === 'page' ? { 'page-partial': '@' } : {}
+  Object.assign(attributes, config.attributes, intrinsicAttrs, computePageAttrs(fileSrc, contentCatalog))
   const relativizePageRefs = config.relativizePageRefs !== false
   // tag::override[]
   let converter

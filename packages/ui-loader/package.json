@@ -1,6 +1,6 @@
 {
   "name": "@antora/ui-loader",
-  "version": "2.1.1",
+  "version": "2.2.0",
   "description": "Downloads a UI bundle, if necessary, and loads the files into a UI catalog for use in an Antora documentation pipeline.",
   "license": "MPL-2.0",
   "author": "OpenDevise Inc. (https://opendevise.com)",
@@ -17,9 +17,9 @@
   "main": "lib/index.js",
   "dependencies": {
     "@antora/expand-path-helper": "~1.0",
-    "bl": "~3.0",
+    "bl": "~4.0",
     "cache-directory": "~2.0",
-    "camelcase-keys": "~6.0",
+    "camelcase-keys": "~6.1",
     "fs-extra": "~8.1",
     "got": "~9.6",
     "gulp-vinyl-zip": "~2.1 >=2.1.2",
