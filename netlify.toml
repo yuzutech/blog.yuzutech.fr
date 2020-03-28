@@ -10,6 +10,12 @@
 [context.deploy-preview]
   command = "URL=$DEPLOY_PRIME_URL ./netlify-build.sh"
 
+[context.production]
+  command = "URL=$DEPLOY_PRIME_URL ./netlify-reattach-git-branch.sh && ./netlify-build.sh"
+
+[context.branch-deploy]
+  command = "URL=$DEPLOY_PRIME_URL ./netlify-reattach-git-branch.sh && ./netlify-build.sh"
+
 [[redirects]]
   from = "/blog/1.0/*"
   to = "/blog/:splat"
