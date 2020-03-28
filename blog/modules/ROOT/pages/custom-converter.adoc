@@ -3,7 +3,7 @@ Guillaume Grossetie <ggrossetie@yuzutech.fr>
 :page-revdate: 2018-11-16 17:45
 :page-author: Guillaume Grossetie
 :description: Asciidoctor.js provides a built-in HTML5 converter. \
-In this article we are going to see how to override the converter methods used to convert almost any individual AsciiDoc element.
+In this article, we are going to see how to override the converter methods used to convert almost any individual AsciiDoc element.
 :page-tags: Asciidoctor.js, Converter, JavaScript
 :page-image: build.jpg
 :page-color-primary: #abc3d8
