@@ -29,7 +29,6 @@
     "@fortawesome/pro-solid-svg-icons": "5.13.0"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-pro": "^5.13.0",
     "@fortawesome/fontawesome-svg-core": "1.2.8",
     "@fortawesome/free-brands-svg-icons": "5.13.0",
     "@fortawesome/free-regular-svg-icons": "5.13.0",
