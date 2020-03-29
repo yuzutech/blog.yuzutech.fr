@@ -139,7 +139,11 @@ function ensureCacheDir (customCacheDir, startDir) {
 }
 
 function downloadBundle (url, to) {
-  return get(url, { encoding: null }).then(({ body }) => fs.outputFile(to, body).then(() => to))
+  return get(url, { encoding: null })
+    .then(({ body }) => fs.outputFile(to, body).then(() => to))
+    .catch((e) => {
+      throw new Error(`Failed to download UI bundle: ${url}\nreason: ${e.message}`)
+    })
 }
 
 function selectFilesStartingFrom (startPath) {

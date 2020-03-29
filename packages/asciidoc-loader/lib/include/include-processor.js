@@ -29,10 +29,13 @@ const IncludeProcessor = (() => {
     const resolvedFile = this[$callback](doc, target, reader.$cursor_at_prev_line())
     if (resolvedFile) {
       let includeContents
+      let linenums
       let tags
       let startLineNum
-      if ((tags = getTags(attrs))) {
-        ;[includeContents, startLineNum] = applyTagFiltering(reader, target, resolvedFile, tags)
+      if ((linenums = getLines(attrs))) {
+        ;[includeContents, startLineNum] = filterLinesByLineNumbers(reader, target, resolvedFile, linenums)
+      } else if ((tags = getTags(attrs))) {
+        ;[includeContents, startLineNum] = filterLinesByTags(reader, target, resolvedFile, tags)
       } else {
         includeContents = resolvedFile.contents
         startLineNum = 1
@@ -48,6 +51,38 @@ const IncludeProcessor = (() => {
 
   return scope
 })()
+
+function getLines (attrs) {
+  if (attrs['$key?']('lines')) {
+    const lines = attrs['$[]']('lines')
+    if (lines) {
+      const linenums = []
+      let filtered
+      ;(~lines.indexOf(',') ? lines.split(',') : lines.split(';'))
+        .filter((it) => it)
+        .forEach((linedef) => {
+          filtered = true
+          let delim
+          let from
+          if (~(delim = linedef.indexOf('..'))) {
+            from = linedef.substr(0, delim)
+            let to = linedef.substr(delim + 2)
+            if ((to = parseInt(to) || -1) > 0) {
+              if ((from = parseInt(from) || -1) > 0) {
+                linenums.push(...Array.from({ length: to - from + 1 }, (_, i) => i + from))
+              }
+            } else if (to === -1 && (from = parseInt(from) || -1) > 0) {
+              linenums.push(from, Infinity)
+            }
+          } else if ((from = parseInt(linedef) || -1) > 0) {
+            linenums.push(from)
+          }
+        })
+      if (linenums.length) return [...new Set(linenums.sort((a, b) => a - b))]
+      if (filtered) return []
+    }
+  }
+}
 
 function getTags (attrs) {
   if (attrs['$key?']('tag')) {
@@ -71,7 +106,29 @@ function getTags (attrs) {
   }
 }
 
-function applyTagFiltering (reader, target, file, tags) {
+function filterLinesByLineNumbers (reader, target, file, linenums) {
+  let lineNum = 0
+  let startLineNum
+  let selectRest
+  const lines = []
+  file.contents.split(NEWLINE_RX).some((line) => {
+    lineNum++
+    if (selectRest || (selectRest = linenums[0] === Infinity)) {
+      if (!startLineNum) startLineNum = lineNum
+      lines.push(line)
+    } else {
+      if (linenums[0] === lineNum) {
+        if (!startLineNum) startLineNum = lineNum
+        linenums.shift()
+        lines.push(line)
+      }
+      if (!linenums.length) return true
+    }
+  })
+  return [lines, startLineNum || 1]
+}
+
+function filterLinesByTags (reader, target, file, tags) {
   let selecting, selectingDefault, wildcard
   if (tags.has('**')) {
     if (tags.has('*')) {
@@ -112,7 +169,7 @@ function applyTagFiltering (reader, target, file, tags) {
             log(
               'warn',
               `mismatched end tag (expected '${activeTag}' but found '${thisTag}') ` +
-              `at line ${lineNum} of include file: ${file.file})`,
+                `at line ${lineNum} of include file: ${file.file})`,
               reader,
               reader.$create_include_cursor(file.file, target, lineNum)
             )

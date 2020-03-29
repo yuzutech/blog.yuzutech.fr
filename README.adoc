@@ -13,6 +13,6 @@ Then, install the dependencies:
 
 Finally, run the following command to generate the site:
 
- $ ./node_modules/.bin/antora site-local.yml --html-url-extension-style=indexify --generator ./lib/generator.js
+ $ ./node_modules/.bin/antora site.yml --html-url-extension-style=indexify --generator ./lib/generator.js
 
 Open [.path]_public/blog/index.html_ in your browser.
