@@ -8,7 +8,7 @@
   ANTORA_CACHE_DIR = ".cache/antora"
 
 [context.deploy-preview]
-  command = "URL=$DEPLOY_PRIME_URL ./netlify-build.sh"
+  command = "URL=$DEPLOY_PRIME_URL ./netlify-reattach-git-branch.sh && ./netlify-build.sh"
 
 [context.production]
   command = "URL=$DEPLOY_PRIME_URL ./netlify-reattach-git-branch.sh && ./netlify-build.sh"
