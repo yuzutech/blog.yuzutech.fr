@@ -2614,6 +2614,8 @@ b.conum * { color: inherit !important; }
 
 .has-text-caution { color: firebrick; }
 
+.has-text-tip { color: #4caf50 !important; }
+
 .gist .content table td, .gist .content table th { border: none; }
 
 dt { color: #4a4a4a; font-style: italic; font-weight: 600; }
