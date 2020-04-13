@@ -1,0 +1,265 @@
+= Delicious Docker: Build minimal containers
+Guillaume Grossetie <ggrossetie@yuzutech.fr>
+:page-revdate: 2020-04-13 19:00
+:page-author: Guillaume Grossetie
+:description: 🐳 Build minimal containers for your application written in Go, Haskell, Rust, Node.js or Java!
+:page-tags: Docker
+:page-image: ant.jpeg
+:page-color-primary: #f6eee3
+:page-color-secondary: #9bbf01
+:uri-docker-scratch: https://hub.docker.com/_/scratch
+:uri-docker-multi-stage: https://docs.docker.com/develop/develop-images/multistage-build/
+:uri-gh-erd: https://github.com/BurntSushi/erd
+:uri-blog-static-haskell: https://vaibhavsagar.com/blog/2018/01/03/static-haskell-nix/
+:uri-blog-static-go: https://medium.com/@chemidy/create-the-smallest-and-secured-golang-docker-image-based-on-scratch-4752223b7324
+:uri-blog-static-rust: https://blog.semicolonsoftware.de/building-minimal-docker-containers-for-rust-applications/
+
+It's a common best practice in the Docker community to keep containers as small as possible.
+There are a few reasons for this:
+
+* small images are faster to copy around,
+* they are faster to start,
+* by removing unnecessary components from your image, you reduce the attack surface.
+
+While working on https://kroki.io[Kroki^], one of my goal was to build minimal containers.
+To give you a bit of context, Kroki provides a unified API on top of more than a dozen diagrams libraries.
+And as you might have guessed, each diagram library has specific requirements and runtime!
+As a matter of fact, they are written in various programming language: Haskell, Go, Java, Node.js, Python...
+
+== Action plan
+
+I took the following approach:
+
+. create an image from {uri-docker-scratch}[scratch^] (literally `FROM scratch`).
+. build a statically linked binary (for each diagram library) that can run on top of _scratch_!
+
+In this article, I will describe a few tools and techniques I've discovered along the way.
+Let's start with the easiest first!
+
+== Haskell
+
+For reference, I've never written a single line of Haskell and I'm not familiar with the Haskell ecosystem.
+But surprisingly, it was relatively easy to create a statically linked binary thanks to this {uri-blog-static-haskell}[great article by Vaibhav Sagar^].
+
+One thing led to another, https://github.com/nh2[Niklas Hambüchen^] and https://github.com/mmzx[Akos Marton^] helped me to setup an even easier build based on _Stack_.
+
+My goal here was to build a statically linked binary of {uri-gh-erd}[Erd^].
+If you don't know this utility, it can translate a plain text description of a relational database schema to a graphical entity-relationship diagram.
+The visualization is produced by using dot from _GraphViz_.
+
+Starting with Docker 17.05, we can use {uri-docker-multi-stage}[multi-stage build^].
+Basically, we can use different base images, and each of them begins a new stage of the build.
+
+In our case, we will define two steps:
+
+- The first step will use an Ubuntu image to build the project and create a static binary using _stack_.
+- The second step will copy the static binary built at the first step in a _scratch_ image.
+
+[source,dockerfile]
+----
+include::example$minimal-docker/erd.Dockerfile[]
+----
+
+And here's the result, a 21 MB image:
+
+[source]
+----
+REPOSITORY         TAG           SIZE
+scratch-erd        latest        21MB
+----
+
+For reference, here's the size of the `haskell:8` image:
+
+[source]
+----
+REPOSITORY         TAG           SIZE
+haskell            8.8.3         1.47GB
+----
+
+[NOTE]
+====
+Please note that, in this specific example, the GraphViz library is still required at runtime.
+
+To workaround this issue, we could instead use an https://hub.docker.com/_/alpine[Alpine^] base image and install GraphViz using `RUN apk add --update --no-cache graphviz`.
+====
+
+== Rust
+
+Stefan Seemayer describes in a blog post {uri-blog-static-rust}[how to statically compile an 'Hello World' server in Rust^].
+In this article, Stefan is _not_ using a multi-stage build.
+Instead, the current working directory is mapped into the container:
+
+ $ alias rust-musl-builder='docker run --rm -it -v "$(pwd)":/home/rust/src ekidd/rust-musl-builder'
+ $ rust-musl-builder cargo build --release
+
+To be consistent, we will use the `ekidd/rust-musl-builder` image in a multi-stage build:
+
+[source,dockerfile]
+----
+include::example$minimal-docker/svgbob.Dockerfile[]
+----
+
+Nothing fancy here, we are using the `cargo` command line to install a pre-built binary of `svgbob` from https://crates.io/crates/svgbob_cli[crates.io^].
+
+And here's the result, a 4 MB image:
+
+[source]
+----
+REPOSITORY        TAG       SIZE
+scratch-svgbob    latest    4.01MB
+----
+
+== Go
+
+It comes at no surprise that someone already wrote a great blog post on {uri-blog-static-go}[how to create the smallest Golang Docker image^].
+In this blog post, Cyrille Hemidy, points out that the _official_ Docker image for Go is 779 MB!
+
+Here, we're using the same approach described above with a multi-stage build:
+
+[source,dockerfile]
+----
+include::example$minimal-docker/kroki.Dockerfile[]
+----
+
+[IMPORTANT]
+====
+If you are using Go < 1.10, dont forget to add `CGO_ENABLED=0` otherwise you will get the following error when trying to run the binary:
+
+[source]
+----
+standard_init_linux.go:211: exec user process caused "no such file or directory"
+----
+
+This obscure message means that a dynamic library is missing because the binary is not statically linked.
+====
+
+And here's the result, from 779 MB to less than 10 MB:
+
+[source]
+----
+REPOSITORY         TAG           SIZE
+scratch-kroki      latest        8.91MB
+----
+
+== Node.js
+
+As we've seen above, building a statically linked binary is relatively easy in an Haskell, Rust or Go ecosystem.
+But what about Node.js?
+
+Thanks to https://github.com/zeit/pkg[pkg^], it's possible to package a Node.js application into an executable that can be run even on containers without Node.js installed.
+
+[source,dockerfile]
+----
+include::example$minimal-docker/nomnoml.Dockerfile[]
+----
+
+In the example above, we are using `pkg` to create a binary from the https://github.com/skanaar/nomnoml[Nomnoml^] diagram library but the logic can be applied to almost any Node.js project.
+As you can see, we get the sources from GitHub, then we install the dependencies using `npm i`, and finally we execute the `pkg` command line to produce a binary named `nomnoml.bin` from the `dist/nomnoml-cli.js` file.
+
+[IMPORTANT]
+====
+Please note that the binary is not statically linked. If you run `ldd` on the binary you will get:
+
+[source,console]
+----
+$ ldd /nomnoml/nomnoml.bin
+	/lib/ld-musl-x86_64.so.1 (0x7fc3d3bc4000)
+	libstdc++.so.6 => /usr/lib/libstdc++.so.6 (0x7fc3d168a000)
+	libgcc_s.so.1 => /usr/lib/libgcc_s.so.1 (0x7fc3d1676000)
+	libc.musl-x86_64.so.1 => /lib/ld-musl-x86_64.so.1 (0x7fc3d3bc4000)
+----
+
+That's why we are not building the image `FROM scratch` but `FROM alpine:3.11` to make sure that the system shared libraries will be available and compatible.
+====
+
+And here's the result:
+
+[source]
+----
+REPOSITORY         TAG           SIZE
+alpine-nomnoml     latest        50.9MB
+----
+
+That's still not bad for an Alpine based image.
+For reference, the builder base image `node:12.16.2-alpine3.11` (also based on Alpine) is about 90MB.
+
+== Java
+
+With https://www.graalvm.org/[GraalVM^] and https://quarkus.io/[Quarkus^] it's now possible to build native images that generate a native binary but it has a few https://github.com/oracle/graal/blob/master/substratevm/LIMITATIONS.md[limitations^].
+If you can, you should definitely build a native binary but if you cannot then one solution is to use Alpine as a base image.
+
+=== Alpine Linux
+
+The main benefit is that Alpine Linux is much smaller than most distribution base images (~5MB), and thus leads to much slimmer images in general.
+But the main caveat is that it does use http://www.musl-libc.org/[musl libc^] instead of http://www.etalabs.net/compare_libcs.html[glibc and friends^], so certain software might run into issues depending on the depth of their libc requirements.
+However, most software doesn't have an issue with this, so this variant is usually a very safe choice. +
+
+Keep in mind that, since Alpine is not officially supported, the OpenJDK organization on Docker only publish Early Access versions of the JDK on Alpine.
+So, if you want to use a stable version of the JDK, you should instead use the Docker images produced by the https://adoptopenjdk.net/[AdoptOpenJDK^] organization.
+
+They come in two flavors, a "slim" JDK image and and JRE image, both based on Alpine:
+
+[source]
+----
+REPOSITORY                    TAG                          SIZE
+adoptopenjdk/openjdk11        jre-11.0.6_10-alpine         147MB
+adoptopenjdk/openjdk11        jdk-11.0.6_10-alpine-slim    253MB
+----
+
+For comparison, here's an image based on Ubuntu Bionic and another one based on Debian Buster "slim":
+
+[source]
+----
+REPOSITORY            TAG                            SIZE
+adoptopenjdk          13.0.2_8-jre-hotspot-bionic    225MB
+openjdk               11.0.6-jre-slim-buster         204MB
+----
+
+As you can see, they are relatively small and the image based on Alpine Linux is "only" 27% smaller.
+At the same time, if you are using a JRE instead of a JDK on Alpine Linux, you will get a 40% smaller image.
+
+=== jlink
+
+I'm not using `jlink` (yet) but this tool, introduced in JDK 9, can be used to create a custom runtime image where only the required Java modules are included.
+Combined with a multi-stage build, it's possible to build a smaller runtime for your Java application.
+
+=== fat-jar
+
+Since my application is relatively lightweight, I've decided to use a single executable jar that contains all my dependencies (also known as "fat-jar").
+As a result, the Dockerfile is really straightforward:
+
+[source,dockerfile]
+----
+include::example$minimal-docker/java.Dockerfile[]
+----
+
+This approach is also useful because the application can be executed outside of Docker using the same command line: `java -jar kroki-server.jar`.
+
+[NOTE]
+====
+Using a single executable jar is convenient but it's not the most optimal because the entire application is build as a single image layer.
+So even when you change a single line of your code, the entire application layer will be rebuilt.
+
+If you are building an application with a lot of dependencies (and your build is slow), you should try https://github.com/GoogleContainerTools/jib[jib^].
+====
+
+== Summary
+
+The size of your Docker images matters but it should not be the only deciding factor.
+For instance, you don't want to spend days or weeks trying to make your application work on Alpine.
+If your application is working fine on Debian, then use a minimal base image and carefully add additional packages.
+
+You should also think about security.
+While it's true that by removing unnecessary components from your image, you reduce the attack surface,
+it is also true that it's safer to use an active and well-maintained base image with security updates rather than a less reliable but smaller base image.
+
+And finally, you should think about troubleshooting.
+If you cannot execute an interactive shell on the container (because you don't even have one installed!) then it will be really hard to troubleshoot a problem.
+
+So the smallest image possible is not always the best solution!
+
+If you want to learn more, I recommend this great series by https://twitter.com/jpetazzo[Jérôme Petazzoni^]:
+
+- https://www.ardanlabs.com/blog/2020/02/docker-images-part1-reducing-image-size.html[Docker Images : Part I - Reducing Image Size^]
+- https://www.ardanlabs.com/blog/2020/02/docker-images-part2-details-specific-to-different-languages.html[Docker Images : Part II - Details Specific To Different Languages^]
+- https://www.ardanlabs.com/blog/2020/04/docker-images-part3-going-farther-reduce-image-size.html[Docker Images : Part III - Going Farther To Reduce Image Size^]

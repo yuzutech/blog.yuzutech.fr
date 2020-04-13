@@ -34,7 +34,7 @@ module.exports = (self) => {
   return {
     section: (node) => {
       return `<section class="section is-small">
-<h2 class="title is-4">${node.getTitle()}</h2>
+<h2 class="title is-${3 + node.getLevel()}">${node.getTitle()}</h2>
 ${node.getContent()}
 </section>`
     },
