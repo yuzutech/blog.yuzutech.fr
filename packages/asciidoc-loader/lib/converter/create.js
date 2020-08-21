@@ -8,6 +8,7 @@ const Html5Converter = require('./html5')
  * @memberof asciidoc-loader
  *
  * @param {Object} callbacks - Callback functions.
+ * @param {Function} callbacks.onImageRef - A function that converts an image reference.
  * @param {Function} callbacks.onPageRef - A function that converts a page reference.
  *
  * @returns {Converter} An enhanced instance of Asciidoctor's HTML5 converter.

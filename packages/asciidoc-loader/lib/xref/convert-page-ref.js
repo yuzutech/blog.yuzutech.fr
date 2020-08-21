@@ -1,7 +1,6 @@
 'use strict'
 
 const computeRelativeUrlPath = require('../util/compute-relative-url-path')
-const splitOnce = require('../util/split-once')
 
 /**
  * Converts the specified page reference to the data necessary to build an HTML link.
@@ -14,10 +13,10 @@ const splitOnce = require('../util/split-once')
  *
  * @memberof asciidoc-loader
  *
- * @param {String} refSpec - The target of an xref macro to a page, which is a page ID spec without
- * the .adoc extension and with an optional fragment identifier.
+ * @param {String} refSpec - The target of a page xref macro, which is a page ID spec with an optional
+ * fragment identifier.
  * @param {String} content - The content (i.e., formatted text) of the link (undefined if not specified).
- * @param {File} currentPage - The virtual file for the current page.
+ * @param {File} currentPage - The virtual file for the current page, which serves as the context.
  * @param {ContentCatalog} contentCatalog - The content catalog that contains the virtual files in the site.
  * @param {Boolean} [relativize=true] - Compute the target relative to the current page.
  * @returns {Object} A map ({ content, target, internal, unresolved }) containing the resolved
@@ -25,27 +24,43 @@ const splitOnce = require('../util/split-once')
  * internal or unresolved.
  */
 function convertPageRef (refSpec, content, currentPage, contentCatalog, relativize = true) {
+  let pageSpec
+  let hash
+  let target
   let targetPage
-  const [pageIdSpec, fragment] = splitOnce(refSpec, '#')
-  const hash = fragment ? '#' + fragment : ''
+  if (~(hash = refSpec.indexOf('#'))) {
+    pageSpec = refSpec.substr(0, hash)
+    hash = refSpec.substr(hash)
+  } else {
+    pageSpec = refSpec
+    hash = ''
+  }
   try {
-    if (!((targetPage = contentCatalog.resolvePage(pageIdSpec, currentPage.src)) && targetPage.pub)) {
+    if (!((targetPage = contentCatalog.resolvePage(pageSpec, currentPage.src)) && targetPage.pub)) {
       // TODO log "Unresolved page ID"
-      return { content, target: `#${pageIdSpec}.adoc${hash}`, unresolved: true }
+      return { content: content || refSpec, target: '#' + refSpec, unresolved: true }
     }
   } catch (e) {
     // TODO log "Invalid page ID syntax" (or e.message)
-    return { content, target: `#${refSpec}`, unresolved: true }
+    return { content: content || refSpec, target: '#' + refSpec, unresolved: true }
   }
-  let target
-  let internal
   if (relativize) {
     target = computeRelativeUrlPath(currentPage.pub.url, targetPage.pub.url, hash)
-    if (target === hash) internal = true
+    if (target === hash) return { content, target, internal: true }
   } else {
     target = targetPage.pub.url + hash
   }
-  return { content: content || `${pageIdSpec}.adoc${hash}`, target, internal }
+  if (!content) {
+    if (hash) {
+      content = pageSpec + hash
+    } else {
+      content =
+        (currentPage.src.family === 'nav'
+          ? (targetPage.asciidoc || {}).navtitle
+          : (targetPage.asciidoc || {}).xreftext) || pageSpec
+    }
+  }
+  return { content, target }
 }
 
 module.exports = convertPageRef

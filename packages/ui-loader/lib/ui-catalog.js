@@ -1,34 +1,40 @@
 'use strict'
 
-const _ = require('lodash')
-
 const $files = Symbol('files')
-const $generateId = Symbol('generateId')
 
 class UiCatalog {
   constructor () {
-    this[$files] = {}
+    this[$files] = new Map()
   }
 
-  getFiles () {
-    return Object.values(this[$files])
+  getAll () {
+    return [...this[$files].values()]
   }
 
   addFile (file) {
-    const id = this[$generateId](file)
-    if (id in this[$files]) {
+    const key = generateKey(file)
+    if (this[$files].has(key)) {
       throw new Error('Duplicate file')
     }
-    this[$files][id] = file
+    this[$files].set(key, file)
   }
 
   findByType (type) {
-    return _.filter(this[$files], { type })
+    const accum = []
+    for (const candidate of this[$files].values()) {
+      if (candidate.type === type) accum.push(candidate)
+    }
+    return accum
   }
+}
 
-  [$generateId] (file) {
-    return [file.type, ...file.path.split('/')]
-  }
+/**
+ * @deprecated superceded by getAll
+ */
+UiCatalog.prototype.getFiles = UiCatalog.prototype.getAll
+
+function generateKey ({ type, path }) {
+  return type + '$' + path
 }
 
 module.exports = UiCatalog

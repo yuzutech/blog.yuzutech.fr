@@ -1,7 +1,7 @@
 'use strict'
 
 /**
- * Splits the specified string at the first occurance of the specified separator.
+ * Splits the specified string at the first occurrence of the specified separator.
  *
  * @memberof asciidoc-loader
  *
