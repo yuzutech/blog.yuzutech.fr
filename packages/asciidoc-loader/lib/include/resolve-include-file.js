@@ -37,7 +37,7 @@ function resolveIncludeFile (target, page, cursor, catalog) {
       })
       // NOTE require family segment for now
     } else if (~target.indexOf('$')) {
-      resolved = catalog.resolveResource(target, selectResourceId(ctx))
+      resolved = catalog.resolveResource(target, extractResourceId(ctx))
     }
   } else {
     resolved = catalog.getByPath({
@@ -53,15 +53,15 @@ function resolveIncludeFile (target, page, cursor, catalog) {
       context: resolvedSrc,
       file: resolvedSrc.path,
       path: resolvedSrc.basename,
-      // NOTE src.contents is set if page is marked as a partial
-      // TODO if include file is a page, warn if not marked as a partial
-      contents: (resolvedSrc.contents || resolved.contents).toString(),
+      // NOTE src.contents holds AsciiDoc source for page marked as a partial
+      // QUESTION should we only use src.contents if family is 'page' and mediaType is 'text/asciidoc'?
+      contents: (resolvedSrc.contents || resolved.contents || '').toString(),
     }
   }
 }
 
-function selectResourceId ({ component, version, module, family, relative }) {
-  return { component, version, module, family, relative }
+function extractResourceId ({ component, version, module: module_, family, relative }) {
+  return { component, version, module: module_, family, relative }
 }
 
 module.exports = resolveIncludeFile

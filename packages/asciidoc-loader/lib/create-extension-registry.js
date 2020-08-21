@@ -6,7 +6,7 @@ const IncludeProcessor = require('./include/include-processor')
  * Creates an extension registry instance that provides extensions to integrate AsciiDoc into Antora.
  *
  * This registry includes a built-in include processor that resolves the target of include directives
- * from Antora's virtual content catalog.
+ * to files in Antora's virtual content catalog.
  *
  * @memberof asciidoc-loader
  *

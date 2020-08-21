@@ -20,47 +20,69 @@ const Html5Converter = (() => {
   Opal.defn(scope, '$inline_anchor', function convertInlineAnchor (node) {
     if (node.getType() === 'xref') {
       let callback
-      if (node.getAttribute('path') && (callback = this[$pageRefCallback])) {
+      let refSpec = node.getAttribute('path', undefined, false)
+      if (refSpec && (callback = this[$pageRefCallback])) {
         const attrs = node.getAttributes()
-        if (attrs.fragment === Opal.nil) delete attrs.fragment
-        const { content, target, internal, unresolved } = callback(attrs.refid, node.getText())
-        let options
+        const fragment = attrs.fragment
+        if (fragment && fragment !== Opal.nil) refSpec += '#' + fragment
+        const { content, target, internal, unresolved } = callback(refSpec, node.getText())
+        let type
         if (internal) {
-          // QUESTION should we propogate the role in this case?
-          options = Opal.hash2(['type', 'target'], { type: 'link', target })
+          type = 'xref'
+          delete attrs.path
+          delete attrs.fragment
+          attrs.refid = fragment // or target.substr(1)
         } else {
+          type = 'link'
           attrs.role = `page${unresolved ? ' unresolved' : ''}${attrs.role ? ' ' + attrs.role : ''}`
-          options = Opal.hash2(['type', 'target', 'attrs'], {
-            type: 'link',
-            target,
-            attributes: Opal.hash2(Object.keys(attrs), attrs),
-          })
         }
+        const attributes = Opal.hash2(Object.keys(attrs), attrs)
+        const options = Opal.hash2(['type', 'target', 'attributes'], { type, target, attributes })
         node = Opal.module(null, 'Asciidoctor').Inline.$new(node.getParent(), 'anchor', content, options)
       }
     }
     return Opal.send(this, Opal.find_super_dispatcher(this, 'inline_anchor', convertInlineAnchor), [node])
   })
   Opal.defn(scope, '$image', function convertImage (node) {
-    let callback
-    if (matchesResourceSpec(node.getAttribute('target')) && (callback = this[$imageRefCallback])) {
-      const attrs = node.getAttributes()
-      if (attrs.alt === attrs['default-alt']) node.setAttribute('alt', attrs.alt.split(/[@:]/).pop())
-      Opal.defs(node, '$image_uri', (imageSpec) => callback(imageSpec) || imageSpec)
-    }
-    return Opal.send(this, Opal.find_super_dispatcher(this, 'image', convertImage), [node])
+    return Opal.send(this, Opal.find_super_dispatcher(this, 'image', convertImage), [
+      transformImageNode(this, node, node.getAttribute('target')),
+    ])
   })
   Opal.defn(scope, '$inline_image', function convertInlineImage (node) {
-    let callback
-    if (matchesResourceSpec(node.target) && (callback = this[$imageRefCallback])) {
-      const attrs = node.getAttributes()
-      if (attrs.alt === attrs['default-alt']) node.setAttribute('alt', attrs.alt.split(/[@:]/).pop())
-      Opal.defs(node, '$image_uri', (imageSpec) => callback(imageSpec) || imageSpec)
-    }
-    return Opal.send(this, Opal.find_super_dispatcher(this, 'inline_image', convertInlineImage), [node])
+    return Opal.send(this, Opal.find_super_dispatcher(this, 'inline_image', convertInlineImage), [
+      transformImageNode(this, node, node.getTarget()),
+    ])
   })
   return scope
 })()
+
+function transformImageNode (converter, node, imageTarget) {
+  if (matchesResourceSpec(imageTarget)) {
+    const imageRefCallback = converter[$imageRefCallback]
+    if (imageRefCallback) {
+      const alt = node.getAttribute('alt', undefined, false)
+      if (node.isAttribute('default-alt', alt, false)) node.setAttribute('alt', alt.split(/[@:]/).pop())
+      Opal.defs(node, '$image_uri', (imageSpec) => imageRefCallback(imageSpec) || imageSpec)
+    }
+  }
+  if (node.hasAttribute('xref')) {
+    const refSpec = node.getAttribute('xref', '', false)
+    if (refSpec.charAt() === '#') {
+      node.setAttribute('link', refSpec)
+    } else if (~refSpec.indexOf('.adoc')) {
+      const pageRefCallback = converter[$pageRefCallback]
+      if (pageRefCallback) {
+        const { target, unresolved } = pageRefCallback(refSpec, '[image]')
+        const role = node.getAttribute('role', undefined, false)
+        node.setAttribute('role', `link-page${unresolved ? ' link-unresolved' : ''}${role ? ' ' + role : ''}`)
+        node.setAttribute('link', target)
+      }
+    } else {
+      node.setAttribute('link', '#' + refSpec)
+    }
+  }
+  return node
+}
 
 function matchesResourceSpec (target) {
   return ~target.indexOf(':')

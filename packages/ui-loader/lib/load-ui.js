@@ -4,7 +4,7 @@ const camelCaseKeys = require('camelcase-keys')
 const collectBuffer = require('bl')
 const { createHash } = require('crypto')
 const expandPath = require('@antora/expand-path-helper')
-const File = require('./file')
+const { File, MemoryFile, ReadableFile } = require('./file')
 const fs = require('fs-extra')
 const get = require('got')
 const getCacheDir = require('cache-directory')
@@ -18,7 +18,7 @@ const yaml = require('js-yaml')
 const vfs = require('vinyl-fs')
 const vzip = require('gulp-vinyl-zip')
 
-const { FILE_MODE, UI_CACHE_FOLDER, UI_DESC_FILENAME, SUPPLEMENTAL_FILES_GLOB } = require('./constants')
+const { UI_CACHE_FOLDER, UI_DESC_FILENAME, SUPPLEMENTAL_FILES_GLOB } = require('./constants')
 const URI_SCHEME_RX = /^https?:\/\//
 const EXT_RX = /\.[a-z]{2,3}$/
 
@@ -39,12 +39,19 @@ const EXT_RX = /\.[a-z]{2,3}$/
  * @param {Object} playbook.dir - The working directory of the playbook.
  * @param {Object} playbook.runtime - The runtime configuration object for Antora.
  * @param {String} [playbook.runtime.cacheDir=undefined] - The base cache directory.
+ * @param {Boolean} [playbook.runtime.fetch=false] - Forces the bundle to be
+ * retrieved if configured as a snapshot.
  * @param {Object} playbook.ui - The UI configuration object for Antora.
  * @param {String} playbook.ui.bundle - The UI bundle configuration.
  * @param {String} playbook.ui.bundle.url - The path (relative or absolute) or URI
  * of the UI bundle to use.
  * @param {String} [playbook.ui.bundle.startPath=''] - The path inside the bundle from
  * which to start reading files.
+ * @param {Boolean} [playbook.ui.bundle.snapshot=false] - Whether to treat the
+ * bundle URL as a snapshot (i.e., retrieve again if playbook.runtime.fetch is
+ * true).
+ * @param {Array} [playbook.ui.supplementalFiles=undefined] - An array of
+ * additional files to overlay onto the files from the UI bundle.
  * @param {String} [playbook.ui.outputDir='_'] - The path relative to the site root
  * where the UI files should be published.
  *
@@ -90,13 +97,21 @@ async function loadUi (playbook) {
             } else {
               vzip
                 .src(bundlePath)
-                .on('error', reject)
+                .on('error', (err) => {
+                  err.message = `not a valid zip file; ${err.message}`
+                  reject(err)
+                })
                 .pipe(selectFilesStartingFrom(bundle.startPath))
                 .pipe(bufferizeContents())
                 .on('error', reject)
                 .pipe(collectFiles(resolve))
             }
-          })
+          }
+        ).catch((e) => {
+          const wrapped = new Error(`Failed to read UI bundle: ${bundlePath} (resolved from url: ${bundleUrl})`)
+          wrapped.stack += '\nCaused by: ' + (e.stack || 'unknown')
+          throw wrapped
+        })
       )
     ),
     srcSupplementalFiles(supplementalFilesSpec, startDir),
@@ -140,9 +155,23 @@ function ensureCacheDir (customCacheDir, startDir) {
 
 function downloadBundle (url, to) {
   return get(url, { encoding: null })
-    .then(({ body }) => fs.outputFile(to, body).then(() => to))
+    .then(
+      ({ body }) =>
+        new Promise((resolve, reject) =>
+          new ReadableFile(new MemoryFile({ path: ospath.basename(to), contents: body }))
+            .pipe(vzip.src())
+            .on('error', (err) => {
+              err.message = `not a valid zip file; ${err.message}`
+              err.summary = 'Invalid UI bundle'
+              reject(err)
+            })
+            .on('finish', () => fs.outputFile(to, body).then(() => resolve(to)))
+        )
+    )
     .catch((e) => {
-      throw new Error(`Failed to download UI bundle: ${url}\nreason: ${e.message}`)
+      const wrapped = new Error(`${e.summary || 'Failed to download UI bundle'}: ${url}`)
+      wrapped.stack += '\nCaused by: ' + (e.stack || 'unknown')
+      throw wrapped
     })
 }
 
@@ -195,7 +224,7 @@ function bufferizeContents () {
 
 function collectFiles (done) {
   const files = new Map()
-  return map((file, _, next) => files.set(file.path, file) && next(), () => done(files))
+  return map((file, _, next) => files.set(file.path, file) && next(), () => done(files)) // prettier-ignore
 }
 
 function srcSupplementalFiles (filesSpec, startDir) {
@@ -208,7 +237,7 @@ function srcSupplementalFiles (filesSpec, startDir) {
           return accum
         } else if (contents_) {
           if (~contents_.indexOf('\n') || !EXT_RX.test(contents_)) {
-            accum.push(createMemoryFile(path_, contents_))
+            accum.push(new MemoryFile({ path: path_, contents: Buffer.from(contents_) }))
           } else {
             contents_ = expandPath(contents_, '~+', startDir)
             accum.push(
@@ -218,7 +247,7 @@ function srcSupplementalFiles (filesSpec, startDir) {
             )
           }
         } else {
-          accum.push(createMemoryFile(path_))
+          accum.push(new MemoryFile({ path: path_ }))
         }
         return accum
       }, [])
@@ -229,27 +258,19 @@ function srcSupplementalFiles (filesSpec, startDir) {
       .access(base)
       .then(
         () =>
-          new Promise((resolve, reject) => {
+          new Promise((resolve, reject) =>
             vfs
               .src(SUPPLEMENTAL_FILES_GLOB, { base, cwd: base, removeBOM: false })
               .on('error', reject)
               .pipe(relativizeFiles())
               .pipe(collectFiles(resolve))
-          })
+          )
       )
       .catch((err) => {
         // Q: should we skip unreadable files?
         throw new Error('problem encountered while reading ui.supplemental_files: ' + err.message)
       })
   }
-}
-
-function createMemoryFile (path_, contents = []) {
-  const stat = new fs.Stats()
-  stat.mode = FILE_MODE
-  stat.mtime = undefined
-  stat.size = contents.length
-  return new File({ path: path_, contents: Buffer.from(contents), stat })
 }
 
 function relativizeFiles () {
