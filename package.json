@@ -23,11 +23,6 @@
     "@antora/site-publisher": "^2.3.3",
     "@antora/ui-loader": "file:packages/ui-loader"
   },
-  "optionalDependencies": {
-    "@fortawesome/pro-light-svg-icons": "^5.13.0",
-    "@fortawesome/pro-regular-svg-icons": "5.13.0",
-    "@fortawesome/pro-solid-svg-icons": "5.13.0"
-  },
   "devDependencies": {
     "@fortawesome/fontawesome-svg-core": "1.2.8",
     "@fortawesome/free-brands-svg-icons": "5.13.0",

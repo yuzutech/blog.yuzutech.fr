@@ -1,15 +1,8 @@
 const library = require('@fortawesome/fontawesome-svg-core').library
 const {icon, layer} = require('@fortawesome/fontawesome-svg-core')
 
-let soldIcon
-let faLightbulb
-try {
-  soldIcon = require('@fortawesome/pro-solid-svg-icons')
-  faLightbulb = soldIcon.faLightbulbOn
-} catch (e) {
-  soldIcon = require('@fortawesome/free-solid-svg-icons')
-  faLightbulb = soldIcon.faLightbulb
-}
+const soldIcon = require('@fortawesome/free-solid-svg-icons')
+const faLightbulb = soldIcon.faLightbulb
 
 const faCircle = soldIcon.faCircle
 const faLightbulbCircleIcon = layer((push) => {
@@ -21,12 +14,7 @@ const faExclamationCircleIcon = icon(soldIcon.faExclamationCircle)
 const faQuestionCircleIcon = icon(soldIcon.faQuestionCircle)
 const faFireIcon = icon(soldIcon.faFire)
 const fas = soldIcon.fas
-let far
-try {
-  far = require('@fortawesome/pro-regular-svg-icons').far
-} catch (e) {
-  far = require('@fortawesome/free-regular-svg-icons').far
-}
+const far = require('@fortawesome/free-regular-svg-icons').far
 const fab = require('@fortawesome/free-brands-svg-icons').fab
 library.add(fas, far, fab)
 
