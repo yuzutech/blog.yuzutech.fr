@@ -1,0 +1,197 @@
+= Awesome Antora: Sort and hide components and versions
+David Jencks <djencks@apache.org>
+:page-revdate: 2020-9-28 14:25
+:page-author: David Jencks
+:description: You would like custom sorting of Antora components and versions, or to hide components.
+:page-tags: Antora, Sorting Components
+:page-image: sort.jpg
+:page-color-primary: #8BB3B2
+:page-color-secondary: #C68B45
+:ms-sorter-url: https://gitlab.com/opendevise/oss/antora-site-generator-ms/-/blob/v2.3.x/lib/custom-sort-components.js
+
+A frequent request is to sort the components and their versions in the default Antora UI component explorer in a customized order.
+Fortunately, this is quite easy to do using a couple of files in a supplemental UI or in a customized UI.
+
+I'd like to thank Bob Roro and Ewan Edwards for a lot of hints about what to do and answers about how to do it.
+Their invaluable help pushed me into figuring out how this works!
+I'd also like to thank Dan Allen for pointing to an existing implementation (for a completely custom UI).
+
+== Where do we sort?
+
+Here's the default UI's partial that sets up the component explorer contents:
+
+.nav-explore.hbs (original)
+[source,handlebars]
+----
+include::example$sort-components/nav-explore-default.hbs[]
+----
+<1> The crucial line!
+
+Here, `{{#each site.components}}` iterates over the object `site.components` in the default order.
+All we have to do is use a Javascript helper to change the order, as in `{{#each (mySorter site.components)}}`.
+For this the Javascript helper signature would be `module.exports = (components) => {...}`.
+Note that `#each` works on either arrays or objects, so, although `site.components` is an object, we can return an array of components in the desired order.
+
+Now let's consider plausible sources of information for the sorter.
+First of all, we need the collection of components.
+This is actually available in two ways, as `site.components` or by calling `getComponents` on the content catalog model as `site.contentCatalog`.
+We could pass the entire `site` model to our helper, but let's use `site.components` like the default.
+
+This much is adequate to hard-code a sort, for instance by listing the order of components explicitly.
+
+Let's start with a possibly silly example that demonstrates a sorting algorithm that does not need to be configured.
+
+Here's the `nav-explore.hbs` modified to work with a sorter:
+
+.nav-explore.hbs (with automonous component sorting)
+[source,handlebars]
+----
+include::example$sort-components/nav-explore-components-autonomous.hbs[]
+----
+
+.componentSorter.js (Reverse sorting)
+[source,javascript]
+----
+include::example$sort-components/componentSorter-autonomous.js[]
+----
+
+Here, all we've done is to reverse the original sort order.
+As with all these sorters, the code would go in `supplemental_ui/helpers/componentSorter.js` or, for a UI project, `src/helpers/componentSorter.js`.
+
+== Sorting components based on configuration
+
+This is simple, but it's convenient to be able to configure the sorting.
+Let's do that with a page attribute `page-component-sort-order`, expected to be set in the playbook.
+If you want to confuse your viewers, you could set it differently in each `antora.yml` component descriptor, or even on each page.
+
+Something similar could be done for version sort order, but this can be configured more easily in the component descriptors.
+
+With these choices, our Handlebars partial will look like this:
+
+.nav-explore.hbs (with component sorting)
+[source,handlebars]
+----
+include::example$sort-components/nav-explore-components.hbs[]
+----
+
+In a project with supplemental UI, this would be `supplemental_ui/partials/nav-explore.hbs`.
+In a UI project based on the Antora default UI, this would be `src/partials/nav-explore.hbs`.
+
+Now let's consider a configurable example, where you specify the exact order of components, and any components not mentioned are skipped.
+
+.componentSorter.js (Simple configurable sorting)
+[source,javascript]
+----
+include::example$sort-components/componentSorter-simple.js[]
+----
+
+And, finally for this section, an example with a wildcard and explicit "hide" instructions.
+(This is heavily influenced by Dan's link:{ms-sorter-url}[example]).
+
+.componentSorter.js (with component sorting and hiding, and wildcards)
+[source,javascript]
+----
+include::example$sort-components/componentSorter.js[]
+----
+
+These implementations are going to be very noisy if you specify a component that isn't present or leave out a component (in the last implementation).
+Leaving out the console logging or only logging once is an easy solution.
+The component-version sorter has a more sophisticated solution.
+
+== Sorting Versions
+
+Versions occur in two places in the UI: the component explorer and the page version selector.
+Thus, we need to modify two `partials` Handlebars templates.
+It would be most convenient to have two helpers, one for each sorting task, but since helpers cannot require each other due to how they are loaded from a virtual file system, we need to get both sorters into the same helper.
+We'll do this by specifying the type of sort as the first parameter.
+
+=== Specifying version sort order
+
+Since there's only one component descriptor for each component-version, we can do version sorting by putting a key in each component descriptor.
+This strategy doesn't work well for components, since the key would have to be the same for every version of the component.
+Another possible version sorting strategy, that we will not pursue, would be to have a global complex sorting key, where each component name is associated with an explicit version sort order.
+For instance:
+
+[source,yaml]
+----
+asciidoc:
+  attributes:
+    page-component-sort-order: component-a[v3,v1,vx],component-c[v1,vy,va],component-b[z,y,x]
+----
+
+Implementing this is left as an exercise for the reader.
+
+To get back to what we will demonstrate, we'll have an Asciidoc attribute in each component descriptor with a string-valued sort key:
+
+[source,yaml]
+----
+name: component-a
+version: 1.0
+title: My Fabulous A
+display-version: Version One Point Zero
+
+asciidoc:
+  attributes:
+    version-sort-key: zanzibar
+----
+
+Since we'll be getting the `version-sort-key` value from the version object rather than the page attributes exposed in the UI model, the key name doesn't need to start with the `page-` prefix.
+
+=== Handlebars template modifications
+
+We're already supplying all the necessary information to the sorting helper, so the `nav-explore.hbs` Handlebars template doesn't need significant modification.
+In order to avoid modifying the existing component objects, we'll copy them, so the component comparison code needs to be a little more careful, comparing names rather than objects.
+
+.nav-explore.hbs (with component and version sorting)
+[source,handlebars]
+----
+include::example$sort-components/nav-explore-component-versions.hbs[]
+----
+
+.page-versions.hbs
+[source,handlebars]
+----
+include::example$sort-components/page-versions-component-versions.hbs[]
+----
+
+=== Sorting helper
+
+We need to add version sorting logic to the sorting helper and make it callable separately.
+We'll do this by adding a first parameter describing the type of sort requested.
+
+.componentVersionSorter.js
+[source,javascript]
+----
+include::example$sort-components/componentVersionSorter.js[]
+----
+
+The version sorting is in reverse order, just like the default sorting.
+Versions without a `version-sort-order` key are placed last, in their original order.
+
+Component sorting configuration (playbook `asciidoc.attributes.page-component-sort-order` key)::
+  The key value is a comma-separated list of specifiers:
+  Required component:::
+    An explicit component name is placed in the order specified if present and warned if missing.
+  Optional component:::
+    A component name suffixed with '?' is placed in the order specified if present.
+  Hidden component:::
+    A component name prefixed with '!' is hidden if present and warned if missing.
+  Optional hidden component:::
+    A component name prefixed with '!' and suffixed with '?' is hidden if present.
+  Wildcard include:::
+    A '\*' includes all components not otherwise mentioned, in their original order, at the position of the '*'
+  Wildcard hide:::
+    A '!*' causes all components not otherwise mentioned to be hidden.
+Version sorting configuration, per component::
+* Version sorting is specified in the component descriptor with the `asciidoc.attributes.version-sort-key` key.
+* Versions with this key are ordered in reverse lexicographical order of key value.
+* Versions without this key are ordered after those with the key, in the original order.
+* The key value of '!' causes the version to be hidden.
+
+There's a small project demonstrating all this at https://gitlab.com/djencks/antora-component-sorting-example.
+
+While this implementation can specify any desired sort, it may not always allow an easy or appropriate way to specify that sort.
+Nevertheless this should provide an indication of how to implement and use more specific sorting strategies.
+
+Comments and suggestions would be appreciated!
+
