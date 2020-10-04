@@ -484,24 +484,65 @@ code[class*="language-"], pre[class*="language-"] {
       .discuss-twitter {
         margin-right: .7rem;
       }
+
       a {
         box-shadow: 0 1px 0 0 currentColor;
         color: currentColor;
       }
+
       a:hover, a:active {
         box-shadow: none;
       }
+
       a:active, a:hover {
         outline-width: 0;
       }
     }
   }
+
   aside {
     max-width: 50rem;
     margin: 0 auto;
   }
+
   .title:not(:last-child) {
     margin-bottom: .5rem;
+  }
+
+  .literalblock > .title,
+  .imageblock > .title {
+    font-size: 1rem;
+    font-weight: 400;
+    margin: 0;
+    padding: .25rem 0;
+    font-style: italic;
+  }
+
+  .imageblock > .title {
+    margin-left: 0.5rem;
+  }
+
+  .quoteblock > blockquote::before {
+    content: "\201c";
+    float: left;
+    font-size: 2.75em;
+    font-weight: bold;
+    line-height: .6em;
+    margin-left: -.6em;
+  }
+
+  .quoteblock > blockquote {
+    background-color: initial;
+    border-left: 0;
+    padding: .5em 1.5em;
+  }
+
+  .content blockquote:not(:last-child) {
+    margin: 0;
+  }
+
+  .content .quoteblock:not(:last-child) {
+    margin-bottom: 1em;
   }
 }
 
@@ -562,6 +603,7 @@ li {
 
 .imageblock {
   display: flex;
+  flex-direction: column;
   margin-bottom: 1rem;
 }
 

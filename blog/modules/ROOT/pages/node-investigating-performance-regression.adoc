@@ -1,0 +1,179 @@
+= Nifty Node: Investigating a performance regression
+Guillaume Grossetie <ggrossetie@yuzutech.fr>
+:page-revdate: 2020-11-01 20:15
+:page-author: Guillaume Grossetie
+:description: 🤿 Let's take a deep dive into Node to identify the root cause of a major performance regression.
+:page-tags: Node, V8, JavaScript, performance
+:page-image: investigation.jpeg
+:page-color-primary: #AFBFBC
+:page-color-secondary: #714334
+:source-highlighter: highlight.js
+:uri-asciidoc-user-guide: https://raw.githubusercontent.com/asciidoc/asciidoc/d43faae38c4a8bf366dcba545971da99f2b2d625/doc/asciidoc.txt
+:uri-opal: https://github.com/opal/opal
+
+[%hardbreaks]
+It all started when https://twitter.com/mojavelinux[Dan Allen] told me that he noticed that Antora -- a documentation site generator based on Asciidoctor.js -- was 40% slower on Node 12 compared to Node 10.
+Dan quickly identified that `Asciidoctor.convert` was significantly slower.
+At this point, I was really surprised because the V8 JavaScript engine, used in Node, is renowned to run faster from one version to a newer one.
+
+Since the Asciidoctor.js repository contains a benchmark script, I was able to measure precisely how much slower Asciidoctor.js was on Node 12 compared to Node 10.
+For reference, the benchmark script measures how much time it takes to convert the {uri-asciidoc-user-guide}[AsciiDoc User Guide].
+
+Without further ado, the result:
+
+.Node 10.22.1
+....
+Load scripts: 0.08s
+avg: 494.40
+stddev: 68.72
+50th: 469.50
+75th: 497.50
+90th: 530.80
+99th: 674.98
+....
+
+.Node 12.18.4
+....
+Load scripts: 0.058s
+avg: 2406.50
+stddev: 72.72
+50th: 2380.00
+75th: 2417.75
+90th: 2477.40
+99th: 2585.94
+....
+
+On this benchmark, Node 12 is 3.8x to 5x slower compared to Node 10. +
+My reaction was basically 😱😱😱
+
+NOTE: In this article I will compare Node 10 to Node 12, but I get similar results between Node 10 and Node 14 and even between Node 10 and the recently released Node 15.
+
+== Flamegraph profiling
+
+Flamegraphs are great to discover bottlenecks and hot paths. +
+On the JVM, you can use the excellent https://blog.yuzutech.fr/blog/flamegraph-embeddable-profiler/index.html[async-profiler] to generate flamegraphs.
+While looking for a similar tool in the Node ecosystem, I found https://github.com/davidmarkclements/0x[0x].
+`0x` can profile and generate an interactive flamegraph for a Node process with a single command, and it's working wonders, I highly recommend it! 🎉
+
+In this case, the goal is to generate one flamegraph when running on Node 10 and another one when running on Node 12.
+Hopefully, we should be able to spot differences between the two flamegraphs.
+We might even be able to visualize where the time is spent and which calls are slower.
+
+Here are the flamegraphs:
+
+.Node 10.22.1
+image::flamegraph-asciidoctor-js-node-10.png[]
+
+.Node 12.18.4
+image::flamegraph-asciidoctor-js-node-12.png[]
+
+Can you find the culprit? +
+I can give you a clue. Take a close look at the dark orange blocks.
+
+> Can you zoom and enhance that? 🔍
+
+Sure I can!
+
+image::flamegraph-asciidoctor-js-node-12-parser-next-line.png[]
+
+As you can see, `unshift` and `shift` are almost always on the top of the stack.
+Let's dig a bit further... 🕵️
+
+As you might know, Asciidoctor.js is transpiled from Ruby to JavaScript using {uri-opal}[Opal].
+As a result, the `unshift` and `shift` are actually Ruby methods implemented in JavaScript:
+
+- https://ruby-doc.org/core-2.7.0/Array.html#method-i-shift[Array#shift]
+- https://ruby-doc.org/core-2.7.0/Array.html#method-i-unshift[Array#unshift]
+
+The implementation in Opal is actually pretty straightforward and delegates most of the work to `Array.prototype.splice`, `Array.prototype.shift` and `Array.prototype.unshift`.
+So how comes that these functions are way slower in Node&nbsp;12? 🤔
+
+== Micro-benchmark
+
+Let's write a micro-benchmark to compare the performance of `Array.prototype.splice` on Node&nbsp;10 and Node&nbsp;12.
+In the following example, I'm using the excellent https://benchmarkjs.com/[Benchmark.js]:
+
+[source,js]
+----
+include::example$node-investigating-performance-regression/splice.js[]
+----
+
+.Node 10.22.1
+....
+splice x 7,555,366 ops/sec ±3.04% (94 runs sampled)
+....
+
+.Node 12.18.4
+....
+splice x 20,305,330 ops/sec ±0.71% (93 runs sampled)
+....
+
+You read it right, `Array.prototype.splice` is approximately 2.5x times faster on Node 12 (not slower!). 😕 +
+While this result is counter-intuitive, it clearly indicates that `Array.prototype.splice` has been optimized between Node&nbsp;10 and Node&nbsp;12.
+In other words, the implementation changed.
+
+Now let's try to run the same test when the Opal runtime is loaded.
+
+.Node 10.22.1 with Opal runtime
+....
+splice x 7,504,100 ops/sec ±3.26% (90 runs sampled)
+....
+
+Nothing to report... the performance is similar to what we had before when Opal runtime was not loaded.
+
+.Node 12.18.4 with Opal runtime
+....
+splice x 984,509 ops/sec ±0.41% (92 runs sampled)
+....
+
+Oh oh! +
+The code is now 20x times slower compared to Node 12.18.4 and 7x times slower compared to Node 10.22.1.
+
+Instinctively, it seems that when Opal runtime is loaded we are not benefiting from a performance optimization in V8...
+As a result, I decided to document myself about the V8 engine and found a couple of really well written articles by https://mathiasbynens.be/[Mathias Bynens].
+
+In one of them, https://mathiasbynens.be/notes/prototypes["JavaScript engine fundamentals: optimizing prototypes"], we can read:
+
+> Based on this knowledge, we identified a practical JavaScript coding tip that can help boost performance: don’t mess with prototypes (or if you really, really need to, then at least do it before other code runs).
+-- Mathias Bynens
+
+All of a sudden, I connected the dots! 💡
+
+{uri-opal}[Opal] relies on prototypes to augment built-in objects and implement Ruby inheritance model. +
+In fact, Opal will actually replace the prototype on the `Array` built-in object using `Object.setPrototypeOf`. +
+I was now able to reproduce this issue adding a single line of code:
+
+[source,js]
+----
+Object.setPrototypeOf(Array.prototype, {})
+----
+
+Once `Array.prototype` has been altered, several `Array` operations are not benefiting anymore from the optimizations in V8.
+
+== V8 mailing list
+
+Since I had a simple reproduction case, and a better idea of what was going on,
+I decided to post a question on the https://groups.google.com/g/v8-users/c/Sr19goTi5d8/m/wtW6WHu3BwAJ[v8-users mailing list].
+
+https://github.com/bnoordhuis[Ben Noordhuis] kindly answered my question:
+
+> `Array.p.splice()` returns a new array. `array-splice.tq` has a fast path for that (`ExtractFastJSArray`, defined in _src/codegen/code-stub-assembler.cc_)
+but that's only sound when `Array.prototype` is unmodified, hence the `IsPrototypeInitialArrayPrototype()` check. +
+Older versions of V8 called out to this JS-with-extensions code: https://github.com/v8/v8/blob/7.0.1/src/js/array.js#L599-L642
+-- Ben Noordhuis
+
+For reference, Node 10.22 is using V8 version < 7.0 and Node 12.18 is using V8 version 7.8.
+As pointed by Ben, the implementation changed, and now the fast path is only available when `Array.prototype` is pristine.
+
+It all makes sense now, and I guess "don't mess with prototypes" is pretty good advice! 😅
+
+But unfortunately that's not always possible.
+In our case, Asciidoctor.js relies on Opal and Opal relies on prototypes...
+
+In his reply, Ben also suggested to "open-code" a faster version of `Array.prototype.splice`:
+
+> If `Array.p.splice()` performance is vital to you, you can try open-coding it.
+I did something similar in Node.js a few years ago, to great effect: https://github.com/nodejs/node/commit/d3f8db124463e478420d8bba6fa5cf13af7b4ecb
+-- Ben Noordhuis
+
+In the next article, we will put Ben's suggestion into practice! 🚀
