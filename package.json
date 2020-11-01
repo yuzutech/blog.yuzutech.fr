@@ -6,6 +6,9 @@
     "Guillaume Grossetie (https://github.com/mogztter)"
   ],
   "description": "blog.yuzutech.fr website",
+  "scripts": {
+    "watch": "node watch.js"
+  },
   "engines": {
     "node": ">=10.15.0"
   },
