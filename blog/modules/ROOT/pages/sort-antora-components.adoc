@@ -1,6 +1,6 @@
 = Awesome Antora: Sort and hide components and versions
 David Jencks <djencks@apache.org>
-:page-revdate: 2020-9-28 14:25
+:page-revdate: 2020-09-28 14:25
 :page-author: David Jencks
 :description: You would like custom sorting of Antora components and versions, or to hide components.
 :page-tags: Antora, Sorting Components
