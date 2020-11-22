@@ -3,12 +3,14 @@
 # Netlify clone the repository and detach the HEAD
 # Luckily, we can use git metadata to reattach the HEAD
 # https://docs.netlify.com/configure-builds/environment-variables/#git-metadata
-git remote add origin $REPOSITORY_URL
-if [ $HEAD = "master" ]
-then
-  # since the branch "master" already exists on Netlify,
-  # we first need to remove it to reattach the HEAD
-  # on a new branch named "master"
-  git branch -d master
+origin_remote_exists=$(git remote | grep origin || true)
+if [[ -z "${origin_remote_exists}" ]]; then
+  git remote add origin $REPOSITORY_URL
 fi
-  git checkout -b $HEAD
+current_branch="$HEAD"
+branch_exists=$(git branch --list "${current_branch}")
+if [[ ! -z "${branch_exists}" ]]; then
+  # the branch already exists, remove it and reattach the HEAD (current branch)
+  git branch -D "${current_branch}"
+fi
+git checkout -b "${current_branch}"
