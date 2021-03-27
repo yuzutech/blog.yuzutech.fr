@@ -1,6 +1,6 @@
 = Nifty Node: Investigating a performance regression
 Guillaume Grossetie <ggrossetie@yuzutech.fr>
-:page-revdate: 2020-11-01 20:15
+:page-revdate: 2021-03-27 16:10
 :page-author: Guillaume Grossetie
 :description: 🤿 Let's take a deep dive into Node to identify the root cause of a major performance regression.
 :page-tags: Node, V8, JavaScript, performance
