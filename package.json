@@ -6,6 +6,9 @@
     "Guillaume Grossetie (https://github.com/mogztter)"
   ],
   "description": "blog.yuzutech.fr website",
+  "scripts": {
+    "watch": "node watch.js"
+  },
   "engines": {
     "node": ">=10.15.0"
   },
@@ -28,6 +31,8 @@
     "@fortawesome/free-brands-svg-icons": "5.13.0",
     "@fortawesome/free-regular-svg-icons": "5.13.0",
     "@fortawesome/free-solid-svg-icons": "5.13.0",
+    "browser-sync": "^2.26.12",
+    "chokidar": "^3.4.2",
     "chroma-js": "^2.1.0",
     "luxon": "^1.25.0",
     "puppeteer": "^5.5.0"
