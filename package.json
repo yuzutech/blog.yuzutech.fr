@@ -19,14 +19,14 @@
     "@antora/site-generator": "^3.0.0-rc.2"
   },
   "devDependencies": {
-    "@fortawesome/fontawesome-svg-core": "1.2.8",
-    "@fortawesome/free-brands-svg-icons": "5.13.0",
-    "@fortawesome/free-regular-svg-icons": "5.13.0",
-    "@fortawesome/free-solid-svg-icons": "5.13.0",
-    "browser-sync": "^2.26.12",
-    "chokidar": "^3.4.2",
-    "chroma-js": "^2.1.0",
-    "luxon": "^1.25.0",
-    "puppeteer": "^5.5.0"
+    "@fortawesome/fontawesome-svg-core": "1.2.36",
+    "@fortawesome/free-brands-svg-icons": "5.15.4",
+    "@fortawesome/free-regular-svg-icons": "5.15.4",
+    "@fortawesome/free-solid-svg-icons": "5.15.4",
+    "browser-sync": "^2.27.7",
+    "chokidar": "^3.5.2",
+    "chroma-js": "^2.1.2",
+    "luxon": "^1.28.0",
+    "puppeteer": "^13.0.0"
   }
 }
