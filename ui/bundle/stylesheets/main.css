@@ -2480,4 +2480,6 @@ li .paragraph { margin-bottom: 1em; }
 .imageblock.text-center { justify-content: center; }
 
 .imageblock > .content { margin: .5rem; border: 1px solid #dbdbdb; }
+
+.box .media-content { overflow-x: unset; }
 /*# sourceMappingURL=main.css.map */

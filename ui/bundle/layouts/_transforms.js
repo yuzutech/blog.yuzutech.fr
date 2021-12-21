@@ -108,7 +108,7 @@ ${titleElement}<div class="content">
       return `<i class="conum" data-value="${node.text}"></i>`
     },
     inline_image: (node) => {
-      if (node.getType() === 'icon' && node.getDocument().isAttribute('icons', 'svg')) {
+      if (node.getType() === 'icon' && node.getDocument().isAttribute('page-icons', 'svg')) {
         const transform = {}
         if (node.hasAttribute('rotate')) {
           transform.rotate = node.getAttribute('rotate') // <1>
@@ -161,10 +161,10 @@ ${titleElement}<div class="content">
       if (node.getTitle()) {
         result.push(`<div class="title">${node.getTitle()}</div>`)
       }
-      if (node.getDocument().hasAttribute('icons')) {
+      if (node.getDocument().hasAttribute('page-icons') || node.getDocument().hasAttribute('icons')) {
         result.push('<table>')
         let num = 0
-        const svgIcons = node.getDocument().isAttribute('icons', 'svg')
+        const svgIcons = node.getDocument().isAttribute('page-icons', 'svg')
         let numLabel
         node.getItems().forEach((item) => {
           num += 1

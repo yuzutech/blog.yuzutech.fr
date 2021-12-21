@@ -123,4 +123,4 @@ Chroma.create("orange").rgba() // List(255, 165, 0, 1)
 ```
 
 Written with GraalVM 1.0.0-rc7 and Java 1.8. +
-icon:github-alt[] The full source code is available on GitHub: https://github.com/yuzutech/chroma-graalvm
+icon:github-alt[prefix=fab] The full source code is available on GitHub: https://github.com/yuzutech/chroma-graalvm
