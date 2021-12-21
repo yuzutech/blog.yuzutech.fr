@@ -14,6 +14,10 @@
   from = "/blog/1.0/*"
   to = "/blog/:splat"
 
+[[redirects]]
+  from = "/blog/*"
+  to = "/:splat"
+
 [[headers]]
   for = "/*"
   [headers.values]
