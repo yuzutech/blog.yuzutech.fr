@@ -3,7 +3,7 @@ runtime:
 site:
   title: Blog - Yuzu tech
   url: https://blog.yuzutech.fr
-  start_page: blog::index.adoc
+  start_page: ROOT::index.adoc
 content:
   sources:
   - url: '.'
@@ -13,6 +13,9 @@ ui:
   bundle:
     url: './ui/bundle'
   supplemental_files: ./ui/supplemental-ui
+antora:
+  extensions:
+    - ./lib/blog-extension.js
 asciidoc:
   attributes:
     hide-uri-scheme: ''

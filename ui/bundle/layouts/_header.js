@@ -8,7 +8,7 @@ module.exports = (title, uiModel) => {
   let openGraphMeta = ''
   if (page.layout === 'default') {
     const attributes = page.attributes
-    const basename = ospath.basename(attributes.relative, '.adoc')
+    const basename = ospath.basename(attributes['relative-src-path'], '.adoc')
     if (basename !== 'index') {
       const revisionDate = attributes.revdate
       const revisionDateTime = DateTime.fromFormat(revisionDate, 'yyyy-MM-dd HH:mm')
@@ -47,7 +47,7 @@ ${twitterCreator}`
   <link rel="canonical" href="${page.canonicalUrl}">
   <meta property="og:url" content="${page.canonicalUrl}">
   <meta property="og:site_name" content="${site.title}">
-  <link rel="alternate" type="application/rss+xml" title="Feed for articles" href="/blog/rss/feed.xml">
+  <link rel="alternate" type="application/rss+xml" title="Feed for articles" href="/rss/feed.xml">
   ${openGraphMeta}
   <link rel="stylesheet" href="${uiModel.uiRootPath}/stylesheets/main.min.css">
   <style>
@@ -88,7 +88,7 @@ ${twitterCreator}`
         <a class="navbar-item" href="https://www.yuzutech.fr/#contact">
           Contact
         </a>
-        <a class="navbar-item" href="${uiModel.siteRootPath}/blog/">
+        <a class="navbar-item" href="${uiModel.siteRootPath}/">
           Blog
         </a>
       </div>

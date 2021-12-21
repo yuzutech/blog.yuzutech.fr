@@ -7,24 +7,16 @@
   ],
   "description": "blog.yuzutech.fr website",
   "scripts": {
-    "watch": "node watch.js"
+    "watch": "node watch.js",
+    "build": "antora --html-url-extension-style=indexify --fetch site.yml -r ./lib/blog-converter.js"
   },
   "engines": {
-    "node": ">=10.15.0"
+    "node": ">=16"
   },
   "dependencies": {
-    "@antora/asciidoc-loader": "file:packages/asciidoc-loader",
-    "@antora/cli": "^2.3.3",
-    "@antora/content-aggregator": "^2.3.3",
-    "@antora/content-classifier": "^2.3.3",
-    "@antora/document-converter": "^2.3.3",
-    "@antora/navigation-builder": "^2.3.3",
-    "@antora/page-composer": "^2.3.3",
-    "@antora/playbook-builder": "^2.3.3",
-    "@antora/redirect-producer": "^2.3.3",
-    "@antora/site-mapper": "^2.3.3",
-    "@antora/site-publisher": "^2.3.3",
-    "@antora/ui-loader": "file:packages/ui-loader"
+    "@antora/cli": "^3.0.0-rc.2",
+    "@antora/page-composer": "^3.0.0-rc.2",
+    "@antora/site-generator": "^3.0.0-rc.2"
   },
   "devDependencies": {
     "@fortawesome/fontawesome-svg-core": "1.2.8",

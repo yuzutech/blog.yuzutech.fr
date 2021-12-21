@@ -7,13 +7,13 @@
   ],
   "description": "blog.yuzutech.fr UI",
   "devDependencies": {
-    "autoprefixer": "^8.2.0",
-    "bulma": "^0.7.2",
-    "chokidar": "^2.0.4",
-    "clean-css": "^4.1.11",
-    "node-sass": "^4.13.1",
-    "postcss-cli": "^5.0.0",
-    "rimraf": "^2.6.2"
+    "autoprefixer": "^10.4.0",
+    "bulma": "^0.9.3",
+    "chokidar": "^3.5.2",
+    "clean-css": "^5.2.2",
+    "node-sass": "^7.0.0",
+    "postcss-cli": "^9.1.0",
+    "rimraf": "^3.0.2"
   },
   "scripts": {
     "build": "npm run build-clean && npm run build-css",

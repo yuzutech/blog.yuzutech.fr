@@ -143,7 +143,7 @@ ${titleElement}<div class="content">
           return faIcon.html
         }
       } else {
-        return self.baseConverter.$inline_image(node)
+        return self.baseConverter.$convert_inline_image(node)
       }
     },
     colist: (node) => {
