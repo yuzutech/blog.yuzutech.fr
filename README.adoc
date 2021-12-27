@@ -3,16 +3,12 @@
 
 Yuzu tech blog powered by {uri-antora}[Antora].
 
-To run locally, you will first need to install the local dependencies:
-
- $ npm i ./packages/asciidoc-loader ./packages/ui-loader
-
-Then, install the dependencies:
+To run locally, you will first need to install the dependencies using Node.js 16+ and npm 8+:
 
  $ npm i
 
 Finally, run the following command to generate the site:
 
- $ ./node_modules/.bin/antora site.yml --html-url-extension-style=indexify --generator ./lib/generator.js
+ $ npm run build
 
 Open [.path]_public/blog/index.html_ in your browser.

@@ -3,7 +3,7 @@
   command = "./netlify-reattach-git-branch.sh && ./netlify-build.sh"
 
 [build.environment]
-  NODE_VERSION = "14"
+  NODE_VERSION = "16"
   BUILD_ONLY = "true"
   ANTORA_CACHE_DIR = ".cache/antora"
 
@@ -13,6 +13,10 @@
 [[redirects]]
   from = "/blog/1.0/*"
   to = "/blog/:splat"
+
+[[redirects]]
+  from = "/blog/*"
+  to = "/:splat"
 
 [[headers]]
   for = "/*"

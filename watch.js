@@ -1,6 +1,7 @@
 const chokidar = require('chokidar')
-const browserSync = require("browser-sync")
-const generator = require('./lib/generator.js')
+const browserSync = require('browser-sync')
+const generateSite = require('@antora/site-generator')
+require('./lib/blog-converter.js')
 const Lock = require('./lock.js')
 const processorLock = new Lock()
 
@@ -19,7 +20,7 @@ async function process() {
   try {
     const hasQueuedEvents = await processorLock.acquire()
     if (!hasQueuedEvents) {
-      await generator(antoraArgs, process.env)
+      await generateSite(antoraArgs)
       browserSync.reload("*")
     }
   } catch (err) {

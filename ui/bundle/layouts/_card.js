@@ -25,7 +25,7 @@ module.exports = (uiModel) => {
     const title = attributes['doctitle']
     const description = attributes['description']
     const revisionDate = new Date(attributes['page-revdate'])
-    const pageUrl = `${uiModel.siteRootPath}/${page.out.path}`
+    const pageUrl = `${uiModel.siteRootPath}${page.pub.url}`
     const imageHTML = image ? `<div class="card-image">
   <a href="${pageUrl}" class="summary">
     <img src="${uiModel.uiRootPath}/images/${image}" alt="${title} illustration">
