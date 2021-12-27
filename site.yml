@@ -1,5 +1,6 @@
 runtime:
   cache_dir: ./.cache/antora
+  fetch: true
 site:
   title: Blog - Yuzu tech
   url: https://blog.yuzutech.fr
